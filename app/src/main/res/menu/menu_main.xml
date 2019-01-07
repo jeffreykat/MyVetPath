@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.myvetpath.myvetpath.MainActivity">
+    <item
+        android:id="@+id/action_info"
+        android:icon="@drawable/ic_info_24dp"
+        android:title="@string/action_info"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_submission"
+        android:title="@string/action_submission"
+        android:orderInCategory="1"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_viewsubs"
+        android:title="@string/action_viewsubs"
+        android:orderInCategory="2"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+</menu>

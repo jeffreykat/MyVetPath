@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">MyVetPath</string>
+    <string name="create_account">Create Account</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_info">Information</string>
+    <string name="action_submission">Create Submission</string>
+    <string name="action_viewsubs">View Submissions</string>
+    <string name="action_viewdrafts">View Drafts</string>
+    <string name="title_activity_create_sub">CreateSubActivity</string>
+</resources>
