@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Initialize buttons and set the on click listeners
         create_sub_activity = new Intent(this, CreateSubActivity.class);
 
         create_sub_button = findViewById(R.id.createSubButton);
