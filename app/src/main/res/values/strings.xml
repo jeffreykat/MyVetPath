@@ -7,4 +7,8 @@
     <string name="action_viewsubs">View Submissions</string>
     <string name="action_viewdrafts">View Drafts</string>
     <string name="title_activity_create_sub">CreateSubActivity</string>
+    <string name="title_activity_create_account">CreateAccountActivity</string>
+    <string name="web_URL">https://vetmed.oregonstate.edu/diagnostic</string>
+    <string name="title_activity_view_submissions">ViewSubmissionsActivity</string>
+    <string name="title_activity_view_drafts">ViewDraftsActivity</string>
 </resources>
