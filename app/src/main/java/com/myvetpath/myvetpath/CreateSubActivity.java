@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
+//This is for the "Create Submission screen"
 public class CreateSubActivity extends AppCompatActivity {
 
     @Override
