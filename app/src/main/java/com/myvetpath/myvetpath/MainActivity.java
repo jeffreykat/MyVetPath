@@ -25,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
     Intent view_drafts_activity;
     Button view_drafts_button;
 
+    Intent settings_activity;
+    Intent instructions_activity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,9 +85,13 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            settings_activity = new Intent(this, SettingsActivity.class);
+            startActivity(settings_activity);
             return true;
         }
-        if (id == R.id.action_info) {
+        if (id == R.id.action_info) { //TODO: right now, the parent for the info button is always the home screen, we will need to change this later when we work more on the toolbar
+            instructions_activity = new Intent(this, InstructionsActivity.class);
+            startActivity(instructions_activity);
             return true;
         }
         if (id == R.id.action_submission) {

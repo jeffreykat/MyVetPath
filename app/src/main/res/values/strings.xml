@@ -11,4 +11,9 @@
     <string name="web_URL">https://vetmed.oregonstate.edu/diagnostic</string>
     <string name="title_activity_view_submissions">ViewSubmissionsActivity</string>
     <string name="title_activity_view_drafts">ViewDraftsActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_add_pictures">AddPicturesActivity</string>
+    <string name="action_addpictures">Add Pictures</string>
+    <string name="title_activity_instructions">InstructionsActivity</string>
+    <string name="action_instructions">Instructions</string>
 </resources>

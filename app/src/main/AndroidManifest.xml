@@ -37,6 +37,33 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.myvetpath.myvetpath.MainActivity" />
         </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.myvetpath.myvetpath.MainActivity" />
+        </activity>
+        <activity
+            android:name=".AddPicturesActivity"
+            android:label="@string/title_activity_add_pictures"
+            android:parentActivityName=".CreateSubActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.myvetpath.myvetpath.CreateSubActivity" />
+        </activity>
+        <activity
+            android:name=".InstructionsActivity"
+            android:label="@string/title_activity_instructions"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.myvetpath.myvetpath.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
