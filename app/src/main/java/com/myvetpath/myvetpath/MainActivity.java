@@ -21,8 +21,6 @@ public class MainActivity extends AppCompatActivity {
     Intent create_account_activity;
     Button create_account_button;
 
-    Intent view_submissions_activity;
-    Button view_submissions_button;
 
     Intent view_drafts_activity;
     Button view_drafts_button;
@@ -56,14 +54,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        view_submissions_activity = new Intent(this, ViewSubmissionsActivity.class);
-        view_submissions_button = findViewById(R.id.viewSubsButton);
-        view_submissions_button.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                startActivity(view_submissions_activity);
-            }
-        });
 
         view_drafts_activity = new Intent(this, ViewDraftsActivity.class);
         view_drafts_button = findViewById(R.id.viewDraftsButton);
