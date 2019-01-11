@@ -1,49 +1,35 @@
 package com.myvetpath.myvetpath;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.view.View;
+import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class SubDetailsActivity extends AppCompatActivity {
 
     Intent create_sub_activity;
-    Intent view_subs_activity;
-    Button create_sub_button;
-    Button view_subs_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_sub_details);
+        int position = getIntent().getIntExtra("pos", 0);
+        String title = getResources().getStringArray(R.array.subsTitles)[position];
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(title);
         setSupportActionBar(toolbar);
 
         create_sub_activity = new Intent(this, CreateSubActivity.class);
-        view_subs_activity = new Intent(this, ViewSubsActivity.class);
 
-        create_sub_button = findViewById(R.id.createSubButton);
-        create_sub_button.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                startActivity(create_sub_activity);
-            }
-        });
-
-        view_subs_button = findViewById(R.id.viewSubsButton);
-        view_subs_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(view_subs_activity);
-            }
-        });
+        TextView titleText = findViewById(R.id.subTitle);
+        titleText.setText(title);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -72,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.action_viewsubs) {
-            startActivity(view_subs_activity);
             return true;
         }
         if (id == R.id.action_settings) {

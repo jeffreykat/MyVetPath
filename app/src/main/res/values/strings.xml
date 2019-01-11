@@ -7,4 +7,25 @@
     <string name="action_viewsubs">View Submissions</string>
     <string name="action_viewdrafts">View Drafts</string>
     <string name="title_activity_create_sub">CreateSubActivity</string>
+    <string name="title_activity_view_subs">ViewSubsActivity</string>
+    <string name="subs">Submissions</string>
+
+    <string-array name="subsTitles">
+        <item>Cows at Farm</item>
+        <item>50 Sheep Samples</item>
+        <item>Bird Pictures</item>
+    </string-array>
+
+    <string-array name="subsDates">
+        <item>11/23/2018</item>
+        <item>12/2/2018</item>
+        <item>12/30/2018</item>
+    </string-array>
+
+    <string-array name="subsCaseIDs">
+        <item>1234</item>
+        <item>5678</item>
+        <item>9101</item>
+    </string-array>
+    <string name="title_activity_sub_details">SubDetailsActivity</string>
 </resources>
