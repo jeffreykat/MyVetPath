@@ -48,11 +48,13 @@ public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnM
         switch(menuItem.getItemId()){
             default: //right now we have plans to only include a "Delete" option. If we ever add more, we will need to add more switch cases
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ViewSubsActivity.this);
+
                 String confirmationMessage = getString(R.string.action_delete_confirmation_prompt_first_part) + subsTitles[selectedSubmissionPosition]
                                             + getString(R.string.action_delete_confirmation_second_part); //Create confirmation message by including case title
+
                 dialogBuilder.setMessage(confirmationMessage).setCancelable(false).setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
                     @Override
-                    //This function sets what happens when user clicks on the "yes" button in the dialog box. It should delete the submission from the SQLite database
+                    //This function sets what happens when user clicks on the "yes" button in the dialog box. It should delete the submission from the SQLite database and show a message to the user saying that the entry was deleted
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Toast.makeText(ViewSubsActivity.this, R.string.deleted_message,
                                 Toast.LENGTH_LONG).show();
