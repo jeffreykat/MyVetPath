@@ -16,7 +16,9 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
 
     Intent create_sub_activity;
+    Intent view_subs_activity;
     Button create_sub_button;
+    Button view_subs_button;
 
     Intent create_account_activity;
     Button create_account_button;
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Initialize buttons and set the on click listeners
         create_sub_activity = new Intent(this, CreateSubActivity.class);
+        view_subs_activity = new Intent(this, ViewSubsActivity.class);
 
         create_sub_button = findViewById(R.id.createSubButton);
         create_sub_button.setOnClickListener(new View.OnClickListener(){
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(create_sub_activity);
             }
         });
+
 
         create_account_activity = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.web_URL))); //TODO Just use placeholder web page for now, update later when we set up account creation page
         create_account_button = findViewById(R.id.createAccountButton);
@@ -64,6 +68,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(view_drafts_activity);
+            }
+        });
+
+
+        view_subs_button = findViewById(R.id.viewSubsButton);
+        view_subs_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(view_subs_activity);
             }
         });
 
@@ -99,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.action_viewsubs) {
+            startActivity(view_subs_activity);
             return true;
         }
         if (id == R.id.action_settings) {

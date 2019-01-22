@@ -7,6 +7,7 @@
     <string name="action_viewsubs">View Submissions</string>
     <string name="action_viewdrafts">View Drafts</string>
     <string name="title_activity_create_sub">CreateSubActivity</string>
+
     <string name="title_activity_create_account">CreateAccountActivity</string>
     <string name="web_URL">https://vetmed.oregonstate.edu/diagnostic</string>
     <string name="title_activity_view_submissions">ViewSubmissionsActivity</string>
@@ -16,4 +17,60 @@
     <string name="action_addpictures">Add Pictures</string>
     <string name="title_activity_instructions">InstructionsActivity</string>
     <string name="action_instructions">Instructions</string>
+
+    <string name="title_activity_view_subs">ViewSubsActivity</string>
+    <string name="subs">Submissions</string>
+
+    <string-array name="subsTitles">
+        <item>Cows at Farm</item>
+        <item>50 Sheep Samples</item>
+        <item>Bird Pictures</item>
+        <item>Cows at Farm</item>
+        <item>50 Sheep Samples</item>
+        <item>Bird Pictures</item>
+        <item>Cows at Farm</item>
+        <item>50 Sheep Samples</item>
+        <item>Bird Pictures</item>
+        <item>Cows at Farm</item>
+        <item>50 Sheep Samples</item>
+        <item>Bird Pictures</item>
+    </string-array>
+
+    <string-array name="subsDates">
+        <item>11/23/2018</item>
+        <item>12/2/2018</item>
+        <item>12/30/2018</item>
+        <item>11/23/2018</item>
+        <item>12/2/2018</item>
+        <item>12/30/2018</item>
+        <item>11/23/2018</item>
+        <item>12/2/2018</item>
+        <item>12/30/2018</item>
+        <item>11/23/2018</item>
+        <item>12/2/2018</item>
+        <item>12/30/2018</item>
+    </string-array>
+
+    <string-array name="subsCaseIDs">
+        <item>1234</item>
+        <item>5678</item>
+        <item>9101</item>
+        <item>1234</item>
+        <item>5678</item>
+        <item>9101</item>
+        <item>1234</item>
+        <item>5678</item>
+        <item>9101</item>
+        <item>1234</item>
+        <item>5678</item>
+        <item>9101</item>
+    </string-array>
+    <string name="title_activity_sub_details">SubDetailsActivity</string>
+    <string name="deleted_message">Deleted</string>
+    <string name="action_yes">Yes</string>
+    <string name="action_no">No</string>
+    <string name="action_delete_confirmation_prompt_first_part">Are you sure you want to delete the report \"</string>
+    <string name="action_delete_confirmation_second_part">\"?</string>
+    <string name="action_delete_confirmation">Delete Confirmation</string>
+
 </resources>
