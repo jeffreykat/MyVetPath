@@ -1,9 +1,9 @@
 package com.myvetpath.myvetpath;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,9 +13,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class ViewSubsActivity extends AppCompatActivity {
+public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
 
     Intent create_sub_activity;
     Intent sub_details_activity;
@@ -23,10 +25,52 @@ public class ViewSubsActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
+    private int selectedSubmissionPosition; //keeps track of what entry was selected for long press
     private String[] subsTitles;
     private String[] subsDates;
     private String[] subsCaseID;
+
+    //This method is used to show the delete popup option when the user long clicks on a submission.
+    //Parameters: the view and the position of the entry that was clicked on
+    public void showPopup(View v, int pos){
+        PopupMenu popup = new PopupMenu(this, v);
+        selectedSubmissionPosition = pos;
+        popup.setOnMenuItemClickListener(this);
+        popup.inflate(R.menu.view_submission_delete_menu);
+        popup.show();
+
+    }
+
+    //This function shows the dialog box that confirms with the user if they want to delete the submission.
+    //It is called whenever the user clicks on the delete option from the popup menu
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        switch(menuItem.getItemId()){
+            default: //right now we have plans to only include a "Delete" option. If we ever add more, we will need to add more switch cases
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ViewSubsActivity.this);
+
+                String confirmationMessage = getString(R.string.action_delete_confirmation_prompt_first_part) + subsTitles[selectedSubmissionPosition]
+                                            + getString(R.string.action_delete_confirmation_second_part); //Create confirmation message by including case title
+
+                dialogBuilder.setMessage(confirmationMessage).setCancelable(false).setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    //This function sets what happens when user clicks on the "yes" button in the dialog box. It should delete the submission from the SQLite database and show a message to the user saying that the entry was deleted
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(ViewSubsActivity.this, R.string.deleted_message,
+                                Toast.LENGTH_LONG).show();
+                                  //TODO: Delete submission from SQLite database
+                    }
+                })
+                .setNegativeButton(R.string.action_no, null); //Create "No" option. Set it to null to just dismiss the dialog button
+                AlertDialog alert = dialogBuilder.create();
+                alert.setTitle(getString(R.string.action_delete_confirmation));
+                alert.show();
+                return true;
+        }
+
+    }
+
+
 
     public class SubsAdapter extends RecyclerView.Adapter<SubsAdapter.MyViewHolder> {
         private String[] mDataset;
@@ -69,8 +113,18 @@ public class ViewSubsActivity extends AppCompatActivity {
                     clickListener.onSubClick(view, myViewHolder.getAdapterPosition());
                 }
             });
+            v.setOnLongClickListener(new View.OnLongClickListener() { //Enable long click on a case entry
+                @Override
+                public boolean onLongClick(View view) {
+                    clickListener.onSubLongClick(view, myViewHolder.getAdapterPosition());
+                    return true;
+                }
+            });
+
             return myViewHolder;
         }
+
+
 
         // Replace the contents of a view (invoked by the layout manager)
         @Override
@@ -113,20 +167,19 @@ public class ViewSubsActivity extends AppCompatActivity {
                 sub_details_activity.putExtra("pos", position);
                 startActivity(sub_details_activity);
             }
+
+            @Override
+            public boolean onSubLongClick(View v, int position) { //Set it so long clicking on an entry shows the popoup menu
+                showPopup(v, position);
+                return true;
+            }
         });
+
         mLayoutManager = new LinearLayoutManager(this);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
