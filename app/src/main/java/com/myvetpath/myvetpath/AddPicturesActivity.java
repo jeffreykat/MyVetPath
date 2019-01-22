@@ -6,7 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-
+//This is for the screen where users can add pictures. It is called when people click the camera icon on the CreateSubActivity screen
 public class AddPicturesActivity extends AppCompatActivity {
 
     @Override

@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
+//This screen will show the draft that the user was was previously working on
 public class ViewDraftsActivity extends AppCompatActivity {
 
     @Override

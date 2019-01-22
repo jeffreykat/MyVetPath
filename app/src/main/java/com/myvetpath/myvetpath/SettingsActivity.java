@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
+//This screen will have all the settings that the user can view
 public class SettingsActivity extends AppCompatActivity {
 
     @Override

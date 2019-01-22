@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
+//This screen will show the instructions on how to use the app
 public class InstructionsActivity extends AppCompatActivity {
 
     @Override
