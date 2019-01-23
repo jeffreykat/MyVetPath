@@ -44,6 +44,21 @@ public class MainActivity extends AppCompatActivity {
         * else open the existing one.
          */
         db = new MyDBHandler(this);
+
+        /*
+        * When you want to add a submission to the table it should look something like this:
+        * db.addSubmission(yourNewSubmission);
+        * where a submission has the value title filled, internal id could also be filled but
+        *   the submission table auto increments the id so there is no need to maintain our own.
+        *
+        * When you want to view all of the submissions you would call the procedure as follows,
+        * String results = db.selectAll("Submission");
+        *
+        * when you want to grab a specific submission
+        * Submission sub = db.findSubmissionTitle("title of submission");
+        * or if you want to find a submission based on the id
+        * Submission sub = db.findSubmissionID(an int number);
+        */
     }
 
     @Override

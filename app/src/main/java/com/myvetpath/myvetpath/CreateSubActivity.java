@@ -10,7 +10,12 @@ import android.view.MenuItem;
 import android.view.View;
 
 public class CreateSubActivity extends AppCompatActivity {
-
+/*
+Submission sub = new Submission();
+MyDBHandler db = getwritabledatabase();
+sub.setTitle(stuff from app)
+db.addSubmission(sub)
+ */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -29,7 +29,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     //This is to display all of the contents in a specific table
     //This is done inside a string.
     //Future will include a clause to only display tables for a user.
-    public String loadHandler(String tableName) {
+    public String selectAll(String tableName) {
         String result = "";
         String query = "Select * FROM " + tableName;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -48,16 +48,32 @@ public class MyDBHandler extends SQLiteOpenHelper {
     //Id would be added in automatically
     public void addSubmission(Submission submission) {
         ContentValues values = new ContentValues();
-
         values.put(Submission.COLUMN_TITLE, submission.getTitle());
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(Submission.TABLE_NAME, null, values);
         db.close();
     }
 
-    //Searches the database to to find a row based on a certain column.
-    public Submission findHandler(String nTitle) {
+    //Searches the database to to find a row based on a title.
+    public Submission findSubmissionTitle(String nTitle) {
         String query = "Select * FROM " + Submission.TABLE_NAME + "WHERE" + Submission.COLUMN_TITLE + " = " + "'" + nTitle + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        Submission sub = new Submission();
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            sub.setInternalID(Integer.parseInt(cursor.getString(0)));
+            sub.setTitle(cursor.getString(1));
+            cursor.close();
+        } else {
+            sub = null;
+        }
+        db.close();
+        return sub;
+    }
+    //Searches the database to find a row based on the id.
+    public Submission findSubmissionID(int id) {
+        String query = "Select * FROM " + Submission.TABLE_NAME + "WHERE" + Submission.COLUMN_ID + " = " + "'" + id + "'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         Submission sub = new Submission();
@@ -75,7 +91,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     //Deletes a row based on the id of a table.
 
-    public boolean deleteHandler(int ID, String tableName) {
+    public boolean deleteSubmission(int ID, String tableName) {
         boolean result = false;
         String query = "Select * FROM " + tableName + " WHERE " + Submission.COLUMN_ID + " = '" + String.valueOf(ID) + "'";
         SQLiteDatabase db = this.getWritableDatabase();
