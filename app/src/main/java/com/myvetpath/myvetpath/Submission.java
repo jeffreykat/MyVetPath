@@ -1,7 +1,16 @@
 package com.myvetpath.myvetpath;
 
 public class Submission {
-    //Fields
+    //Table Fields
+    public static final String TABLE_NAME = "Submission";
+    public static final String COLUMN_ID = "InternalID";
+    public static final String COLUMN_NAME = "Title";
+
+    //Create Table String
+    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
+            "INTEGER PRIMARYKEY," + COLUMN_NAME + "TEXT )";
+
+    //Object Fields
     private int internalID; //Primary key for the internal database.
     //private int caseID; //An identifier currently used by Pathologist
     //private int masterID; //Primary key for the Server database
