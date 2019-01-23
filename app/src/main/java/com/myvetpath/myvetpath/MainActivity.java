@@ -17,6 +17,9 @@ public class MainActivity extends AppCompatActivity {
     Intent create_sub_activity;
     Button create_sub_button;
 
+    //The database would be in this variable
+    private MyDBHandler db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +36,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(create_sub_activity);
             }
         });
+        /*
+        * this will create a database by the name of db.
+        * in the future we would probably do something along the lines of
+        * If db.openExistingDatabse() = error
+        * then create new database
+        * else open the existing one.
+         */
+        db = new MyDBHandler(this);
     }
 
     @Override
