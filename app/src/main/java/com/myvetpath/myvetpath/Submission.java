@@ -11,6 +11,7 @@ public class Submission {
             "INTEGER PRIMARY KEY," + COLUMN_TITLE + "TEXT )";
 
     //Object Fields
+    //Commented out variables in order to reduce the amount of testing needed.
     private int internalID; //Primary key for the internal database.
     //private int caseID; //An identifier currently used by Pathologist
     //private int masterID; //Primary key for the Server database
@@ -25,16 +26,12 @@ public class Submission {
     public Submission() {}
     public Submission(int id, String titlename) {
         this.internalID = id;
-        //this.masterID = 0;
         this.title = titlename;
-        //this.dateOfCreation = new Date();
-        //this.caseID = first
     }
     //Modifiers
     public void setInternalID(int newInternal){
         this.internalID = newInternal;
     }
-   // public void setCaseID(){} Will be used later.
     public void setTitle(String newTitle){
         this.title = newTitle;
     }
