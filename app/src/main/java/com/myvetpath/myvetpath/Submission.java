@@ -4,11 +4,11 @@ public class Submission {
     //Table Fields
     public static final String TABLE_NAME = "Submission";
     public static final String COLUMN_ID = "InternalID";
-    public static final String COLUMN_NAME = "Title";
+    public static final String COLUMN_TITLE = "Title";
 
     //Create Table String
     public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
-            "INTEGER PRIMARYKEY," + COLUMN_NAME + "TEXT )";
+            "INTEGER PRIMARY KEY," + COLUMN_TITLE + "TEXT )";
 
     //Object Fields
     private int internalID; //Primary key for the internal database.
@@ -34,7 +34,7 @@ public class Submission {
     public void setInternalID(int newInternal){
         this.internalID = newInternal;
     }
-    public void setCaseID(){}
+   // public void setCaseID(){} Will be used later.
     public void setTitle(String newTitle){
         this.title = newTitle;
     }

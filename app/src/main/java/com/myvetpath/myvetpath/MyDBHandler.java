@@ -11,23 +11,24 @@ public class MyDBHandler extends SQLiteOpenHelper {
     //information of database
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "myVetPath.db";
-    public static final String TABLE_NAME = "Submission";
-    public static final String COLUMN_ID = "InternalID";
-    public static final String COLUMN_NAME = "Title";
+
     //initialize the database
-    public MyDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, DATABASE_NAME, factory, DATABASE_VERSION);
+    public MyDBHandler(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
+    //Creates a database with the table Submission.
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
-                "INTEGER PRIMARYKEY," + COLUMN_NAME + "TEXT )";
-        db.execSQL(CREATE_TABLE);
+
+        db.execSQL(Submission.CREATE_TABLE);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {}
 
-    //this is to display all of the contents in a specific table
+    //This is to display all of the contents in a specific table
+    //This is done inside a string.
+    //Future will include a clause to only display tables for a user.
     public String loadHandler(String tableName) {
         String result = "";
         String query = "Select * FROM " + tableName;
@@ -44,18 +45,19 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return result;
     }
     //adders This is to add the respective table into the database.
+    //Id would be added in automatically
     public void addSubmission(Submission submission) {
         ContentValues values = new ContentValues();
-        values.put(COLUMN_ID, submission.getInternalID());
-        values.put(COLUMN_NAME, submission.getTitle());
+
+        values.put(Submission.COLUMN_TITLE, submission.getTitle());
         SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(TABLE_NAME, null, values);
+        db.insert(Submission.TABLE_NAME, null, values);
         db.close();
     }
 
     //Searches the database to to find a row based on a certain column.
     public Submission findHandler(String nTitle) {
-        String query = "Select * FROM " + TABLE_NAME + "WHERE" + COLUMN_NAME + " = " + "'" + nTitle + "'";
+        String query = "Select * FROM " + Submission.TABLE_NAME + "WHERE" + Submission.COLUMN_TITLE + " = " + "'" + nTitle + "'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         Submission sub = new Submission();
@@ -75,13 +77,13 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     public boolean deleteHandler(int ID, String tableName) {
         boolean result = false;
-        String query = "Select * FROM " + tableName + " WHERE " + COLUMN_ID + " = '" + String.valueOf(ID) + "'";
+        String query = "Select * FROM " + tableName + " WHERE " + Submission.COLUMN_ID + " = '" + String.valueOf(ID) + "'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         Submission sub = new Submission();
         if (cursor.moveToFirst()) {
             sub.setInternalID(Integer.parseInt(cursor.getString(0)));
-            db.delete(TABLE_NAME, COLUMN_ID + "=?",
+            db.delete(Submission.TABLE_NAME, Submission.COLUMN_ID + "=?",
                     new String[] {
                             String.valueOf(sub.getInternalID())
                     });
@@ -92,12 +94,12 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return result;
     }
 
-    public boolean updateHandler(int ID, String name) {
+    public boolean updateHandler(int ID, String title) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues args = new ContentValues();
-        args.put(COLUMN_ID, ID);
-        args.put(COLUMN_NAME, name);
-        return db.update(TABLE_NAME, args, COLUMN_ID + "=" + ID, null) > 0;
+        args.put(Submission.COLUMN_ID, ID);
+        args.put(Submission.COLUMN_TITLE, title);
+        return db.update(Submission.TABLE_NAME, args, Submission.COLUMN_ID + "=" + ID, null) > 0;
     }
 }
 
