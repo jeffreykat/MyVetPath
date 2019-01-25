@@ -28,6 +28,66 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.myvetpath.myvetpath.MainActivity" />
         </activity>
+        <activity
+
+            android:name=".ViewDraftsActivity"
+            android:label="@string/title_activity_view_drafts"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.myvetpath.myvetpath.MainActivity"
+            />
+        </activity>
+            <activity
+            android:name=".ViewSubsActivity"
+            android:label="@string/title_activity_view_subs"
+
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.myvetpath.myvetpath.MainActivity" />
+        </activity>
+        <activity
+
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.myvetpath.myvetpath.MainActivity" />
+        </activity>
+        <activity
+            android:name=".AddPicturesActivity"
+            android:label="@string/title_activity_add_pictures"
+            android:parentActivityName=".CreateSubActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.myvetpath.myvetpath.CreateSubActivity" />
+        </activity>
+        <activity
+            android:name=".InstructionsActivity"
+            android:label="@string/title_activity_instructions"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.myvetpath.myvetpath.MainActivity" />
+        </activity>
+        <activity
+            android:name=".SubDetailsActivity"
+            android:label="@string/title_activity_sub_details"
+            android:parentActivityName=".ViewSubsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.myvetpath.myvetpath.ViewSubsActivity" />
+
+        </activity>
+
     </application>
 
 </manifest>

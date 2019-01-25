@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.myvetpath.myvetpath.CreateSubActivity"
-    tools:showIn="@layout/activity_create_sub">
+    tools:context=".SubDetailsActivity"
+    tools:showIn="@layout/activity_sub_details">
 
-    <ImageButton
-        android:id="@+id/addPicturesButton"
+    <TextView
+        android:id="@+id/subTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@android:drawable/ic_menu_camera"
-        tools:layout_editor_absoluteX="57dp"
-        tools:layout_editor_absoluteY="388dp" />
+        android:padding="10dp"
+        android:textColor="@color/colorHeader" />
+
 </android.support.constraint.ConstraintLayout>
