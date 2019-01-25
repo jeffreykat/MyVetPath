@@ -11,6 +11,12 @@ import android.widget.ImageButton;
 
 //This is for the "Create Submission screen"
 public class CreateSubActivity extends AppCompatActivity {
+/*
+Submission sub = new Submission();
+MyDBHandler db = getwritabledatabase();
+sub.setTitle(stuff from app)
+db.addSubmission(sub)
+ */
 
     Intent add_pictures_activity;
     ImageButton add_pictures_button;
