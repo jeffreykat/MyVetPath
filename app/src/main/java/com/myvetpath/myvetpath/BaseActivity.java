@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 /*
-    This is the class that implements the toolbar menu options. It also takes the appropriate action based on what was clicked,
+    This is the class that all screens should inherit from. This class implements the toolbar menu options. It also takes the appropriate action based on what was clicked,
     which is usually navigating to a different activity. If you want an activity to use these options, then have
     that activity inherit from this class (and make sure that activity doesn't overwrite any of the methods here).
 */

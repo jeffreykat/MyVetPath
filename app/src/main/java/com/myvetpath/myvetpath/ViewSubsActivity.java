@@ -154,9 +154,6 @@ public class ViewSubsActivity extends BaseActivity implements PopupMenu.OnMenuIt
         setContentView(R.layout.activity_view_subs);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Submissions");
-//        toolbar.setBackgroundColor((getResources().getColor(R.color.colorViewsubs)));
-
-
         setSupportActionBar(toolbar);
 
         create_sub_activity = new Intent(this, CreateSubActivity.class);

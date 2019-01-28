@@ -81,8 +81,6 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        getWindow().setStatusBarColor(getResources().getColor(R.color.colorViewsubs));
     }
 
 }
