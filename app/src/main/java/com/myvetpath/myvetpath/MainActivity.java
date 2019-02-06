@@ -2,6 +2,7 @@ package com.myvetpath.myvetpath;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -31,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
     Intent instructions_activity;
 
     //The database would be in this variable
-    private MyDBHandler db;
+    MyDBHandler dbHelper;
+    SQLiteDatabase sqLiteDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,9 @@ public class MainActivity extends AppCompatActivity {
         * then create new database
         * else open the existing one.
          */
-        db = new MyDBHandler(this);
+        dbHelper = new MyDBHandler(this);
+        //dbHelper.dropTable(dbHelper.getWritableDatabase());
+        //dbHelper.createTables(dbHelper.getWritableDatabase());
 
         /*
         * When you want to add a submission to the table it should look something like this:

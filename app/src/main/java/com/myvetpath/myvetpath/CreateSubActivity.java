@@ -1,13 +1,22 @@
 package com.myvetpath.myvetpath;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 //This is for the "Create Submission screen"
 public class CreateSubActivity extends AppCompatActivity {
@@ -19,7 +28,13 @@ db.addSubmission(sub)
  */
 
     Intent add_pictures_activity;
+    Intent view_subs_activity;
     ImageButton add_pictures_button;
+    Button save_draft_button;
+    Button submit_button;
+    EditText title_et;
+    MyDBHandler dbHandler;
+    SQLiteDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +45,49 @@ db.addSubmission(sub)
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        view_subs_activity = new Intent(this, ViewSubsActivity.class);
+
+        dbHandler = new MyDBHandler(this);
+        final Submission newSub = new Submission();
+
+        //For displaying the current date
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+        //+ simpleDateFormat.format(Calendar.getInstance().getTime());
+
+        //initialize submission elements
+        title_et = findViewById(R.id.sub_title);
+        save_draft_button = findViewById(R.id.save_draft_btn);
+        save_draft_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hideSoftKeyboard();
+                newSub.setTitle(title_et.getText().toString());
+                newSub.setStatusFlag(0);
+                newSub.setDateOfCreation(Calendar.getInstance().getTime().getTime());
+                //Display confirmation Toast
+                String content = title_et.getText().toString() + " Saved";
+                Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
+                testToast.show();
+                dbHandler.addSubmission(newSub);
+            }
+        });
+        submit_button = findViewById(R.id.submit_btn);
+        submit_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hideSoftKeyboard();
+                newSub.setTitle(title_et.getText().toString());
+                newSub.setStatusFlag(1);
+                newSub.setDateOfCreation(Calendar.getInstance().getTime().getTime());
+                //Display confirmation Toast
+                String content = title_et.getText().toString() + " Submitted";
+                Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
+                testToast.show();
+                dbHandler.addSubmission(newSub);
+                startActivity(view_subs_activity);
+            }
+        });
+
         //initialize the camera button where users can add pictures
         add_pictures_activity = new Intent(this, AddPicturesActivity.class);
         add_pictures_button = findViewById(R.id.addPicturesButton);
@@ -39,6 +97,16 @@ db.addSubmission(sub)
                 startActivity(add_pictures_activity);
             }
         });
+    }
+
+    /**
+     * Hides the soft keyboard on screen
+     */
+    public void hideSoftKeyboard() {
+        if(getCurrentFocus()!=null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
     }
 
     @Override

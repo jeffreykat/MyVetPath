@@ -2,6 +2,7 @@ package com.myvetpath.myvetpath;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,8 @@ public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnM
 
     Intent create_sub_activity;
     Intent sub_details_activity;
+    MyDBHandler dbHandler;
+    boolean subTableExists;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -70,8 +73,7 @@ public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnM
 
     }
 
-
-
+    /*Fills View with Submission elements*/
     public class SubsAdapter extends RecyclerView.Adapter<SubsAdapter.MyViewHolder> {
         private String[] mDataset;
         private String[] mDatesset;
@@ -139,7 +141,7 @@ public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnM
 
         @Override
         public int getItemCount() {
-            return mDataset.length;
+            return dbHandler.getNumberOfSubmissions();
         }
 
     }
@@ -157,8 +159,11 @@ public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnM
 
         mRecyclerView = (RecyclerView) findViewById(R.id.subsRecyclerView);
 
-        subsTitles = getResources().getStringArray(R.array.subsTitles);
-        subsDates = getResources().getStringArray(R.array.subsDates);
+        dbHandler = new MyDBHandler(this);
+        subTableExists = dbHandler.doesTableExist(Submission.TABLE_NAME);
+
+        subsTitles = dbHandler.getSubmissionTitles();
+        subsDates = dbHandler.getSubmissionDates();
         subsCaseID = getResources().getStringArray(R.array.subsCaseIDs);
 
         mAdapter = new SubsAdapter(subsTitles, subsDates, subsCaseID, new CustomSubClickListener() {
