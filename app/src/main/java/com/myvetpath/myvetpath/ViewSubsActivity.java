@@ -161,6 +161,7 @@ public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnM
 
         dbHandler = new MyDBHandler(this);
         subTableExists = dbHandler.doesTableExist(Submission.TABLE_NAME);
+        /*TODO: Add check to make sure table exists*/
 
         subsTitles = dbHandler.getSubmissionTitles();
         subsDates = dbHandler.getSubmissionDates();

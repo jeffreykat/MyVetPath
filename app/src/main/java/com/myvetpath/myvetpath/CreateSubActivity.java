@@ -71,6 +71,7 @@ db.addSubmission(sub)
                 dbHandler.addSubmission(newSub);
             }
         });
+        /*TODO: Add fragment to check if user is sure before submitting*/
         submit_button = findViewById(R.id.submit_btn);
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override

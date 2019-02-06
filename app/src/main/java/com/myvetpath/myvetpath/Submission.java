@@ -24,7 +24,6 @@ public class Submission {
     private int statusFlag; // Stage of the submission 0 = draft, 1 = submitted, 2 = received by server
     private String title; //user created title
     //private string comment; //Contains the comment of a submission.
-    /*TODO: check if Date is correct SQLite date type*/
     private long dateOfCreation; // Date the submission was created
     //private date dateOfSubmission; // Date the submission was sent to the server
     //private date dateOfCompletion; //Date the submission is closed and complete

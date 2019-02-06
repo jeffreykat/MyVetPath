@@ -170,6 +170,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return len;
     }
 
+    /*TODO: fix error that happens on line 184*/
     //return String array of all submission titles
     public String[] getSubmissionTitles(){
         int len = getNumberOfSubmissions();
