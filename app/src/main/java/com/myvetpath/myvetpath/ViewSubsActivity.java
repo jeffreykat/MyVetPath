@@ -18,20 +18,23 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
 
     Intent create_sub_activity;
     Intent sub_details_activity;
     MyDBHandler dbHandler;
     boolean subTableExists;
+    Calendar calendar = Calendar.getInstance();
+    final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private int selectedSubmissionPosition; //keeps track of what entry was selected for long press
-    private String[] subsTitles;
-    private String[] subsDates;
-    private String[] subsCaseID;
+    private Submission[] submissions;
 
     //This method is used to show the delete popup option when the user long clicks on a submission.
     //Parameters: the view and the position of the entry that was clicked on
@@ -52,7 +55,7 @@ public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnM
             default: //right now we have plans to only include a "Delete" option. If we ever add more, we will need to add more switch cases
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ViewSubsActivity.this);
 
-                String confirmationMessage = getString(R.string.action_delete_confirmation_prompt_first_part) + subsTitles[selectedSubmissionPosition]
+                String confirmationMessage = getString(R.string.action_delete_confirmation_prompt_first_part) + submissions[selectedSubmissionPosition].getTitle()
                                             + getString(R.string.action_delete_confirmation_second_part); //Create confirmation message by including case title
 
                 dialogBuilder.setMessage(confirmationMessage).setCancelable(false).setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
@@ -75,10 +78,7 @@ public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnM
 
     /*Fills View with Submission elements*/
     public class SubsAdapter extends RecyclerView.Adapter<SubsAdapter.MyViewHolder> {
-        private String[] mDataset;
-        private String[] mDatesset;
-        private String[] mCaseset;
-
+        private Submission[] mSubmissions;
         CustomSubClickListener clickListener;
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -94,10 +94,8 @@ public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnM
             }
         }
 
-        public SubsAdapter(String[] myDataset, String[] myDatesset, String[] myCaseset, CustomSubClickListener listener) {
-            mDataset = myDataset;
-            mDatesset = myDatesset;
-            mCaseset = myCaseset;
+        public SubsAdapter(Submission[] mySubmissions, CustomSubClickListener listener) {
+            mSubmissions = mySubmissions;
             clickListener = listener;
         }
 
@@ -112,7 +110,7 @@ public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnM
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    clickListener.onSubClick(view, myViewHolder.getAdapterPosition());
+                    clickListener.onSubClick(view, mSubmissions[myViewHolder.getAdapterPosition()].getInternalID());
                 }
             });
             v.setOnLongClickListener(new View.OnLongClickListener() { //Enable long click on a case entry
@@ -126,17 +124,15 @@ public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnM
             return myViewHolder;
         }
 
-
-
         // Replace the contents of a view (invoked by the layout manager)
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             // - get element from your dataset at this position
             // - replace the contents of the view with that element
-            holder.titleTextView.setText(mDataset[position]);
-            holder.dateTextView.setText(mDatesset[position]);
-            holder.caseTextView.setText(mCaseset[position]);
-
+            holder.titleTextView.setText(mSubmissions[position].getTitle());
+            calendar.setTimeInMillis(mSubmissions[position].getDateOfCreation());
+            holder.dateTextView.setText(simpleDateFormat.format(calendar.getTime()));
+            holder.caseTextView.setText(String.valueOf(mSubmissions[position].getInternalID()));
         }
 
         @Override
@@ -163,14 +159,12 @@ public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnM
         subTableExists = dbHandler.doesTableExist(Submission.TABLE_NAME);
         /*TODO: Add check to make sure table exists*/
 
-        subsTitles = dbHandler.getSubmissionTitles();
-        subsDates = dbHandler.getSubmissionDates();
-        subsCaseID = getResources().getStringArray(R.array.subsCaseIDs);
+        submissions = dbHandler.getSubmissions();
 
-        mAdapter = new SubsAdapter(subsTitles, subsDates, subsCaseID, new CustomSubClickListener() {
+        mAdapter = new SubsAdapter(submissions, new CustomSubClickListener() {
             @Override
-            public void onSubClick(View v, int position) {
-                sub_details_activity.putExtra("pos", position);
+            public void onSubClick(View v, int caseID) {
+                sub_details_activity.putExtra("caseID", caseID);
                 startActivity(sub_details_activity);
             }
 

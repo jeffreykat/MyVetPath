@@ -14,13 +14,18 @@ import android.widget.TextView;
 public class SubDetailsActivity extends AppCompatActivity {
 
     Intent create_sub_activity;
+    MyDBHandler myDBHandler;
+    Submission currentSub;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sub_details);
-        int position = getIntent().getIntExtra("pos", 0);
-        String title = getResources().getStringArray(R.array.subsTitles)[position];
+        myDBHandler = new MyDBHandler(this);
+
+        int caseId = getIntent().getIntExtra("caseID", 1);
+        currentSub = myDBHandler.findSubmissionID(caseId);
+        String title = currentSub.getTitle();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(title);
         setSupportActionBar(toolbar);

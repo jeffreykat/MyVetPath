@@ -106,13 +106,14 @@ public class MyDBHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         Submission sub = new Submission();
         if (cursor.moveToFirst()) {
-            cursor.moveToFirst();
-            sub.setInternalID(Integer.parseInt(cursor.getString(0)));
-            sub.setTitle(cursor.getString(1));
-            cursor.close();
+            sub.setInternalID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_ID)));
+            sub.setTitle(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_TITLE)));
+            sub.setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
+            sub.setStatusFlag(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_STATUS_FLAG)));
         } else {
             sub = null;
         }
+        cursor.close();
         db.close();
         return sub;
     }
@@ -124,13 +125,12 @@ public class MyDBHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         Submission sub = new Submission();
         if (cursor.moveToFirst()) {
-            cursor.moveToFirst();
-            sub.setInternalID(Integer.parseInt(cursor.getString(0)));
-            sub.setTitle(cursor.getString(1));
-            cursor.close();
-        } else {
-            sub = null;
+            sub.setInternalID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_ID)));
+            sub.setTitle(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_TITLE)));
+            sub.setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
+            sub.setStatusFlag(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_STATUS_FLAG)));
         }
+        cursor.close();
         db.close();
         return sub;
     }
@@ -148,86 +148,85 @@ public class MyDBHandler extends SQLiteOpenHelper {
                     new String[] {
                             String.valueOf(sub.getInternalID())
                     });
-            cursor.close();
             result = true;
         }
+        cursor.close();
         db.close();
         return result;
     }
 
-    //return the number of rows in the submission table
-    public int getNumberOfSubmissions(){
+    //return number of drafts in submission table
+    public int getNumberOfDrafts(){
         int len = 0;
-        String query = "Select Count(" + Submission.COLUMN_ID + ") FROM Submission";
+        String query = "Select Count(" + Submission.COLUMN_ID + ") FROM Submission WHERE " + Submission.COLUMN_STATUS_FLAG + " = 0";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){
             Log.d("table length", "len = " + cursor.getInt(0));
             len = cursor.getInt(0);
-            cursor.close();
         }
+        cursor.close();
         db.close();
         return len;
     }
 
-    /*TODO: fix error that happens on line 184*/
-    //return String array of all submission titles
-    public String[] getSubmissionTitles(){
-        int len = getNumberOfSubmissions();
-        String [] titles = new String[len];
-        int i = 0;
-        String query = "Select " + Submission.COLUMN_TITLE + " FROM Submission";
+    //return Submission array of drafts
+    public Submission[] getDrafts(){
+        Submission [] subs = new Submission[getNumberOfSubmissions()];
+        String query = "Select * FROM " + Submission.TABLE_NAME + " WHERE " + Submission.COLUMN_STATUS_FLAG + " = 0";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-        if(cursor.moveToFirst()){
-            for(i = 0; i < len; i++){
-                titles[i] = cursor.getString(cursor.getPosition());
-                cursor.moveToNext();
-            }
-        }
-        cursor.close();
-        db.close();
-        return titles;
-    }
-
-    //return formatted String array of submission dates
-    public String[] getSubmissionDates(){
-        int len = getNumberOfSubmissions();
-        String [] dates = new String[len];
         int i = 0;
-        String query = "Select " + Submission.COLUMN_DATE_CREATION + " FROM Submission";
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){
-            while(i < len) {
-                long d = Long.parseLong(cursor.getString(cursor.getPosition()));
-                calendar.setTimeInMillis(d);
-                dates[i] = simpleDateFormat.format(calendar.getTime());
+            do{
+                subs[i] = new Submission();
+                subs[i].setInternalID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_ID)));
+                subs[i].setTitle(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_TITLE)));
+                subs[i].setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
+                subs[i].setStatusFlag(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_STATUS_FLAG)));
                 i++;
-                cursor.moveToNext();
-            }
+            } while (cursor.moveToNext());
         }
         cursor.close();
         db.close();
-        return dates;
+        return subs;
     }
 
-    //return true if there are drafts, return false if no drafts exist
-    public boolean draftsExist() {
-        String query = "Select " + Submission.COLUMN_STATUS_FLAG + " FROM Submission";
+    //return the number of rows in the submission table
+    public int getNumberOfSubmissions(){
+        int len = 0;
+        String query = "Select Count(" + Submission.COLUMN_ID + ") FROM Submission WHERE " + Submission.COLUMN_STATUS_FLAG + " != 0";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){
-            for(int i = 0; i < getNumberOfSubmissions(); i++){
-                if(cursor.getInt(0) == 0) {
-                    cursor.close();
-                    return true;
-                }
-            }
+            Log.d("table length", "len = " + cursor.getInt(0));
+            len = cursor.getInt(0);
         }
         cursor.close();
         db.close();
-        return false;
+        return len;
+    }
+
+    //returns array of Submissions that are sent and waiting to send
+    public Submission[] getSubmissions(){
+        Submission [] subs = new Submission[getNumberOfSubmissions()];
+        String query = "Select * FROM " + Submission.TABLE_NAME + " WHERE " + Submission.COLUMN_STATUS_FLAG + " != 0";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        int i = 0;
+        if(cursor.moveToFirst()){
+            do{
+                subs[i] = new Submission();
+                subs[i].setInternalID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_ID)));
+                subs[i].setTitle(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_TITLE)));
+                subs[i].setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
+                subs[i].setStatusFlag(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_STATUS_FLAG)));
+                i++;
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return subs;
     }
 
     public boolean updateHandler(int ID, String title, Long dateCreation, int statusFlag) {
