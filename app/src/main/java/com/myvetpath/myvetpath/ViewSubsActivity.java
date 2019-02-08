@@ -156,8 +156,6 @@ public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnM
         mRecyclerView = (RecyclerView) findViewById(R.id.subsRecyclerView);
 
         dbHandler = new MyDBHandler(this);
-        subTableExists = dbHandler.doesTableExist(Submission.TABLE_NAME);
-        /*TODO: Add check to make sure table exists*/
 
         submissions = dbHandler.getSubmissions();
 

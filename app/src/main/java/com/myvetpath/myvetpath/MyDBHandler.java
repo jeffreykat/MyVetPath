@@ -162,7 +162,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){
-            Log.d("table length", "len = " + cursor.getInt(0));
             len = cursor.getInt(0);
         }
         cursor.close();
@@ -199,7 +198,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){
-            Log.d("table length", "len = " + cursor.getInt(0));
             len = cursor.getInt(0);
         }
         cursor.close();

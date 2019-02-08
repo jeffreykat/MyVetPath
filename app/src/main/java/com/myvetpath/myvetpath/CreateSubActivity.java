@@ -1,8 +1,9 @@
 package com.myvetpath.myvetpath;
 
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -16,16 +17,9 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 //This is for the "Create Submission screen"
 public class CreateSubActivity extends AppCompatActivity {
-/*
-Submission sub = new Submission();
-MyDBHandler db = getwritabledatabase();
-sub.setTitle(stuff from app)
-db.addSubmission(sub)
- */
 
     Intent add_pictures_activity;
     Intent view_subs_activity;
@@ -34,7 +28,31 @@ db.addSubmission(sub)
     Button submit_button;
     EditText title_et;
     MyDBHandler dbHandler;
-    SQLiteDatabase database;
+
+    public void createDialog(final Submission submission){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(CreateSubActivity.this);
+        dialog.setCancelable(true);
+        dialog.setTitle(R.string.action_submit_conformation);
+        dialog.setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Display confirmation Toast
+                String content = title_et.getText().toString() + " Submitted";
+                Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
+                testToast.show();
+                dbHandler.addSubmission(submission);
+                startActivity(view_subs_activity);
+            }
+        })
+                .setNegativeButton(R.string.action_no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //Close
+                    }
+                });
+        final AlertDialog alertDialog = dialog.create();
+        alertDialog.show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +70,6 @@ db.addSubmission(sub)
 
         //For displaying the current date
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-        //+ simpleDateFormat.format(Calendar.getInstance().getTime());
 
         //initialize submission elements
         title_et = findViewById(R.id.sub_title);
@@ -71,7 +88,6 @@ db.addSubmission(sub)
                 dbHandler.addSubmission(newSub);
             }
         });
-        /*TODO: Add fragment to check if user is sure before submitting*/
         submit_button = findViewById(R.id.submit_btn);
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,12 +96,7 @@ db.addSubmission(sub)
                 newSub.setTitle(title_et.getText().toString());
                 newSub.setStatusFlag(1);
                 newSub.setDateOfCreation(Calendar.getInstance().getTime().getTime());
-                //Display confirmation Toast
-                String content = title_et.getText().toString() + " Submitted";
-                Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
-                testToast.show();
-                dbHandler.addSubmission(newSub);
-                startActivity(view_subs_activity);
+                createDialog(newSub);
             }
         });
 

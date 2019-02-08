@@ -20,6 +20,7 @@
     <string name="action_instructions">Instructions</string>
     <string name="subs">Submissions</string>
 
+    <string name="action_submit_conformation">Are you sure you are ready to submit?</string>
     <string name="deleted_message">Deleted</string>
     <string name="action_yes">Yes</string>
     <string name="action_no">No</string>

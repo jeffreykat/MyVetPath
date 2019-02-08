@@ -2,11 +2,8 @@ package com.myvetpath.myvetpath;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -33,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
     //The database would be in this variable
     MyDBHandler dbHelper;
-    SQLiteDatabase sqLiteDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +128,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(settings_activity);
             return true;
         }
-        if (id == R.id.action_info) { //TODO: right now, the parent for the info button is always the home screen, we will need to change this later when we work more on the toolbar
+        if (id == R.id.action_info) {
+            //TODO: right now, the parent for the info button is always the home screen, we will need to change this later when we work more on the toolbar
             instructions_activity = new Intent(this, InstructionsActivity.class);
             startActivity(instructions_activity);
             return true;
