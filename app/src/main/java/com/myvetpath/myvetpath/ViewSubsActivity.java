@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -21,7 +22,7 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
+public class ViewSubsActivity extends AppCompatActivity {
 
     Intent create_sub_activity;
     Intent sub_details_activity;
@@ -33,47 +34,26 @@ public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnM
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private int selectedSubmissionPosition; //keeps track of what entry was selected for long press
     private Submission[] submissions;
 
-    //This method is used to show the delete popup option when the user long clicks on a submission.
-    //Parameters: the view and the position of the entry that was clicked on
-    public void showPopup(View v, int pos){
-        PopupMenu popup = new PopupMenu(this, v);
-        selectedSubmissionPosition = pos;
-        popup.setOnMenuItemClickListener(this);
-        popup.inflate(R.menu.view_submission_delete_menu);
-        popup.show();
-
-    }
-
-    //This function shows the dialog box that confirms with the user if they want to delete the submission.
-    //It is called whenever the user clicks on the delete option from the popup menu
-    @Override
-    public boolean onMenuItemClick(MenuItem menuItem) {
-        switch(menuItem.getItemId()){
-            default: //right now we have plans to only include a "Delete" option. If we ever add more, we will need to add more switch cases
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ViewSubsActivity.this);
-
-                String confirmationMessage = getString(R.string.action_delete_confirmation_prompt_first_part) + submissions[selectedSubmissionPosition].getTitle()
-                                            + getString(R.string.action_delete_confirmation_second_part); //Create confirmation message by including case title
-
-                dialogBuilder.setMessage(confirmationMessage).setCancelable(false).setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    //This function sets what happens when user clicks on the "yes" button in the dialog box. It should delete the submission from the SQLite database and show a message to the user saying that the entry was deleted
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(ViewSubsActivity.this, R.string.deleted_message,
-                                Toast.LENGTH_LONG).show();
-                                  //TODO: Delete submission from SQLite database
-                    }
-                })
-                .setNegativeButton(R.string.action_no, null); //Create "No" option. Set it to null to just dismiss the dialog button
-                AlertDialog alert = dialogBuilder.create();
-                alert.setTitle(getString(R.string.action_delete_confirmation));
-                alert.show();
-                return true;
-        }
-
+    public void createDeleteDialog(final int selectedSubmissionPosition){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(ViewSubsActivity.this);
+        dialog.setCancelable(true);
+        String title = getString(R.string.action_delete_confirmation_prompt_first_part)
+                + submissions[selectedSubmissionPosition].getTitle()
+                + getString(R.string.action_delete_confirmation_second_part);
+        dialog.setTitle(title);
+        dialog.setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(ViewSubsActivity.this, R.string.deleted_message,
+                        Toast.LENGTH_LONG).show();
+                dbHandler.deleteSubmission(submissions[selectedSubmissionPosition].getInternalID());
+                mAdapter.notifyItemRemoved(selectedSubmissionPosition);
+            }
+        }).setNegativeButton(R.string.action_no, null);
+        AlertDialog alertDialog = dialog.create();
+        alertDialog.show();
     }
 
     /*Fills View with Submission elements*/
@@ -117,6 +97,7 @@ public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnM
                 @Override
                 public boolean onLongClick(View view) {
                     clickListener.onSubLongClick(view, myViewHolder.getAdapterPosition());
+                    notifyDataSetChanged();
                     return true;
                 }
             });
@@ -149,6 +130,7 @@ public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnM
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Submissions");
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         create_sub_activity = new Intent(this, CreateSubActivity.class);
         sub_details_activity = new Intent(this, SubDetailsActivity.class);
@@ -167,18 +149,19 @@ public class ViewSubsActivity extends AppCompatActivity implements PopupMenu.OnM
             }
 
             @Override
-            public boolean onSubLongClick(View v, int position) { //Set it so long clicking on an entry shows the popoup menu
-                showPopup(v, position);
+            public boolean onSubLongClick(View v, int position) {
+                //Set it so long clicking on an entry shows the dialog
+                createDeleteDialog(position);
                 return true;
             }
         });
 
         mLayoutManager = new LinearLayoutManager(this);
 
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
     @Override

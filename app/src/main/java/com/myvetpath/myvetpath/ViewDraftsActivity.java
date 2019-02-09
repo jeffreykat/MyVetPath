@@ -2,10 +2,9 @@ package com.myvetpath.myvetpath;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -14,15 +13,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 //This screen will show the draft that the user was was previously working on
-public class ViewDraftsActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+public class ViewDraftsActivity extends AppCompatActivity {
 
     MyDBHandler dbHandler;
     boolean subTableExists;
@@ -32,47 +29,26 @@ public class ViewDraftsActivity extends AppCompatActivity implements PopupMenu.O
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private int selectedSubmissionPosition; //keeps track of what entry was selected for long press
     private Submission[] drafts;
 
-    //This method is used to show the delete popup option when the user long clicks on a submission.
-    //Parameters: the view and the position of the entry that was clicked on
-    public void showPopup(View v, int pos){
-        PopupMenu popup = new PopupMenu(this, v);
-        selectedSubmissionPosition = pos;
-        popup.setOnMenuItemClickListener(this);
-        popup.inflate(R.menu.view_submission_delete_menu);
-        popup.show();
-
-    }
-
-    //This function shows the dialog box that confirms with the user if they want to delete the submission.
-    //It is called whenever the user clicks on the delete option from the popup menu
-    @Override
-    public boolean onMenuItemClick(MenuItem menuItem) {
-        switch(menuItem.getItemId()){
-            default: //right now we have plans to only include a "Delete" option. If we ever add more, we will need to add more switch cases
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ViewDraftsActivity.this);
-
-                String confirmationMessage = getString(R.string.action_delete_confirmation_prompt_first_part) + drafts[selectedSubmissionPosition].getTitle()
-                        + getString(R.string.action_delete_confirmation_second_part); //Create confirmation message by including case title
-
-                dialogBuilder.setMessage(confirmationMessage).setCancelable(false).setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    //This function sets what happens when user clicks on the "yes" button in the dialog box. It should delete the submission from the SQLite database and show a message to the user saying that the entry was deleted
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(ViewDraftsActivity.this, R.string.deleted_message,
-                                Toast.LENGTH_LONG).show();
-                        //TODO: Delete submission from SQLite database
-                    }
-                })
-                        .setNegativeButton(R.string.action_no, null); //Create "No" option. Set it to null to just dismiss the dialog button
-                AlertDialog alert = dialogBuilder.create();
-                alert.setTitle(getString(R.string.action_delete_confirmation));
-                alert.show();
-                return true;
-        }
-
+    public void createDeleteDialog(final int selectedSubmissionPosition){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(ViewDraftsActivity.this);
+        dialog.setCancelable(true);
+        String title = getString(R.string.action_delete_confirmation_prompt_first_part)
+                + drafts[selectedSubmissionPosition].getTitle()
+                + getString(R.string.action_delete_confirmation_second_part);
+        dialog.setTitle(title);
+        dialog.setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(ViewDraftsActivity.this, R.string.deleted_message,
+                        Toast.LENGTH_LONG).show();
+                dbHandler.deleteSubmission(drafts[selectedSubmissionPosition].getInternalID());
+                mAdapter.notifyItemRemoved(selectedSubmissionPosition);
+            }
+        }).setNegativeButton(R.string.action_no, null);
+        AlertDialog alertDialog = dialog.create();
+        alertDialog.show();
     }
 
     public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.MyViewHolder> {
@@ -157,15 +133,17 @@ public class ViewDraftsActivity extends AppCompatActivity implements PopupMenu.O
 
             @Override
             public boolean onSubLongClick(View v, int position) {
-                showPopup(v, position);
+                createDeleteDialog(position);
                 return true;
             }
         });
 
         mLayoutManager = new LinearLayoutManager(this);
 
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
     @Override

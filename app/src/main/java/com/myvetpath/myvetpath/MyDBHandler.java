@@ -46,7 +46,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     //Remove submission table
     public void dropTable(SQLiteDatabase db){
-        db.execSQL("DROP TABLE IF EXISTS Submission");
+        db.execSQL("DROP TABLE IF EXISTS " + Submission.TABLE_NAME);
     }
 
     @Override
@@ -136,14 +136,14 @@ public class MyDBHandler extends SQLiteOpenHelper {
     }
 
     //Deletes a row based on the id of a table.
-    public boolean deleteSubmission(int ID, String tableName) {
+    public boolean deleteSubmission(int ID) {
         boolean result = false;
-        String query = "Select * FROM " + tableName + " WHERE " + Submission.COLUMN_ID + " = '" + String.valueOf(ID) + "'";
+        String query = "Select * FROM " + Submission.TABLE_NAME + " WHERE " + Submission.COLUMN_ID + " = '" + String.valueOf(ID) + "'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         Submission sub = new Submission();
         if (cursor.moveToFirst()) {
-            sub.setInternalID(Integer.parseInt(cursor.getString(0)));
+            sub.setInternalID(Integer.parseInt(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_ID))));
             db.delete(Submission.TABLE_NAME, Submission.COLUMN_ID + "=?",
                     new String[] {
                             String.valueOf(sub.getInternalID())
@@ -158,7 +158,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     //return number of drafts in submission table
     public int getNumberOfDrafts(){
         int len = 0;
-        String query = "Select Count(" + Submission.COLUMN_ID + ") FROM Submission WHERE " + Submission.COLUMN_STATUS_FLAG + " = 0";
+        String query = "Select Count(" + Submission.COLUMN_ID + ") FROM " + Submission.TABLE_NAME + " WHERE " + Submission.COLUMN_STATUS_FLAG + " = 0";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){
@@ -194,7 +194,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     //return the number of rows in the submission table
     public int getNumberOfSubmissions(){
         int len = 0;
-        String query = "Select Count(" + Submission.COLUMN_ID + ") FROM Submission WHERE " + Submission.COLUMN_STATUS_FLAG + " != 0";
+        String query = "Select Count(" + Submission.COLUMN_ID + ") FROM " + Submission.TABLE_NAME + " WHERE " + Submission.COLUMN_STATUS_FLAG + " != 0";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){
