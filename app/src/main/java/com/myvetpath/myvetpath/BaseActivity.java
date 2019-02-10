@@ -19,8 +19,8 @@ public class BaseActivity extends AppCompatActivity {
     Intent settings_activity;
     Intent instructions_activity;
     Intent home_activity;
-    Context c;
     int mCurrentActivity;
+
     @Override
     //Called when the activity is first starting
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,7 @@ public class BaseActivity extends AppCompatActivity {
         settings_activity = new Intent(this, SettingsActivity.class);
         instructions_activity = new Intent(this, InstructionsActivity.class);
         home_activity = new Intent(this, MainActivity.class);
-        c = getApplicationContext();
+
     }
 
     @Override
