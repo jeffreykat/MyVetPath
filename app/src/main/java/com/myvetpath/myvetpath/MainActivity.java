@@ -1,17 +1,10 @@
 package com.myvetpath.myvetpath;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.WindowManager;
 import android.widget.Button;
 
 public class MainActivity extends BaseActivity {
@@ -28,8 +21,6 @@ public class MainActivity extends BaseActivity {
     Intent view_drafts_activity;
     Button view_drafts_button;
 
-    Intent settings_activity;
-    Intent instructions_activity;
 
     //The database would be in this variable
     private MyDBHandler db;
@@ -39,6 +30,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setMenuOptionItemToRemove(this);
         setSupportActionBar(toolbar);
 
         //Initialize buttons and set the on click listeners

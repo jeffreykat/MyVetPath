@@ -2,21 +2,15 @@ package com.myvetpath.myvetpath;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -153,6 +147,7 @@ public class ViewSubsActivity extends BaseActivity implements PopupMenu.OnMenuIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_subs);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setMenuOptionItemToRemove(this);
         toolbar.setTitle("Submissions");
         setSupportActionBar(toolbar);
 
