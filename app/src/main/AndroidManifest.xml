@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".BaseActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -29,20 +30,8 @@
                 android:value="com.myvetpath.myvetpath.MainActivity" />
         </activity>
         <activity
-
             android:name=".ViewDraftsActivity"
             android:label="@string/title_activity_view_drafts"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.myvetpath.myvetpath.MainActivity"
-            />
-        </activity>
-            <activity
-            android:name=".ViewSubsActivity"
-            android:label="@string/title_activity_view_subs"
-
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -50,7 +39,15 @@
                 android:value="com.myvetpath.myvetpath.MainActivity" />
         </activity>
         <activity
-
+            android:name=".ViewSubsActivity"
+            android:label="@string/title_activity_view_subs"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.myvetpath.myvetpath.MainActivity" />
+        </activity>
+        <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".MainActivity"
@@ -85,9 +82,7 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.myvetpath.myvetpath.ViewSubsActivity" />
-
         </activity>
-
     </application>
 
 </manifest>

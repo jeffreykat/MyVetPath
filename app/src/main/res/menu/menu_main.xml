@@ -7,15 +7,22 @@
         android:icon="@drawable/ic_info_24dp"
         android:title="@string/action_info"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_home"
+        android:title="@string/action_home"
+        android:orderInCategory="1"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_submission"
         android:title="@string/action_submission"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_viewsubs"
         android:title="@string/action_viewsubs"
-        android:orderInCategory="2"
+        android:orderInCategory="3"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_settings"
