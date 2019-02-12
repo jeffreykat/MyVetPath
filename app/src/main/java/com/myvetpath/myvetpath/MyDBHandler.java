@@ -22,6 +22,10 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(Submission.CREATE_TABLE);
+        //Added the below tables to the new database.
+        db.execSQL(Picture.CREATE_TABLE);
+        db.execSQL(SickElement.CREATE_TABLE);
+        db.execSQL(Sample.CREATE_TABLE);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {}
@@ -51,6 +55,30 @@ public class MyDBHandler extends SQLiteOpenHelper {
         values.put(Submission.COLUMN_TITLE, submission.getTitle());
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(Submission.TABLE_NAME, null, values);
+        db.close();
+    }
+    // added adders for the tables: sample, sick element, and image
+    public void addSample(Sample sample) {
+        ContentValues values = new ContentValues();
+        values.put(Sample.COLUMN_NAMEOFSAMPLE, sample.getNameOfSample());
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert(Sample.TABLE_NAME, null, values);
+        db.close();
+    }
+
+    public void addSickElement(SickElement sickElement) {
+        ContentValues values = new ContentValues();
+        values.put(SickElement.COLUMN_SICKELEMENTNAME, sickElement.getNameOfSickElement());
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert(SickElement.TABLE_NAME, null, values);
+        db.close();
+    }
+
+    public void addPicture(Picture picture) {
+        ContentValues values = new ContentValues();
+        values.put(Picture.COLUMN_IMAGETITLE, picture.getImageTitle());
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert(picture.TABLE_NAME, null, values);
         db.close();
     }
 
@@ -109,8 +137,27 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.close();
         return result;
     }
+    //added a deletion for the picture for now. If more is needed just send notify me.
+    public boolean deletePicutre(int ID, String imageName) {
+        boolean result = false;
+        String query = "Select * FROM " + imageName + " WHERE " + Picture.COLUMN_ID + " = '" + String.valueOf(ID) + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        Picture pic = new Picture();
+        if (cursor.moveToFirst()) {
+            pic.setImageID(Integer.parseInt(cursor.getString(0)));
+            db.delete(Picture.TABLE_NAME, Picture.COLUMN_ID + "=?",
+                    new String[] {
+                            String.valueOf(pic.getImageID())
+                    });
+            cursor.close();
+            result = true;
+        }
+        db.close();
+        return result;
+    }
 
-    public boolean updateHandler(int ID, String title) {
+    public boolean updateSubmission(int ID, String title) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues args = new ContentValues();
         args.put(Submission.COLUMN_ID, ID);
