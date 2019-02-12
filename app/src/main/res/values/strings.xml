@@ -72,5 +72,6 @@
     <string name="action_delete_confirmation_prompt_first_part">Are you sure you want to delete the report \"</string>
     <string name="action_delete_confirmation_second_part">\"?</string>
     <string name="action_delete_confirmation">Delete Confirmation</string>
+    <string name="action_home">Home</string>
 
 </resources>
