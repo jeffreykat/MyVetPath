@@ -97,7 +97,7 @@ public class ViewDraftsActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-            holder.caseTextView.setText(String.valueOf(drafts[position].getInternalID()));
+            holder.caseTextView.setText(String.valueOf(drafts[position].getCaseID()));
             holder.titleTextView.setText(drafts[position].getTitle());
             calendar.setTimeInMillis(drafts[position].getDateOfCreation());
             holder.dateTextView.setText(simpleDateFormat.format(calendar.getTime()));

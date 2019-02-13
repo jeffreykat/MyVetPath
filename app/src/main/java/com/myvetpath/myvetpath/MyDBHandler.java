@@ -175,7 +175,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     //return Submission array of drafts
     public Submission[] getDrafts(){
         Submission [] subs = new Submission[getNumberOfSubmissions()];
-        String query = "Select * FROM " + Submission.TABLE_NAME + " WHERE " + Submission.COLUMN_STATUS_FLAG + " = 0";
+        String query = "Select * FROM " + Submission.TABLE_NAME + " WHERE " + Submission.COLUMN_STATUS_FLAG + " = 0 ORDER BY " + Submission.COLUMN_DATE_CREATION + " DESC";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         int i = 0;
@@ -212,7 +212,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     //returns array of Submissions that are sent and waiting to send
     public Submission[] getSubmissions(){
         Submission [] subs = new Submission[getNumberOfSubmissions()];
-        String query = "Select * FROM " + Submission.TABLE_NAME + " WHERE " + Submission.COLUMN_STATUS_FLAG + " != 0";
+        String query = "Select * FROM " + Submission.TABLE_NAME + " WHERE " + Submission.COLUMN_STATUS_FLAG + " != 0 ORDER BY " + Submission.COLUMN_DATE_CREATION + " DESC";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         int i = 0;

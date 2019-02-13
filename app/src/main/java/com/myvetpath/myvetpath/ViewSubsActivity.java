@@ -113,7 +113,7 @@ public class ViewSubsActivity extends AppCompatActivity {
             holder.titleTextView.setText(mSubmissions[position].getTitle());
             calendar.setTimeInMillis(mSubmissions[position].getDateOfCreation());
             holder.dateTextView.setText(simpleDateFormat.format(calendar.getTime()));
-            holder.caseTextView.setText(String.valueOf(mSubmissions[position].getInternalID()));
+            holder.caseTextView.setText(String.valueOf(mSubmissions[position].getCaseID()));
         }
 
         @Override
