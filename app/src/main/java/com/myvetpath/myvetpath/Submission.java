@@ -1,11 +1,11 @@
 package com.myvetpath.myvetpath;
 
-import java.util.Date;
 
 public class Submission {
     //Table Fields
     public static final String TABLE_NAME = "Submission";
     public static final String COLUMN_ID = "internalID";
+    public static final String COLUMN_CASE_ID = "caseID";
     public static final String COLUMN_TITLE = "title";
     public static final String COLUMN_DATE_CREATION = "dateOfCreation";
     public static final String COLUMN_STATUS_FLAG = "statusFlag";
@@ -13,13 +13,13 @@ public class Submission {
     //Create Table String
 
     public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ( " + COLUMN_ID +
-            " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_TITLE + " TEXT, " + COLUMN_DATE_CREATION + " BIGINT, " +
+            " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_CASE_ID + "INT" + COLUMN_TITLE + " TEXT, " + COLUMN_DATE_CREATION + " BIGINT, " +
             COLUMN_STATUS_FLAG + " INT" + " )";
 
     //Object Fields
     //Commented out variables in order to reduce the amount of testing needed.
     private int internalID; //Primary key for the internal database.
-    //private int caseID; //An identifier currently used by Pathologist
+    private int caseID; //An identifier currently used by Pathologist
     //private int masterID; //Primary key for the Server database
     private int statusFlag; // Stage of the submission 0 = draft, 1 = submitted, 2 = received by server
     private String title; //user created title
@@ -30,8 +30,9 @@ public class Submission {
 
     //Constructors
     public Submission() {}
-    public Submission( int internalID, String titlename, long dateOfCreation, int statusFlag) {
+    public Submission( int internalID, int caseID, String titlename, long dateOfCreation, int statusFlag) {
         this.internalID = internalID;
+        this.caseID = caseID;
         this.title = titlename;
         this.dateOfCreation = dateOfCreation;
         this.statusFlag = statusFlag;
@@ -41,6 +42,7 @@ public class Submission {
     public void setInternalID(int newInternal){
         this.internalID = newInternal;
     }
+    public void setCaseID(int newCase){this.caseID = newCase;}
     public void setTitle(String newTitle){
         this.title = newTitle;
     }
@@ -57,6 +59,8 @@ public class Submission {
     public int getInternalID(){
         return this.internalID;
     }
+
+    public int getCaseID(){return this.caseID;}
 
     public String getTitle(){
         return this.title;

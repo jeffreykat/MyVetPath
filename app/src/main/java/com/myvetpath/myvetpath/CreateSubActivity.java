@@ -78,9 +78,12 @@ public class CreateSubActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard();
+                long curDate = Calendar.getInstance().getTime().getTime();
+                int caseID = 190000;
+                newSub.setCaseID(caseID);
                 newSub.setTitle(title_et.getText().toString());
                 newSub.setStatusFlag(0);
-                newSub.setDateOfCreation(Calendar.getInstance().getTime().getTime());
+                newSub.setDateOfCreation(curDate);
                 //Display confirmation Toast
                 String content = title_et.getText().toString() + " Saved";
                 Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
@@ -93,9 +96,12 @@ public class CreateSubActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard();
+                long curDate = Calendar.getInstance().getTime().getTime();
+                int caseID = 190000;
+                newSub.setCaseID(caseID);
                 newSub.setTitle(title_et.getText().toString());
                 newSub.setStatusFlag(1);
-                newSub.setDateOfCreation(Calendar.getInstance().getTime().getTime());
+                newSub.setDateOfCreation(curDate);
                 createDialog(newSub);
             }
         });

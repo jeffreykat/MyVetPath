@@ -41,7 +41,7 @@ public class ViewDraftsActivity extends AppCompatActivity {
         dialog.setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(ViewDraftsActivity.this, R.string.deleted_message,
+                Toast.makeText(ViewDraftsActivity.this,  R.string.deleted_message + drafts[selectedSubmissionPosition].getTitle(),
                         Toast.LENGTH_LONG).show();
                 dbHandler.deleteSubmission(drafts[selectedSubmissionPosition].getInternalID());
                 mAdapter.notifyItemRemoved(selectedSubmissionPosition);
