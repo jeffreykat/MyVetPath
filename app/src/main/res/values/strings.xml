@@ -72,6 +72,15 @@
     <string name="action_delete_confirmation_prompt_first_part">Are you sure you want to delete the report \"</string>
     <string name="action_delete_confirmation_second_part">\"?</string>
     <string name="action_delete_confirmation">Delete Confirmation</string>
+    <string name="title_et">Title</string>
+    <string name="submit">Submit</string>
+    <string name="save_draft">Save Draft</string>
+    <string name="no_subs">No Submissions</string>
     <string name="action_home">Home</string>
+    <string-array name="sexString">
+        <item></item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
 
 </resources>
