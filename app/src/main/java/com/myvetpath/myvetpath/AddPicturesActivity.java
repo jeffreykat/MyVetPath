@@ -231,7 +231,7 @@ public class AddPicturesActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (chosen_method == 1) { //user uploaded a picture using the camera
+        if (chosen_method == 1 && data != null) { //user uploaded a picture using the camera
             Bitmap bitmap = (Bitmap) data.getExtras().get("data"); //get the actual picture
             images[selectedImageView].setImageBitmap(bitmap);
 
