@@ -28,8 +28,8 @@ public class SubDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sub_details);
         myDBHandler = new MyDBHandler(this);
 
-        int caseId = getIntent().getIntExtra("caseID", 1);
-        currentSub = myDBHandler.findSubmissionID(caseId);
+        int internalId = getIntent().getIntExtra("internalID", 1);
+        currentSub = myDBHandler.findSubmissionID(internalId);
         String title = currentSub.getTitle();
         calendar.setTimeInMillis(currentSub.getDateOfCreation());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -44,9 +44,9 @@ public class SubDetailsActivity extends AppCompatActivity {
         TextView dateText = findViewById(R.id.subDate);
         dateText.setText(simpleDateFormat.format(calendar.getTime()));
         TextView caseIDText = findViewById(R.id.subCaseID);
-        caseIDText.setText(caseId);
+        caseIDText.setText(Integer.toString(currentSub.getCaseID()));
         TextView internalIDText = findViewById(R.id.subInternalID);
-        internalIDText.setText(currentSub.getInternalID());
+        internalIDText.setText(Integer.toString(internalId));
     }
 
     @Override

@@ -144,7 +144,7 @@ public class ViewSubsActivity extends AppCompatActivity {
         mAdapter = new SubsAdapter(submissions, new CustomSubClickListener() {
             @Override
             public void onSubClick(View v, int caseID) {
-                sub_details_activity.putExtra("caseID", caseID);
+                sub_details_activity.putExtra("internalID", caseID);
                 startActivity(sub_details_activity);
             }
 

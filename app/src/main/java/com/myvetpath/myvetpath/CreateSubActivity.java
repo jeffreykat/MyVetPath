@@ -41,6 +41,7 @@ public class CreateSubActivity extends AppCompatActivity {
                 Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
                 testToast.show();
                 dbHandler.addSubmission(submission);
+                submission.setCaseID(19000000 + submission.getInternalID());
                 startActivity(view_subs_activity);
             }
         })
@@ -96,7 +97,6 @@ public class CreateSubActivity extends AppCompatActivity {
             public void onClick(View view) {
                 hideSoftKeyboard();
                 long curDate = Calendar.getInstance().getTime().getTime();
-                newSub.setCaseID(19000000 + newSub.getInternalID());
                 newSub.setTitle(title_et.getText().toString());
                 newSub.setStatusFlag(1);
                 newSub.setDateOfCreation(curDate);
