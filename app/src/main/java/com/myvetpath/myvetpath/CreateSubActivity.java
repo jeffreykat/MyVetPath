@@ -79,8 +79,7 @@ public class CreateSubActivity extends AppCompatActivity {
             public void onClick(View view) {
                 hideSoftKeyboard();
                 long curDate = Calendar.getInstance().getTime().getTime();
-                int caseID = 190000;
-                newSub.setCaseID(caseID);
+                newSub.setCaseID(19000000 + newSub.getInternalID());
                 newSub.setTitle(title_et.getText().toString());
                 newSub.setStatusFlag(0);
                 newSub.setDateOfCreation(curDate);
@@ -97,8 +96,7 @@ public class CreateSubActivity extends AppCompatActivity {
             public void onClick(View view) {
                 hideSoftKeyboard();
                 long curDate = Calendar.getInstance().getTime().getTime();
-                int caseID = 190000;
-                newSub.setCaseID(caseID);
+                newSub.setCaseID(19000000 + newSub.getInternalID());
                 newSub.setTitle(title_et.getText().toString());
                 newSub.setStatusFlag(1);
                 newSub.setDateOfCreation(curDate);

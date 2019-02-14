@@ -11,11 +11,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class SubDetailsActivity extends AppCompatActivity {
 
     Intent create_sub_activity;
     MyDBHandler myDBHandler;
     Submission currentSub;
+    Calendar calendar = Calendar.getInstance();
+    final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,15 +31,22 @@ public class SubDetailsActivity extends AppCompatActivity {
         int caseId = getIntent().getIntExtra("caseID", 1);
         currentSub = myDBHandler.findSubmissionID(caseId);
         String title = currentSub.getTitle();
+        calendar.setTimeInMillis(currentSub.getDateOfCreation());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(title);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         create_sub_activity = new Intent(this, CreateSubActivity.class);
 
         TextView titleText = findViewById(R.id.subTitle);
         titleText.setText(title);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        TextView dateText = findViewById(R.id.subDate);
+        dateText.setText(simpleDateFormat.format(calendar.getTime()));
+        TextView caseIDText = findViewById(R.id.subCaseID);
+        caseIDText.setText(caseId);
+        TextView internalIDText = findViewById(R.id.subInternalID);
+        internalIDText.setText(currentSub.getInternalID());
     }
 
     @Override
