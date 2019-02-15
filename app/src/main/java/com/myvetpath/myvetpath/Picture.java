@@ -22,10 +22,10 @@ public class Picture { //remaned to picture so we don't get it confused with Ima
     //Commented out variables in order to reduce the amount of testing needed.
     private int imageID;
     private int internalID;
-    //private Image imageLink; May be able to use the object image?
+    //private Bitmap imageLink; May be able to use the object image?
     private String imageTitle;
-    //private real latitude; not sure about what type to make latitude and longitude
-    //private real longitude;
+    //private string latitude; not sure about what type to make latitude and longitude
+    //private string longitude;
     //private Date dateTaken;
 
 
@@ -40,7 +40,7 @@ public class Picture { //remaned to picture so we don't get it confused with Ima
     public void setImageID(int newID){
         this.imageID = newID;
     }
-    public void setTitle(String newTitle){
+    public void setImageTitle(String newTitle){
         this.imageTitle = newTitle;
     }
 
