@@ -21,7 +21,7 @@ import java.util.Calendar;
 import static java.sql.Types.NULL;
 
 //This screen will show the draft that the user was was previously working on
-public class ViewDraftsActivity extends AppCompatActivity {
+public class ViewDraftsActivity extends BaseActivity {
 
     MyDBHandler dbHandler;
     boolean subTableExists;
@@ -152,38 +152,5 @@ public class ViewDraftsActivity extends AppCompatActivity {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        if (id == R.id.action_info) {
-            return true;
-        }
-        if (id == R.id.action_submission) {
-            return true;
-        }
-        if (id == R.id.action_viewsubs) {
-            return true;
-        }
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
 }
