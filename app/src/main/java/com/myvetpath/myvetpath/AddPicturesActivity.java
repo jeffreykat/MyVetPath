@@ -11,6 +11,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.ExifInterface;
+import android.net.ParseException;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +31,9 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 
 //This is for the screen where users can add pictures. It is called when people click the camera icon on the CreateSubActivity screen
@@ -48,6 +52,7 @@ public class AddPicturesActivity extends AppCompatActivity {
     String [] longitudes = {"", "", "", "", ""};
     String [] latitudes = {"", "", "", "", ""};
     String [] imageNames = {"", "", "", "", ""};
+    Date[] imageDates = {null, null, null, null, null};
 
     private LocationManager locationManager;
     private LocationListener listener;
@@ -123,14 +128,14 @@ public class AddPicturesActivity extends AppCompatActivity {
 //Purpose: Stores the data gathered from this screen into the db. This is called whenever the user selects the floating action button
     private void storePicturesInDB(){
         for(int i = 0; i < 5; i++){
-            if(imageNames[i] != ""){
+            if(imageNames[i] != ""){ //if user uploaded image in this slot
                //TODO: Store the following in the DB
                 //imageNames[i]
                 //longitudes[i]
                 //latitudes[i]
                 //images[i] <- might need to do some work to convert the imageButton to a blob
-
-                Log.d("GPS", "storePicturesInDB: index: " + i + ", Image name: " + imageNames[i] + ", longitude: " + longitudes[i] + "latitude " + latitudes[i]);
+                //imageDates[i]
+                Log.d("MetaData", "storePicturesInDB: index: " + i + ", Image name: " + imageNames[i] + ", longitude: " + longitudes[i] + "latitude " + latitudes[i] + ", dates: " + imageDates[i]);
             }
         }
     }
@@ -176,7 +181,7 @@ public class AddPicturesActivity extends AppCompatActivity {
                         imageNames[selectedDeleteIndex] = "";
                         latitudes[selectedDeleteIndex] = "";
                         longitudes[selectedDeleteIndex] = "";
-
+                        imageDates[selectedDeleteIndex] = null;
                     }
                 });
 
@@ -234,7 +239,7 @@ public class AddPicturesActivity extends AppCompatActivity {
         if (chosen_method == 1 && data != null) { //user uploaded a picture using the camera
             Bitmap bitmap = (Bitmap) data.getExtras().get("data"); //get the actual picture
             images[selectedImageView].setImageBitmap(bitmap);
-
+            imageDates[selectedImageView] = Calendar.getInstance().getTime(); //get the current date
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){ //Check for permissions
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.INTERNET}
@@ -266,6 +271,21 @@ public class AddPicturesActivity extends AppCompatActivity {
                     String latitude = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
                     String latitudeRef = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
                     String longitudeRef = exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
+                    String dateString = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
+
+                    //The returned date comes in as a string, so convert it into date
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
+                    Date convertedDate = new Date();
+                    try {
+                        convertedDate = dateFormat.parse(dateString);
+                        imageDates[selectedImageView] = convertedDate;
+                    } catch (ParseException e) {
+                        // Auto-generated exception
+                        e.printStackTrace();
+                    } catch (java.text.ParseException e) {
+                        //Auto-generated exception
+                        e.printStackTrace();
+                    }
 
                     if(latitudeRef.equals("N")){ //if the degrees should be positive
                         latitude = Float.toString(convertToDegree(latitude));
