@@ -1,10 +1,12 @@
 package com.myvetpath.myvetpath;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,6 +20,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -28,6 +33,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import static java.sql.Types.NULL;
 
 //This is for the "Create Submission screen"
 public class CreateSubActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener{
@@ -63,11 +74,38 @@ db.addSubmission(sub)
     static final int DEATH_DATE = 2;
     private int selectedCalendar;
 
+
+    public void createDialog(final Submission submission){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(CreateSubActivity.this);
+        dialog.setCancelable(true);
+        dialog.setTitle(R.string.action_submit_conformation);
+        dialog.setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Display confirmation Toast
+                String content = title_et.getText().toString() + " Submitted";
+                Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
+                testToast.show();
+                dbHandler.addSubmission(submission);
+                startActivity(view_subs_activity);
+            }
+        })
+                .setNegativeButton(R.string.action_no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //Close
+                    }
+                });
+        final AlertDialog alertDialog = dialog.create();
+        alertDialog.show();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_sub);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarCreateSub);
+        setMenuOptionItemToRemove(this);
         toolbar.setTitle(R.string.action_submission);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -126,15 +164,17 @@ db.addSubmission(sub)
             @Override
             public void onClick(View view) {
                 storeDataInDB();
-//                hideSoftKeyboard();
-//                newSub.setTitle(title_et.getText().toString());
-//                newSub.setStatusFlag(0);
-//                newSub.setDateOfCreation(Calendar.getInstance().getTime().getTime());
-//                //Display confirmation Toast
-//                String content = title_et.getText().toString() + " Saved";
-//                Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
-//                testToast.show();
-//                dbHandler.addSubmission(newSub);
+                hideSoftKeyboard();
+                long curDate = Calendar.getInstance().getTime().getTime();
+                newSub.setCaseID(NULL);
+                newSub.setTitle(title_et.getText().toString());
+                newSub.setStatusFlag(0);
+                newSub.setDateOfCreation(curDate);
+                //Display confirmation Toast
+                String content = title_et.getText().toString() + " Saved";
+                Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
+                testToast.show();
+                dbHandler.addSubmission(newSub);
             }
         });
         /*TODO: Add fragment to check if user is sure before submitting*/
@@ -143,19 +183,20 @@ db.addSubmission(sub)
             @Override
             public void onClick(View view) {
                 storeDataInDB();
-//                hideSoftKeyboard();
-//                newSub.setTitle(title_et.getText().toString());
-//                newSub.setStatusFlag(1);
-//                newSub.setDateOfCreation(Calendar.getInstance().getTime().getTime());
-//                //Display confirmation Toast
-//                String content = title_et.getText().toString() + " Submitted";
-//                Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
-//                testToast.show();
-//                dbHandler.addSubmission(newSub);
-//                startActivity(view_subs_activity);
+                hideSoftKeyboard();
+                long curDate = Calendar.getInstance().getTime().getTime();
+                newSub.setCaseID(NULL);
+                newSub.setTitle(title_et.getText().toString());
+                newSub.setStatusFlag(1);
+                newSub.setDateOfCreation(curDate);
+                createDialog(newSub);
             }
         });
 //
+        view_subs_activity = new Intent(this, ViewSubsActivity.class);
+
+
+
         //initialize the camera button where users can add pictures
         add_pictures_activity = new Intent(this, AddPicturesActivity.class);
         add_pictures_button = findViewById(R.id.addPicturesButton);
@@ -248,7 +289,7 @@ db.addSubmission(sub)
     }
 
     //This method stores all the data into the database. Called whenever the user wants to save a submission
-    //Todo: store everything into database. May need to make changes to this to accomodate differences between submit button and save as draft button
+    //Todo: store everything into database. May need to make changes to this to accomodate differences between submit button and save as draft button. Will have to modify the newsub variable
     private void storeDataInDB(){
         int numberOfSamples;
         String submissionTitle = ((EditText) findViewById(R.id.sub_title)).getText().toString();
