@@ -28,7 +28,12 @@ public class MyDBHandler extends SQLiteOpenHelper {
     //Creates a database with the table Submission.
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         db.execSQL(Submission.CREATE_TABLE);
+        //added below tables
+        db.execSQL(Picture.CREATE_TABLE);
+        db.execSQL(SickElement.CREATE_TABLE);
+        db.execSQL(Sample.CREATE_TABLE);
     }
 
     @Override
@@ -42,11 +47,22 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public void createTables(SQLiteDatabase db){
         db.execSQL(Submission.CREATE_TABLE);
         Log.v("tableCreate", Submission.CREATE_TABLE);
+        //added below tables;
+        db.execSQL(Picture.CREATE_TABLE);
+        Log.v("tableCreatePicture", Picture.CREATE_TABLE);
+        db.execSQL(SickElement.CREATE_TABLE);
+        Log.v("tableCreateSickElement", SickElement.CREATE_TABLE);
+        db.execSQL(Sample.CREATE_TABLE);
+        Log.v("tableCreateSample", Sample.CREATE_TABLE);
     }
 
     //Remove submission table
+    //Remove the Picture table, SickElement, Sample
     public void dropTable(SQLiteDatabase db){
         db.execSQL("DROP TABLE IF EXISTS " + Submission.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Picture.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Sample.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + SickElement.TABLE_NAME);
     }
 
     @Override
@@ -99,6 +115,31 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.insert(Submission.TABLE_NAME, null, values);
         db.close();
     }
+
+    public void addSample(Sample sample) {
+        ContentValues values = new ContentValues();
+        values.put(Sample.COLUMN_NAMEOFSAMPLE, sample.getNameOfSample());
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert(Sample.TABLE_NAME, null, values);
+        db.close();
+    }
+
+    public void addSickElement(SickElement sickElement) {
+        ContentValues values = new ContentValues();
+        values.put(SickElement.COLUMN_SICKELEMENTNAME, sickElement.getNameOfSickElement());
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert(SickElement.TABLE_NAME, null, values);
+        db.close();
+    }
+
+    public void addPicture(Picture picture) {
+        ContentValues values = new ContentValues();
+        values.put(Picture.COLUMN_IMAGETITLE, picture.getImageTitle());
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert(picture.TABLE_NAME, null, values);
+        db.close();
+    }
+
 
     //Searches the database to to find a row based on a title.
     public Submission findSubmissionTitle(String nTitle) {
@@ -154,6 +195,25 @@ public class MyDBHandler extends SQLiteOpenHelper {
             result = true;
         }
         cursor.close();
+        db.close();
+        return result;
+    }
+
+    public boolean deletePicutre(int ID, String imageName) {
+        boolean result = false;
+        String query = "Select * FROM " + imageName + " WHERE " + Picture.COLUMN_ID + " = '" + String.valueOf(ID) + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        Picture pic = new Picture();
+        if (cursor.moveToFirst()) {
+            pic.setImageID(Integer.parseInt(cursor.getString(0)));
+            db.delete(Picture.TABLE_NAME, Picture.COLUMN_ID + "=?",
+                    new String[] {
+                            String.valueOf(pic.getImageID())
+                    });
+            cursor.close();
+            result = true;
+        }
         db.close();
         return result;
     }
