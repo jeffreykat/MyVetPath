@@ -22,6 +22,8 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import static java.sql.Types.NULL;
+
 public class ViewSubsActivity extends AppCompatActivity {
 
     Intent create_sub_activity;
@@ -113,7 +115,11 @@ public class ViewSubsActivity extends AppCompatActivity {
             holder.titleTextView.setText(mSubmissions[position].getTitle());
             calendar.setTimeInMillis(mSubmissions[position].getDateOfCreation());
             holder.dateTextView.setText(simpleDateFormat.format(calendar.getTime()));
-            holder.caseTextView.setText(String.valueOf(mSubmissions[position].getCaseID()));
+            if(mSubmissions[position].getCaseID() == NULL){
+                holder.caseTextView.setText(R.string.pending);
+            } else {
+                holder.caseTextView.setText(String.valueOf(mSubmissions[position].getCaseID()));
+            }
         }
 
         @Override

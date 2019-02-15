@@ -18,6 +18,8 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import static java.sql.Types.NULL;
+
 //This screen will show the draft that the user was was previously working on
 public class ViewDraftsActivity extends AppCompatActivity {
 
@@ -97,7 +99,11 @@ public class ViewDraftsActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-            holder.caseTextView.setText(String.valueOf(drafts[position].getCaseID()));
+            if(drafts[position].getCaseID() == NULL){
+                holder.caseTextView.setText(R.string.pending);
+            } else {
+                holder.caseTextView.setText(String.valueOf(drafts[position].getCaseID()));
+            }
             holder.titleTextView.setText(drafts[position].getTitle());
             calendar.setTimeInMillis(drafts[position].getDateOfCreation());
             holder.dateTextView.setText(simpleDateFormat.format(calendar.getTime()));

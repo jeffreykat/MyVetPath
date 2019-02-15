@@ -14,6 +14,8 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import static java.sql.Types.NULL;
+
 public class SubDetailsActivity extends AppCompatActivity {
 
     Intent create_sub_activity;
@@ -44,7 +46,11 @@ public class SubDetailsActivity extends AppCompatActivity {
         TextView dateText = findViewById(R.id.subDate);
         dateText.setText(simpleDateFormat.format(calendar.getTime()));
         TextView caseIDText = findViewById(R.id.subCaseID);
-        caseIDText.setText(Integer.toString(currentSub.getCaseID()));
+        if(currentSub.getCaseID() == NULL){
+            caseIDText.setText(R.string.pending);
+        } else {
+            caseIDText.setText(String.valueOf(currentSub.getCaseID()));
+        }
         TextView internalIDText = findViewById(R.id.subInternalID);
         internalIDText.setText(Integer.toString(internalId));
     }
