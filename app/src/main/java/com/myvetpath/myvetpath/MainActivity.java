@@ -87,6 +87,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        view_subs_button = findViewById(R.id.viewSubsButton);
+        view_subs_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(view_subs_activity);
+            }
+        });
 
         view_drafts_activity = new Intent(this, ViewDraftsActivity.class);
         view_drafts_button = findViewById(R.id.viewDraftsButton);
@@ -97,14 +104,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        view_subs_button = findViewById(R.id.viewSubsButton);
-        view_subs_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(view_subs_activity);
-            }
-        });
+        if(dbHelper.getNumberOfDrafts() == 0){
+            view_drafts_button.setVisibility(View.INVISIBLE);
+        }
 
     }
 

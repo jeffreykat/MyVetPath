@@ -21,13 +21,13 @@ public class Submission {
     //Commented out variables in order to reduce the amount of testing needed.
     private int internalID; //Primary key for the internal database.
     private int caseID; //An identifier currently used by Pathologist
-    //private int masterID; //Primary key for the Server database
+    private int masterID; //Primary key for the Server database
     private int statusFlag; // Stage of the submission 0 = draft, 1 = submitted, 2 = received by server
     private String title; //user created title
     private String comment; //Contains the comment of a submission.
     private long dateOfCreation; // Date the submission was created
-    //private date dateOfSubmission; // Date the submission was sent to the server
-    //private date dateOfCompletion; //Date the submission is closed and complete
+    //private long dateOfSubmission; // Date the submission was sent to the server
+    //private long dateOfCompletion; //Date the submission is closed and complete
 
     //Constructors
     public Submission() {}
@@ -43,7 +43,13 @@ public class Submission {
     public void setInternalID(int newInternal){
         this.internalID = newInternal;
     }
+
     public void setCaseID(int newCase){this.caseID = newCase;}
+
+    public void setMasterID(int masterID) {
+        this.masterID = masterID;
+    }
+
     public void setTitle(String newTitle){
         this.title = newTitle;
     }
@@ -56,12 +62,20 @@ public class Submission {
         this.statusFlag = statusFlag;
     }
 
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     //Accessors
     public int getInternalID(){
         return this.internalID;
     }
 
     public int getCaseID(){return this.caseID;}
+
+    public int getMasterID() {
+        return masterID;
+    }
 
     public String getTitle(){
         return this.title;
@@ -73,6 +87,10 @@ public class Submission {
 
     public int getStatusFlag() {
         return statusFlag;
+    }
+
+    public String getComment() {
+        return comment;
     }
 }
 
