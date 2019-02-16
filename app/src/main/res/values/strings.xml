@@ -6,27 +6,37 @@
     <string name="action_submission">Create Submission</string>
     <string name="action_viewsubs">View Submissions</string>
     <string name="action_viewdrafts">View Drafts</string>
-
     <string name="title_activity_create_sub">CreateSubActivity</string>
     <string name="title_activity_view_drafts">ViewDraftsActivity</string>
-    <string name="title_activity_view_subs">ViewSubsActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="title_activity_add_pictures">AddPicturesActivity</string>
-    <string name="title_activity_instructions">InstructionsActivity</string>
-    <string name="title_activity_sub_details">SubDetailsActivity</string>
-
-    <string name="web_URL">https://vetmed.oregonstate.edu/diagnostic</string>
     <string name="action_addpictures">Add Pictures</string>
+    <string name="title_activity_instructions">InstructionsActivity</string>
     <string name="action_instructions">Instructions</string>
+
+    <string name="title_activity_view_subs">ViewSubsActivity</string>
     <string name="subs">Submissions</string>
 
-    <string name="action_submit_conformation">Are you sure you are ready to submit?</string>
-    <string name="deleted_message">Deleted </string>
+
+    <string name="title_activity_sub_details">SubDetailsActivity</string>
+    <string name="deleted_message">Deleted</string>
     <string name="action_yes">Yes</string>
     <string name="action_no">No</string>
-    <string name="action_delete_confirmation_prompt_first_part">Are you sure you want to delete \"</string>
+    <string name="action_delete_confirmation_prompt_first_part">Are you sure you want to delete the report \"</string>
     <string name="action_delete_confirmation_second_part">\"?</string>
-  <string name="action_delete_confirmation">Delete Confirmation</string>
-
+    <string name="action_delete_confirmation">Delete Confirmation</string>
+    <string name="action_home">Home</string>
+    <string name="title_et">Title</string>
+    <string name="submit">Submit</string>
+    <string name="save_draft">Save Draft</string>
+    <string name="no_subs">No Submissions</string>
+    <string name="action_submit_conformation">Are you sure you are ready to submit?</string>
+    <string name="web_URL">https://vetmed.oregonstate.edu/diagnostic</string>
+    <string name="pending">Pending</string>
+    <string-array name="sexString">
+        <item></item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
 
 </resources>

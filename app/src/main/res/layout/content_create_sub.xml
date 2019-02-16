@@ -12,10 +12,27 @@
         android:id="@+id/createsub_sv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="410dp">
+
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/SubmissionTitleTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Submission Title"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"
+                />
 
             <EditText
                 android:id="@+id/sub_title"
@@ -23,49 +40,392 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:hint="@string/title_et"
-                android:inputType="text"
                 android:focusable="true"
+                android:hint="@string/title_et"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@id/SubmissionTitleTV"
+                android:inputType="text|textMultiLine"
+                android:maxLength="255"
+                />
+
+            <TextView
+                android:id="@+id/GroupNameTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Group Name"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sub_title"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/group_name_ET"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:focusable="true"
+                android:hint="Group Name"
+                android:inputType="text|textMultiLine"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/GroupNameTV"
+                android:maxLength="255"/>
+
+            <TextView
+                android:id="@+id/LocationSampleTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Location of Sample"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/group_name_ET"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/location_sample_ET"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:focusable="true"
+                android:hint="Location"
+                android:inputType="text|textMultiLine"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/LocationSampleTV"
+                android:maxLength="255"/>
+
+            <TextView
+                android:id="@+id/NumberSamplesTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Number of Samples"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/location_sample_ET"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/number_of_samples_ET"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:focusable="true"
+                android:hint="Number of Samples"
+                android:inputType="phone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/NumberSamplesTV"
+                />
+
+            <TextView
+                android:id="@+id/NameOfTheSampleTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Name of Samples"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/number_of_samples_ET"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/name_of_samples_ET"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:focusable="true"
+                android:hint="Sample Name"
+                android:inputType="text|textMultiLine"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/NameOfTheSampleTV"
+                android:maxLength="30"/>
+
+            <TextView
+                android:id="@+id/sampleCollectedDateTitleTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Sample Collection Date"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/name_of_samples_ET"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
 
             <ImageButton
-                android:id="@+id/addPicturesButton"
+                android:id="@+id/CollectionDateBTTN"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                app:layout_constraintTop_toBottomOf="@id/sub_title"
+                android:background="@drawable/ic_action_calendar"
+                android:padding="20dp"
+                app:background="@drawable/ic_action_calendar"
                 app:layout_constraintStart_toStartOf="parent"
-                app:srcCompat="@drawable/ic_photo_camera_grey_48dp"
-                tools:ignore="VectorDrawableCompat" />
+                app:layout_constraintTop_toBottomOf="@id/sampleCollectedDateTitleTV"
+                tools:ignore="VectorDrawableCompat"
 
-            <Button
-                android:id="@+id/save_draft_btn"
-                style="@style/Widget.AppCompat.Button.Colored"
+                />
+
+            <TextView
+                android:id="@+id/CollectionDateTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text=""
+                app:layout_constraintLeft_toRightOf="@id/CollectionDateBTTN"
+                app:layout_constraintTop_toBottomOf="@id/sampleCollectedDateTitleTV" />
+
+
+            <TextView
+                android:id="@+id/SickElementNameTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:background="@color/colorViewsubs"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
-                android:text="@string/save_draft"
-                android:textColor="@android:color/white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sub_title" />
 
-            <Button
-                android:id="@+id/submit_btn"
-                style="@style/Widget.AppCompat.Button.Colored"
+                android:text="Sick Element Name"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/CollectionDateBTTN"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/sick_element_name_ET"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:focusable="true"
+                android:hint="Sick Element Name"
+                android:inputType="text|textMultiLine"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/SickElementNameTV"
+                android:maxLength="30"/>
+
+            <TextView
+                android:id="@+id/SpeciesTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:background="@color/colorPrimary"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
-                android:text="@string/submit"
-                android:textColor="@android:color/white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/save_draft_btn" />
+                android:text="Species"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sick_element_name_ET"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/species_ET"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:focusable="true"
+                android:hint="Species"
+                android:inputType="text|textMultiLine"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/SpeciesTV"
+                android:maxLength="30"/>
+
+            <TextView
+                android:id="@+id/SexTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Sex:"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/species_ET"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
+
+            <Spinner
+                android:id="@+id/SexSp"
+                android:layout_width="wrap_content"
+                android:gravity="right"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/SexTV"
+                app:layout_constraintBottom_toBottomOf="@id/SexTV"
+                >
+
+            </Spinner>
+
+
+
+            <CheckBox
+                android:id="@+id/EuthanizedCB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Euthanized"
+                android:onClick="onCheckboxClicked"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/SexTV"
+                android:layout_margin="5dp"
+                android:padding="5dp"
+                android:button="@null"
+                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                />
+
+
+            <TextView
+                android:id="@+id/DateOfBirthTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Date of Birth"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/EuthanizedCB"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
+
+            <ImageButton
+                android:id="@+id/BirthDateBTTN"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/ic_action_calendar"
+                android:padding="20dp"
+                app:background="@drawable/ic_action_calendar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/DateOfBirthTV"
+                tools:ignore="VectorDrawableCompat"
+
+                />
+
+            <TextView
+                android:id="@+id/Birth_Date_Message_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text=""
+                app:layout_constraintLeft_toRightOf="@id/BirthDateBTTN"
+                app:layout_constraintTop_toBottomOf="@id/DateOfBirthTV" />
+
+
+            <TextView
+                android:id="@+id/DateOfDeathTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Date of Death"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/BirthDateBTTN"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
+
+            <ImageButton
+                android:id="@+id/DeathDateBTTN"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/ic_action_calendar"
+                android:padding="20dp"
+                app:background="@drawable/ic_action_calendar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/DateOfDeathTV"
+                tools:ignore="VectorDrawableCompat"
+
+                />
+
+            <TextView
+                android:id="@+id/Death_Date_Message_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text=""
+                app:layout_constraintLeft_toRightOf="@id/DeathDateBTTN"
+                app:layout_constraintTop_toBottomOf="@id/DateOfDeathTV" />
+
+
+            <TextView
+                android:id="@+id/CommentTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Comment"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/DeathDateBTTN"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/Comment_ET"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:focusable="true"
+                android:hint="Comment"
+                android:inputType="text|textMultiLine"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/CommentTV" />
+
+
+            <ImageButton
+            android:id="@+id/addPicturesButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            app:layout_constraintTop_toBottomOf="@id/Comment_ET"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/ic_photo_camera_grey_48dp"
+            tools:ignore="VectorDrawableCompat" />
+
+            <Button
+            android:id="@+id/save_draft_btn"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@color/colorViewsubs"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="@string/save_draft"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/Comment_ET" />
+
+            <Button
+            android:id="@+id/submit_btn"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@color/colorPrimary"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="@string/submit"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/save_draft_btn" />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 
