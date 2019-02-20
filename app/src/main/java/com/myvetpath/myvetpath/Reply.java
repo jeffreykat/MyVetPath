@@ -15,8 +15,8 @@ public class Reply {
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
                     "INTEGER PRIMARY KEY,"
-                    + COLUMN_SENDERID + "TEXT"
-                    + COLUMN_RECIVERID + "TEXT"
+                    + COLUMN_SENDERID + "INTEGER"
+                    + COLUMN_RECIVERID + "INTEGER"
                     + COLUMN_MESSAGE + "TEXT" + ")";
 
     //Object Fields
