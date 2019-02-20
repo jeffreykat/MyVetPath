@@ -19,7 +19,6 @@ public class Report {
                     + COLUMN_INTERNALID + "INTEGER"
                     + COLUMN_REPORTDATE + "BIGINT"
                     + COLUMN_FINALCOMMENTS + "TEXT"
-                    + COLUMN_REPORTDATE + "TEXT"
                     + COLUMN_Attachments + "TEXT" + ")";
 
     //Object Fields
