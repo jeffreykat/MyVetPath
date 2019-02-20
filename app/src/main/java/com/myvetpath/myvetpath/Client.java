@@ -2,7 +2,7 @@ package com.myvetpath.myvetpath;
 
 import java.sql.Date;
 
-public class Client { //remaned to picture so we don't get it confused with Image object from android
+public class Client {
     //Table Fields
     public static final String TABLE_NAME = "Client";
     public static final String COLUMN_ID = "ClientID";
