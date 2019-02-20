@@ -17,7 +17,7 @@ public class Client {
                     "INTEGER PRIMARY KEY,"
                     + COLUMN_FIRSTNAME + "TEXT"
                     + COLUMN_LASTNAME + "TEXT"
-                    + COLUMN_PHONENUMBER + "INTEGER"
+                    + COLUMN_PHONENUMBER + "TEXT"
                     + Column_EMAIL + "TEXT" + ")";
 
 
