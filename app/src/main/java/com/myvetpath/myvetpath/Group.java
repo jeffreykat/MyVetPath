@@ -16,7 +16,7 @@ public class Group {
             "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
                     "INTEGER PRIMARY KEY,"
                     + COLUMN_NAME + "TEXT"
-                    + COLUMN_DATEOFCREATION + "TEXT" + ")";
+                    + COLUMN_DATEOFCREATION + "BIGINT" + ")";
 
     //Object Fields
     private int groupID;
