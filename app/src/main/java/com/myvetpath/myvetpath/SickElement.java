@@ -16,13 +16,13 @@ public class SickElement {
 
     //Create Table String
     public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "("
-            + COLUMN_ID + "INTEGER PRIMARY KEY,"
-            + COLUMN_INTERNAL + " INT,"
-            + COLUMN_EUTAHNIZED + " INT,"
-            + COLUMN_SEX + " TEXT,"
-            + COLUMN_SPECIES + " TEXT,"
-            + COLUMN_SICKELEMENTNAME + " TEXT,"
-            + COLUMN_DATEOFBIRTH + " BIGINT,"
+            + COLUMN_ID + " INTEGER PRIMARY KEY, "
+            + COLUMN_INTERNAL + " INT, "
+            + COLUMN_EUTAHNIZED + " INT, "
+            + COLUMN_SEX + " TEXT, "
+            + COLUMN_SPECIES + " TEXT, "
+            + COLUMN_SICKELEMENTNAME + " TEXT, "
+            + COLUMN_DATEOFBIRTH + " BIGINT, "
             + COLUMN_DATEOFDEATH + " BIGINT"
             + " )";
 
