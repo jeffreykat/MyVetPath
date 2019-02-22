@@ -16,10 +16,10 @@ public class Report {
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
                     "INTEGER PRIMARY KEY,"
-                    + COLUMN_INTERNALID + "INTEGER"
-                    + COLUMN_REPORTDATE + "BIGINT"
-                    + COLUMN_FINALCOMMENTS + "TEXT"
-                    + COLUMN_Attachments + "TEXT" + ")";
+                    + COLUMN_INTERNALID + " INTEGER,"
+                    + COLUMN_REPORTDATE + " BIGINT,"
+                    + COLUMN_FINALCOMMENTS + " TEXT,"
+                    + COLUMN_Attachments + " TEXT" + " )";
 
     //Object Fields
     private int pathoID;
