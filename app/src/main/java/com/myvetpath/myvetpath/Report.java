@@ -15,10 +15,10 @@ public class Report {
     //Create Table String
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
-                    "INTEGER PRIMARY KEY,"
-                    + COLUMN_INTERNALID + " INTEGER,"
-                    + COLUMN_REPORTDATE + " BIGINT,"
-                    + COLUMN_FINALCOMMENTS + " TEXT,"
+                    " INTEGER PRIMARY KEY, "
+                    + COLUMN_INTERNALID + " INTEGER, "
+                    + COLUMN_REPORTDATE + " BIGINT, "
+                    + COLUMN_FINALCOMMENTS + " TEXT, "
                     + COLUMN_Attachments + " TEXT" + " )";
 
     //Object Fields
