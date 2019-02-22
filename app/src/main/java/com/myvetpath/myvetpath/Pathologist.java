@@ -15,7 +15,7 @@ public class Pathologist {
             "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
                     "INTEGER PRIMARY KEY,"
                     + COLUMN_POSITION + " TEXT,"
-                    + COLUMN_SECURITYLEVEL + " INTEGER" + ")";
+                    + COLUMN_SECURITYLEVEL + " INTEGER" + " )";
 
     //Object Fields
     private int pathoID;
