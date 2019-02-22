@@ -15,10 +15,10 @@ public class Client {
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
                     "INTEGER PRIMARY KEY,"
-                    + COLUMN_FIRSTNAME + "TEXT"
-                    + COLUMN_LASTNAME + "TEXT"
-                    + COLUMN_PHONENUMBER + "TEXT"
-                    + Column_EMAIL + "TEXT" + ")";
+                    + COLUMN_FIRSTNAME + " TEXT,"
+                    + COLUMN_LASTNAME + " TEXT,"
+                    + COLUMN_PHONENUMBER + " TEXT,"
+                    + Column_EMAIL + " TEXT" + " )";
 
 
     //Object Fields
