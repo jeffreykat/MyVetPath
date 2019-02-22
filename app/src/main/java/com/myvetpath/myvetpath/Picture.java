@@ -20,7 +20,7 @@ public class Picture { //remaned to picture so we don't get it confused with Ima
             + COLUMN_ID + "INTEGER PRIMARY KEY,"
             + COLUMN_IMAGETITLE + "TEXT"
             + COLUMN_INTERNAL + "INTEGER"
-            + COLUMN_IMAGELINK + "TEXT" //will have to double check how this works
+            + COLUMN_IMAGELINK + "BLOB" //will have to double check how this works
             + COLUMN_LATITUDE + "BIGINT"
             + COLUMN_LONGITUDE + "BIGINT" //forgot what we where doing with these.
             + COLUMN_DATETAKEN + "BIGINT"
