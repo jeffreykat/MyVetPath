@@ -14,8 +14,8 @@ public class Group {
     //Create Table String
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
-                    "INTEGER PRIMARY KEY,"
-                    + COLUMN_NAME + " TEXT,"
+                    "INTEGER PRIMARY KEY, "
+                    + COLUMN_NAME + " TEXT, "
                     + COLUMN_DATEOFCREATION + " BIGINT" + " )";
 
     //Object Fields
