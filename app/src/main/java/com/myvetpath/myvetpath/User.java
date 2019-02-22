@@ -13,10 +13,10 @@ public class User { //remaned to picture so we don't get it confused with Image 
     //Create Table String
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
-                    "INTEGER PRIMARY KEY,"
-                    + COLUMN_USERNAME + "TEXT"
-                    + COLUMN_PASSWORD + "TEXT"
-                    + COLUMN_AUTHORIZED + "INTEGER" + ")";
+                    " INTEGER PRIMARY KEY, "
+                    + COLUMN_USERNAME + " TEXT, "
+                    + COLUMN_PASSWORD + " TEXT, "
+                    + COLUMN_AUTHORIZED + " INTEGER" + " )";
 
 
     //Object Fields
