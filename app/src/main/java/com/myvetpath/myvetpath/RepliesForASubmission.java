@@ -14,7 +14,7 @@ public class RepliesForASubmission {
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
                     " INTEGER PRIMARY KEY, "
-                    + COLUMN_INTERNALID + " INTEGER,"
+                    + COLUMN_INTERNALID + " INTEGER, "
                     + COLUMN_DATEOFMESSAGE + " BIGINT" + " )";
 
     //Object Fields
