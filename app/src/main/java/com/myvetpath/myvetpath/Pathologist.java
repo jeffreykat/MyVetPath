@@ -13,9 +13,9 @@ public class Pathologist {
     //Create Table String
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
-                    "INTEGER PRIMARY KEY,"
-                    + COLUMN_POSITION + "TEXT"
-                    + COLUMN_SECURITYLEVEL + "INTEGER" + ")";
+                    " INTEGER PRIMARY KEY, "
+                    + COLUMN_POSITION + " TEXT, "
+                    + COLUMN_SECURITYLEVEL + " INTEGER" + " )";
 
     //Object Fields
     private int pathoID;

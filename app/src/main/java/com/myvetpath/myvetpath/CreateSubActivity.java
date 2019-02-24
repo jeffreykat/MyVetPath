@@ -329,7 +329,7 @@ db.addSubmission(sub)
     }
 
     //This method stores all the data into the database. Called whenever the user wants to save a submission
-    //Todo: store everything into database. May need to make changes to this to accomodate differences between submit button and save as draft button. Will have to modify the newsub variable. May not want this later
+    //Todo: store everything into database. May need to make changes to this to accomodate differences between submit button and save as draft button. Will have to modify the newsub variable
     private void storeDataInDB(){
         int numberOfSamples;
         String submissionTitle = ((EditText) findViewById(R.id.sub_title)).getText().toString();

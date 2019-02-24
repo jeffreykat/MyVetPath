@@ -72,7 +72,7 @@ public class AddPicturesActivity extends AppCompatActivity {
 
     static final int REQUEST_TAKE_PHOTO = 1;
     String currentPhotoPath;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

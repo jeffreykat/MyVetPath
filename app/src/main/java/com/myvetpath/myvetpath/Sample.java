@@ -13,11 +13,11 @@ public class Sample {
 
     //Create Table String
     public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "("
-            + COLUMN_ID + "INTEGER PRIMARY KEY,"
-            + COLUMN_NAMEOFSAMPLE + "TEXT"
-            + COLUMN_LOCATIONOFSAMPLE + "TEXT"
-            + COLUMN_NUMBEROFSAMPLE + "INTEGER"
-            + COLUMN_SAMPLECOLLECTIONDATE + "BIGINT"
+            + COLUMN_ID + " INTEGER PRIMARY KEY, "
+            + COLUMN_NAMEOFSAMPLE + " TEXT, "
+            + COLUMN_LOCATIONOFSAMPLE + " TEXT, "
+            + COLUMN_NUMBEROFSAMPLE + " INTEGER, "
+            + COLUMN_SAMPLECOLLECTIONDATE + " BIGINT"
             + " )";
 
 
