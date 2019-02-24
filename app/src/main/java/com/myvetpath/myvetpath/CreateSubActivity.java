@@ -4,6 +4,8 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -28,8 +30,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -73,7 +77,8 @@ db.addSubmission(sub)
     static final int BIRTH_DATE = 1;
     static final int DEATH_DATE = 2;
     private int selectedCalendar;
-
+    private Picture [] pictures = {null, null, null, null, null};
+    private ArrayList<Picture> picturesList;
 
     public void createDialog(final Submission submission){
         AlertDialog.Builder dialog = new AlertDialog.Builder(CreateSubActivity.this);
@@ -86,7 +91,19 @@ db.addSubmission(sub)
                 String content = title_et.getText().toString() + " Submitted";
                 Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
                 testToast.show();
-                dbHandler.addSubmission(submission);
+                long internalID;
+                internalID = dbHandler.addSubmission(submission);
+
+                for(Picture tempPicture: picturesList){
+                    if(tempPicture != null){
+                        tempPicture.setInternalID(Math.toIntExact(internalID));
+                        Log.d("details", "onClick: current internal id is: " + tempPicture.getInternalID());
+                    }
+
+
+                        dbHandler.addPicture(tempPicture);
+                }
+
                 startActivity(view_subs_activity);
             }
         })
@@ -109,6 +126,7 @@ db.addSubmission(sub)
         toolbar.setTitle(R.string.action_submission);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        picturesList = new ArrayList<Picture>(5);
 
         date_of_submission_button = (ImageButton) findViewById(R.id.CollectionDateBTTN);
         date_of_submission_button.setOnClickListener(new View.OnClickListener(){
@@ -199,16 +217,38 @@ db.addSubmission(sub)
 
         //initialize the camera button where users can add pictures
         add_pictures_activity = new Intent(this, AddPicturesActivity.class);
+        Picture p = new Picture();
+        p.setImageTitle("testPic");
+        picturesList.add(p);
+        Log.d("pass", "onCreate: Title of P: " + p.getImageTitle());
+
+
+
         add_pictures_button = findViewById(R.id.addPicturesButton);
         add_pictures_button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                startActivity(add_pictures_activity);
+                add_pictures_activity.putExtra("pictureList", picturesList);
+                startActivityForResult(add_pictures_activity, 1);
             }
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("pass", "onActivityResult: back in onActivityResult");
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            if(resultCode == RESULT_OK){
+                picturesList = (ArrayList<Picture>) data.getSerializableExtra("result");
+                Log.d("pass", "onActivityResult: result after returning to createsub is " + picturesList.get(0).getImageTitle() + " longitude: " + picturesList.get(0).getLongitude());
 
+
+
+
+            }
+        }
+    }
 
     /**
      * Hides the soft keyboard on screen
@@ -289,7 +329,7 @@ db.addSubmission(sub)
     }
 
     //This method stores all the data into the database. Called whenever the user wants to save a submission
-    //Todo: store everything into database. May need to make changes to this to accomodate differences between submit button and save as draft button. Will have to modify the newsub variable
+    //Todo: store everything into database. May need to make changes to this to accomodate differences between submit button and save as draft button. Will have to modify the newsub variable. May not want this later
     private void storeDataInDB(){
         int numberOfSamples;
         String submissionTitle = ((EditText) findViewById(R.id.sub_title)).getText().toString();
