@@ -12,8 +12,8 @@ public class Sample {
     public static final String COLUMN_NAMEOFSAMPLE = "NameOfSample";
 
     //Create Table String
-    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
-            "INTEGER PRIMARY KEY," + COLUMN_NAMEOFSAMPLE + "TEXT )";
+    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "( " + COLUMN_ID +
+            " INTEGER PRIMARY KEY, " + COLUMN_NAMEOFSAMPLE + " TEXT )";
 
 
     //Object Fields

@@ -56,7 +56,6 @@ db.addSubmission(sub)
     Button submit_button;
     EditText title_et;
     MyDBHandler dbHandler;
-    SQLiteDatabase database;
 
     ImageButton date_of_submission_button;
     Spinner sexSpinner;
@@ -110,6 +109,11 @@ db.addSubmission(sub)
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        view_subs_activity = new Intent(this, ViewSubsActivity.class);
+
+        dbHandler = new MyDBHandler(this);
+        final Submission newSub = new Submission();
+
         date_of_submission_button = (ImageButton) findViewById(R.id.CollectionDateBTTN);
         date_of_submission_button.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -140,62 +144,11 @@ db.addSubmission(sub)
             }
         });
 
-
-
         sexSpinner = findViewById(R.id.SexSp);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sexString, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sexSpinner.setAdapter(adapter);
         sexSpinner.setOnItemSelectedListener(this);
-
-        view_subs_activity = new Intent(this, ViewSubsActivity.class);
-
-        dbHandler = new MyDBHandler(this);
-        final Submission newSub = new Submission();
-
-        //For displaying the current date
-//        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-        //+ simpleDateFormat.format(Calendar.getInstance().getTime());
-
-        //initialize submission elements
-        title_et = findViewById(R.id.sub_title);
-        save_draft_button = findViewById(R.id.save_draft_btn);
-        save_draft_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                storeDataInDB();
-                hideSoftKeyboard();
-                long curDate = Calendar.getInstance().getTime().getTime();
-                newSub.setCaseID(NULL);
-                newSub.setTitle(title_et.getText().toString());
-                newSub.setStatusFlag(0);
-                newSub.setDateOfCreation(curDate);
-                //Display confirmation Toast
-                String content = title_et.getText().toString() + " Saved";
-                Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
-                testToast.show();
-                dbHandler.addSubmission(newSub);
-            }
-        });
-        /*TODO: Add fragment to check if user is sure before submitting*/
-        submit_button = findViewById(R.id.submit_btn);
-        submit_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                storeDataInDB();
-                hideSoftKeyboard();
-                long curDate = Calendar.getInstance().getTime().getTime();
-                newSub.setCaseID(NULL);
-                newSub.setTitle(title_et.getText().toString());
-                newSub.setStatusFlag(1);
-                newSub.setDateOfCreation(curDate);
-                createDialog(newSub);
-            }
-        });
-//
-        view_subs_activity = new Intent(this, ViewSubsActivity.class);
-
-
 
         //initialize the camera button where users can add pictures
         add_pictures_activity = new Intent(this, AddPicturesActivity.class);
@@ -206,9 +159,37 @@ db.addSubmission(sub)
                 startActivity(add_pictures_activity);
             }
         });
+
+        //initialize submission elements
+        title_et = findViewById(R.id.sub_title);
+        save_draft_button = findViewById(R.id.save_draft_btn);
+        save_draft_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                storeDataInDB(0, newSub);
+                hideSoftKeyboard();
+                //Display confirmation Toast
+                String content = title_et.getText().toString() + " Saved";
+                Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
+                testToast.show();
+                if(dbHandler.findSubmissionTitle(newSub.getTitle()) != null){
+                    dbHandler.updateSubmission(newSub);
+                }
+                else {
+                    dbHandler.addSubmission(newSub);
+                }
+            }
+        });
+        submit_button = findViewById(R.id.submit_btn);
+        submit_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                storeDataInDB(1, newSub);
+                hideSoftKeyboard();
+                createDialog(newSub);
+            }
+        });
     }
-
-
 
     /**
      * Hides the soft keyboard on screen
@@ -244,8 +225,6 @@ db.addSubmission(sub)
             dateSelectedTV.setText(currentDateString);
             deathDate = new GregorianCalendar(year, month, dayOfMonth).getTime();
         }
-
-
     }
 
     //The selectedSex value is set whenever the user changes the sex in the spinner menu.
@@ -256,9 +235,7 @@ db.addSubmission(sub)
 
     //This function is needed to implement the spinner interface, but it will probably never be called
     @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
+    public void onNothingSelected(AdapterView<?> adapterView) {}
 
     //This is called whenever the euthanized checkbox is clicked. Changes the data that will be stored in teh database
     public void onCheckboxClicked(View view){
@@ -271,8 +248,6 @@ db.addSubmission(sub)
                 isEuthanized = checked;
                 break;
         }
-
-
     }
 
     // Purpose: check if string is an integer. This will be used to validate that the user entered an integer into a numeric field
@@ -290,9 +265,9 @@ db.addSubmission(sub)
 
     //This method stores all the data into the database. Called whenever the user wants to save a submission
     //Todo: store everything into database. May need to make changes to this to accomodate differences between submit button and save as draft button. Will have to modify the newsub variable
-    private void storeDataInDB(){
+    private void storeDataInDB(int status, Submission newSub){
+        long curDate = Calendar.getInstance().getTime().getTime();
         int numberOfSamples;
-        String submissionTitle = ((EditText) findViewById(R.id.sub_title)).getText().toString();
         String groupName = ((EditText) findViewById(R.id.group_name_ET)).getText().toString();
         String sampleLocation = ((EditText) findViewById(R.id.location_sample_ET)).getText().toString();
 
@@ -320,18 +295,18 @@ db.addSubmission(sub)
 
         //Here are the rest of the data we need for the submissions:
         //Client ID - probably going to get this from login
-        //Internal ID - created automatically using SQLite
-        //CaseID
         //Master ID
-        //Date of Creation
         //Submission Date
         //Report Complete Date
-        //Status flag?
         //Sample ID - primary key in form of integer value. Generated with running total on the SQLite database
         //Internal ID - foreign key from Submission table
         //Sick element ID - running total
         //Internal ID for sick element table - foreign key from submission table
 
+        newSub.setCaseID(NULL);
+        newSub.setTitle(title_et.getText().toString());
+        newSub.setStatusFlag(status);
+        newSub.setDateOfCreation(curDate);
     }
 
 }

@@ -15,7 +15,7 @@ public class Submission {
 
     public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ( " + COLUMN_ID +
             " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_CASE_ID + " INTEGER, " + COLUMN_TITLE + " TEXT, " + COLUMN_DATE_CREATION + " BIGINT, " +
-            COLUMN_STATUS_FLAG + " INT" + " )";
+            COLUMN_STATUS_FLAG + " INT, " + COLUMN_COMMENT + " TEXT " +  " )";
 
     //Object Fields
     //Commented out variables in order to reduce the amount of testing needed.

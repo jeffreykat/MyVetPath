@@ -14,8 +14,8 @@ public class Picture { //remaned to picture so we don't get it confused with Ima
     public static final String COLUMN_DATETAKEN = "DateTaken";
 
     //Create Table String
-    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
-            "INTEGER PRIMARY KEY," + COLUMN_IMAGETITLE + "TEXT )";
+    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "( " + COLUMN_ID +
+            " INTEGER PRIMARY KEY, " + COLUMN_IMAGETITLE + " TEXT )";
 
 
     //Object Fields

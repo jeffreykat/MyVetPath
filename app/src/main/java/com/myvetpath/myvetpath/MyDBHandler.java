@@ -113,6 +113,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         values.put(Submission.COLUMN_STATUS_FLAG, submission.getStatusFlag());
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(Submission.TABLE_NAME, null, values);
+        Log.d("SQLite Database", "addSubmission: " + submission.getTitle());
         db.close();
     }
 
@@ -153,6 +154,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
             sub.setTitle(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_TITLE)));
             sub.setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
             sub.setStatusFlag(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_STATUS_FLAG)));
+            sub.setComment(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_COMMENT)));
         } else {
             sub = null;
         }
@@ -292,15 +294,17 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return subs;
     }
 
-    public boolean updateHandler(int ID, int caseID, String title, Long dateCreation, int statusFlag) {
+    public boolean updateSubmission(Submission submission) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues args = new ContentValues();
-        args.put(Submission.COLUMN_ID, ID);
-        args.put(Submission.COLUMN_CASE_ID, caseID);
-        args.put(Submission.COLUMN_TITLE, title);
-        args.put(Submission.COLUMN_DATE_CREATION, dateCreation);
-        args.put(Submission.COLUMN_STATUS_FLAG, statusFlag);
-        return db.update(Submission.TABLE_NAME, args, Submission.COLUMN_ID + "=" + ID, null) > 0;
+        args.put(Submission.COLUMN_ID, submission.getInternalID());
+        args.put(Submission.COLUMN_CASE_ID, submission.getCaseID());
+        args.put(Submission.COLUMN_TITLE, submission.getTitle());
+        args.put(Submission.COLUMN_DATE_CREATION, submission.getDateOfCreation());
+        args.put(Submission.COLUMN_STATUS_FLAG, submission.getStatusFlag());
+        args.put(Submission.COLUMN_COMMENT, submission.getComment());
+        Log.d("SQLite Database", "Update: " + submission.getTitle());
+        return db.update(Submission.TABLE_NAME, args, Submission.COLUMN_ID + "=" + submission.getInternalID(), null) > 0;
     }
 }
 

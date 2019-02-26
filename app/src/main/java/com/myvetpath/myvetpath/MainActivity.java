@@ -53,8 +53,8 @@ public class MainActivity extends BaseActivity {
         * else open the existing one.
          */
         dbHelper = new MyDBHandler(this);
-//        dbHelper.dropTable(dbHelper.getWritableDatabase());
-//        dbHelper.createTables(dbHelper.getWritableDatabase());
+        //dbHelper.dropTable(dbHelper.getWritableDatabase());
+        //dbHelper.createTables(dbHelper.getWritableDatabase());
 
         /*
         * When you want to add a submission to the table it should look something like this:
