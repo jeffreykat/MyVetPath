@@ -55,6 +55,8 @@ db.addSubmission(sub)
     Button save_draft_button;
     Button submit_button;
     EditText title_et;
+    EditText group_et;
+    EditText comment_et;
     MyDBHandler dbHandler;
 
     ImageButton date_of_submission_button;
@@ -72,6 +74,8 @@ db.addSubmission(sub)
     static final int BIRTH_DATE = 1;
     static final int DEATH_DATE = 2;
     private int selectedCalendar;
+
+    static final String LOG_TAG = "CreateSubActivity";
 
 
     public void createDialog(final Submission submission){
@@ -162,11 +166,13 @@ db.addSubmission(sub)
 
         //initialize submission elements
         title_et = findViewById(R.id.sub_title);
+        group_et = findViewById(R.id.group_name_ET);
+        comment_et = findViewById(R.id.Comment_ET);
         save_draft_button = findViewById(R.id.save_draft_btn);
         save_draft_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                storeDataInDB(0, newSub);
+                loadSubmissionData(0, newSub);
                 hideSoftKeyboard();
                 //Display confirmation Toast
                 String content = title_et.getText().toString() + " Saved";
@@ -184,7 +190,7 @@ db.addSubmission(sub)
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                storeDataInDB(1, newSub);
+                loadSubmissionData(1, newSub);
                 hideSoftKeyboard();
                 createDialog(newSub);
             }
@@ -263,28 +269,28 @@ db.addSubmission(sub)
         }
     }
 
-    //This method stores all the data into the database. Called whenever the user wants to save a submission
-    //Todo: store everything into database. May need to make changes to this to accomodate differences between submit button and save as draft button. Will have to modify the newsub variable
-    private void storeDataInDB(int status, Submission newSub){
+    //This method stores all the data in a Submission. Called whenever the user wants to save or submit a submission
+    //Todo: Add checks for empty inputs
+    private boolean loadSubmissionData(int status, Submission newSub){
+        boolean return_value = true; //true if no problems, false if error found
         long curDate = Calendar.getInstance().getTime().getTime();
         int numberOfSamples;
-        String groupName = ((EditText) findViewById(R.id.group_name_ET)).getText().toString();
         String sampleLocation = ((EditText) findViewById(R.id.location_sample_ET)).getText().toString();
 
         //check if user entered an integer into the number of samples text field. We many want to add some input validation later
         if (isInteger(((EditText) findViewById(R.id.number_of_samples_ET)).getText().toString())){
-            Log.d("s", "storeDataInDB: Number of samples: in if ");
+            Log.d(LOG_TAG, "storeDataInDB: Number of samples: in if ");
             numberOfSamples = Integer.parseInt(((EditText) findViewById(R.id.number_of_samples_ET)).getText().toString());
         }else{
-            Log.d("s", "storeDataInDB: Number of samples: in else ");
+            Log.d(LOG_TAG, "storeDataInDB: Number of samples: in else ");
             numberOfSamples = 0; //for now set it to 0. May want to warn the user and stop the submission from happening later
+            return_value = false;
         }
         Log.d("s", "storeDataInDB: before logging " );
         Log.d("s", "storeDataInDB: Number of samples: " + numberOfSamples);
         String sampleName = ((EditText) findViewById(R.id.name_of_samples_ET)).getText().toString();
         String sickElementName = ((EditText) findViewById(R.id.sick_element_name_ET)).getText().toString();
         String species = ((EditText) findViewById(R.id.species_ET)).getText().toString();
-        String comment = ((EditText) findViewById(R.id.Comment_ET)).getText().toString();
 
         //The following data should have been collected elsewhere in the app:
         //deathDate
@@ -295,7 +301,6 @@ db.addSubmission(sub)
 
         //Here are the rest of the data we need for the submissions:
         //Client ID - probably going to get this from login
-        //Master ID
         //Submission Date
         //Report Complete Date
         //Sample ID - primary key in form of integer value. Generated with running total on the SQLite database
@@ -304,9 +309,14 @@ db.addSubmission(sub)
         //Internal ID for sick element table - foreign key from submission table
 
         newSub.setCaseID(NULL);
+        newSub.setMasterID(NULL);
         newSub.setTitle(title_et.getText().toString());
+        newSub.setGroup(group_et.getText().toString());
         newSub.setStatusFlag(status);
         newSub.setDateOfCreation(curDate);
+        newSub.setComment(comment_et.getText().toString());
+
+        return return_value;
     }
 
 }

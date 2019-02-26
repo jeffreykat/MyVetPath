@@ -33,11 +33,15 @@ public class SubDetailsActivity extends BaseActivity {
         int internalId = getIntent().getIntExtra("internalID", 1);
         currentSub = myDBHandler.findSubmissionID(internalId);
         String title = currentSub.getTitle();
-        calendar.setTimeInMillis(currentSub.getDateOfCreation());
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        String group = currentSub.getGroup();
+        calendar.setTimeInMillis(currentSub.getDateOfCreation());
+        String comment = currentSub.getComment();
 
         create_sub_activity = new Intent(this, CreateSubActivity.class);
 
@@ -51,8 +55,10 @@ public class SubDetailsActivity extends BaseActivity {
         } else {
             caseIDText.setText(String.valueOf(currentSub.getCaseID()));
         }
-        TextView internalIDText = findViewById(R.id.subInternalID);
-        internalIDText.setText(Integer.toString(internalId));
+        TextView groupText = findViewById(R.id.subGroupName);
+        groupText.setText(group);
+        TextView commentText = findViewById(R.id.subComment);
+        commentText.setText(comment);
     }
 
 
