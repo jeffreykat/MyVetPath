@@ -40,7 +40,7 @@ import java.util.Calendar;
 
 import static java.sql.Types.NULL;
 
-//This is for the "Create Submission screen"
+//This is for the "Create Submission screen" test
 public class CreateSubActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener{
 /*
 Submission sub = new Submission();
