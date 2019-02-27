@@ -8,7 +8,7 @@ public class Submission {
     public static final String COLUMN_CASE_ID = "caseID";
     public static final String COLUMN_MASTER_ID = "masterID";
     public static final String COLUMN_TITLE = "title";
-    public static final String COLUMN_GROUP = "group";
+    public static final String COLUMN_GROUP = "groupName";
     public static final String COLUMN_DATE_CREATION = "dateOfCreation";
     public static final String COLUMN_STATUS_FLAG = "statusFlag";
     public static final String COLUMN_COMMENT = "comment";
@@ -22,8 +22,8 @@ public class Submission {
             COLUMN_TITLE + " TEXT, " +
             COLUMN_DATE_CREATION + " BIGINT, " +
             COLUMN_STATUS_FLAG + " INT, " +
-            COLUMN_GROUP + " TEXT, " +
-            COLUMN_COMMENT + " TEXT " +
+            COLUMN_COMMENT + " TEXT, " +
+            COLUMN_GROUP + " TEXT" +
             " )";
 
     //Object Fields

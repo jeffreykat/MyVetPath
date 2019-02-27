@@ -108,9 +108,12 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public void addSubmission(Submission submission) {
         ContentValues values = new ContentValues();
         values.put(Submission.COLUMN_CASE_ID, submission.getCaseID());
+        values.put(Submission.COLUMN_MASTER_ID, submission.getMasterID());
         values.put(Submission.COLUMN_TITLE, submission.getTitle());
+        values.put(Submission.COLUMN_GROUP, submission.getGroup());
         values.put(Submission.COLUMN_DATE_CREATION, submission.getDateOfCreation());
         values.put(Submission.COLUMN_STATUS_FLAG, submission.getStatusFlag());
+        values.put(Submission.COLUMN_COMMENT, submission.getComment());
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(Submission.TABLE_NAME, null, values);
         Log.d("SQLite Database", "addSubmission: " + submission.getTitle());
@@ -151,7 +154,9 @@ public class MyDBHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             sub.setInternalID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_ID)));
             sub.setCaseID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_CASE_ID)));
+            sub.setMasterID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_MASTER_ID)));
             sub.setTitle(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_TITLE)));
+            sub.setGroup(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_GROUP)));
             sub.setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
             sub.setStatusFlag(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_STATUS_FLAG)));
             sub.setComment(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_COMMENT)));
@@ -172,9 +177,12 @@ public class MyDBHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             sub.setInternalID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_ID)));
             sub.setCaseID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_CASE_ID)));
+            sub.setMasterID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_MASTER_ID)));
             sub.setTitle(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_TITLE)));
+            sub.setGroup(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_GROUP)));
             sub.setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
             sub.setStatusFlag(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_STATUS_FLAG)));
+            sub.setComment(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_COMMENT)));
         }
         cursor.close();
         db.close();
@@ -246,9 +254,12 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 subs[i] = new Submission();
                 subs[i].setInternalID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_ID)));
                 subs[i].setCaseID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_CASE_ID)));
+                subs[i].setMasterID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_MASTER_ID)));
                 subs[i].setTitle(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_TITLE)));
+                subs[i].setGroup(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_GROUP)));
                 subs[i].setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
                 subs[i].setStatusFlag(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_STATUS_FLAG)));
+                subs[i].setComment(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_COMMENT)));
                 i++;
             } while (cursor.moveToNext());
         }
@@ -283,9 +294,12 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 subs[i] = new Submission();
                 subs[i].setInternalID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_ID)));
                 subs[i].setCaseID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_CASE_ID)));
+                subs[i].setMasterID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_MASTER_ID)));
                 subs[i].setTitle(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_TITLE)));
+                subs[i].setGroup(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_GROUP)));
                 subs[i].setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
                 subs[i].setStatusFlag(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_STATUS_FLAG)));
+                subs[i].setComment(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_COMMENT)));
                 i++;
             } while (cursor.moveToNext());
         }
@@ -299,9 +313,11 @@ public class MyDBHandler extends SQLiteOpenHelper {
         ContentValues args = new ContentValues();
         args.put(Submission.COLUMN_ID, submission.getInternalID());
         args.put(Submission.COLUMN_CASE_ID, submission.getCaseID());
+        args.put(Submission.COLUMN_MASTER_ID, submission.getMasterID());
         args.put(Submission.COLUMN_TITLE, submission.getTitle());
         args.put(Submission.COLUMN_DATE_CREATION, submission.getDateOfCreation());
         args.put(Submission.COLUMN_STATUS_FLAG, submission.getStatusFlag());
+        args.put(Submission.COLUMN_GROUP, submission.getGroup());
         args.put(Submission.COLUMN_COMMENT, submission.getComment());
         Log.d("SQLite Database", "Update: " + submission.getTitle());
         return db.update(Submission.TABLE_NAME, args, Submission.COLUMN_ID + "=" + submission.getInternalID(), null) > 0;

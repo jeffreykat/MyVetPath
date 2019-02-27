@@ -111,7 +111,8 @@ db.addSubmission(sub)
         setMenuOptionItemToRemove(this);
         toolbar.setTitle(R.string.action_submission);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //TODO: Fix Activity Lifecycle so up button restarts main activity
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         view_subs_activity = new Intent(this, ViewSubsActivity.class);
 
@@ -172,17 +173,21 @@ db.addSubmission(sub)
         save_draft_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadSubmissionData(0, newSub);
                 hideSoftKeyboard();
-                //Display confirmation Toast
-                String content = title_et.getText().toString() + " Saved";
-                Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
-                testToast.show();
-                if(dbHandler.findSubmissionTitle(newSub.getTitle()) != null){
-                    dbHandler.updateSubmission(newSub);
+                if(loadSubmissionData(0, newSub)) {
+                    //Display confirmation Toast
+                    String content = title_et.getText().toString() + " Saved";
+                    Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
+                    testToast.show();
+                    if (dbHandler.findSubmissionTitle(newSub.getTitle()) != null) {
+                        dbHandler.updateSubmission(newSub);
+                    } else {
+                        dbHandler.addSubmission(newSub);
+                    }
                 }
                 else {
-                    dbHandler.addSubmission(newSub);
+                    Toast testToast = Toast.makeText(getApplicationContext(), R.string.create_error, Toast.LENGTH_LONG);
+                    testToast.show();
                 }
             }
         });
@@ -190,9 +195,14 @@ db.addSubmission(sub)
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadSubmissionData(1, newSub);
                 hideSoftKeyboard();
-                createDialog(newSub);
+                if(loadSubmissionData(1, newSub)) {
+                    createDialog(newSub);
+                }
+                else{
+                    Toast testToast = Toast.makeText(getApplicationContext(), R.string.create_error, Toast.LENGTH_LONG);
+                    testToast.show();
+                }
             }
         });
     }
@@ -272,19 +282,18 @@ db.addSubmission(sub)
     //This method stores all the data in a Submission. Called whenever the user wants to save or submit a submission
     //Todo: Add checks for empty inputs
     private boolean loadSubmissionData(int status, Submission newSub){
-        boolean return_value = true; //true if no problems, false if error found
         long curDate = Calendar.getInstance().getTime().getTime();
         int numberOfSamples;
         String sampleLocation = ((EditText) findViewById(R.id.location_sample_ET)).getText().toString();
 
         //check if user entered an integer into the number of samples text field. We many want to add some input validation later
+        //TODO: Change this to a NumberPicker to avoid this problem
         if (isInteger(((EditText) findViewById(R.id.number_of_samples_ET)).getText().toString())){
             Log.d(LOG_TAG, "storeDataInDB: Number of samples: in if ");
             numberOfSamples = Integer.parseInt(((EditText) findViewById(R.id.number_of_samples_ET)).getText().toString());
         }else{
             Log.d(LOG_TAG, "storeDataInDB: Number of samples: in else ");
             numberOfSamples = 0; //for now set it to 0. May want to warn the user and stop the submission from happening later
-            return_value = false;
         }
         Log.d("s", "storeDataInDB: before logging " );
         Log.d("s", "storeDataInDB: Number of samples: " + numberOfSamples);
@@ -308,6 +317,10 @@ db.addSubmission(sub)
         //Sick element ID - running total
         //Internal ID for sick element table - foreign key from submission table
 
+        if(title_et.getText().toString().isEmpty() || comment_et.getText().toString().isEmpty()){
+            return false;
+        }
+
         newSub.setCaseID(NULL);
         newSub.setMasterID(NULL);
         newSub.setTitle(title_et.getText().toString());
@@ -316,7 +329,7 @@ db.addSubmission(sub)
         newSub.setDateOfCreation(curDate);
         newSub.setComment(comment_et.getText().toString());
 
-        return return_value;
+        return true;
     }
 
 }

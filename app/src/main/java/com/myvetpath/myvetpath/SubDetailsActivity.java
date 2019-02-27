@@ -55,8 +55,10 @@ public class SubDetailsActivity extends BaseActivity {
         } else {
             caseIDText.setText(String.valueOf(currentSub.getCaseID()));
         }
-        TextView groupText = findViewById(R.id.subGroupName);
-        groupText.setText(group);
+        if(!group.isEmpty()) {
+            TextView groupText = findViewById(R.id.subGroupName);
+            groupText.setText("Group: " + group);
+        }
         TextView commentText = findViewById(R.id.subComment);
         commentText.setText(comment);
     }
