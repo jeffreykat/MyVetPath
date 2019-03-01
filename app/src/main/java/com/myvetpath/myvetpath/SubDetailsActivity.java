@@ -11,7 +11,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import static java.sql.Types.NULL;
 
@@ -23,6 +25,7 @@ public class SubDetailsActivity extends BaseActivity {
     Submission currentSub;
     Calendar calendar = Calendar.getInstance();
     final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+    private TextView mSamplesTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +37,27 @@ public class SubDetailsActivity extends BaseActivity {
         currentSub = myDBHandler.findSubmissionID(internalId);
         String title = currentSub.getTitle();
 
+
+        ArrayList<Sample> samplesList = myDBHandler.findSamples(internalId);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        String sampleText = "";
+        int index = 0;
+        for(Sample tempSample: samplesList){
+            calendar.setTimeInMillis(tempSample.getSampleCollectionDate());
+            String tempSampleDate = simpleDateFormat.format(calendar.getTime());
+
+            sampleText += "Sample " + tempSample.getNameOfSample() + ": " + tempSample.getNumberOfSamples() + " samples collected "
+                    + " in " + tempSample.getLocation() + " on " + tempSampleDate + "\n";
+            index++;
+        }
+
+        mSamplesTV = findViewById(R.id.subSamplesTV);
+        mSamplesTV.setText(sampleText);
 
         String group = currentSub.getGroup();
         calendar.setTimeInMillis(currentSub.getDateOfCreation());

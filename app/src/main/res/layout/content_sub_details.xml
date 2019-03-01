@@ -65,4 +65,25 @@
         app:layout_constraintTop_toBottomOf="@id/subHeaderView"
         app:layout_constraintLeft_toLeftOf="parent"/>
 
+    <TextView
+        android:id="@+id/subSamplesTitleTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="20sp"
+        android:text="Samples"
+        android:textColor="@color/colorHeader"
+        app:layout_constraintTop_toBottomOf="@id/subComment"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <TextView
+        android:id="@+id/subSamplesTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="12sp"
+        android:textColor="@color/colorHeader"
+        app:layout_constraintTop_toBottomOf="@id/subSamplesTitleTV"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
 </android.support.constraint.ConstraintLayout>

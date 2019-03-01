@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MyDBHandler extends SQLiteOpenHelper {
@@ -105,7 +106,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     //adders This is to add the respective table into the database.
     //Id would be added in automatically
-    public void addSubmission(Submission submission) {
+    public long addSubmission(Submission submission) {
         ContentValues values = new ContentValues();
         values.put(Submission.COLUMN_CASE_ID, submission.getCaseID());
         values.put(Submission.COLUMN_MASTER_ID, submission.getMasterID());
@@ -115,14 +116,20 @@ public class MyDBHandler extends SQLiteOpenHelper {
         values.put(Submission.COLUMN_STATUS_FLAG, submission.getStatusFlag());
         values.put(Submission.COLUMN_COMMENT, submission.getComment());
         SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(Submission.TABLE_NAME, null, values);
+        long internalID = db.insert(Submission.TABLE_NAME, null, values);
         Log.d("SQLite Database", "addSubmission: " + submission.getTitle());
         db.close();
+        return internalID;
     }
 
+    //This adds the given sample into the db
     public void addSample(Sample sample) {
         ContentValues values = new ContentValues();
         values.put(Sample.COLUMN_NAMEOFSAMPLE, sample.getNameOfSample());
+        values.put(Sample.COLUMN_LOCATIONOFSAMPLE, sample.getLocation());
+        values.put(Sample.COLUMN_NUMBEROFSAMPLE, sample.getNumberOfSamples());
+        values.put(Sample.COLUMN_SAMPLECOLLECTIONDATE, sample.getSampleCollectionDate());
+        values.put(Sample.COLUMN_INTERNAL, sample.getInternalID());
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(Sample.TABLE_NAME, null, values);
         db.close();
@@ -166,6 +173,29 @@ public class MyDBHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return sub;
+    }
+
+    //Searches the database for all samples related to a case's internal ID
+    public ArrayList<Sample> findSamples(int internalID) {
+        String query = "Select * FROM " + Sample.TABLE_NAME + " WHERE " + Sample.COLUMN_INTERNAL + " = " + "'" + internalID + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        ArrayList<Sample> samplesList = new ArrayList<Sample>();
+
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+            Sample tempSample = new Sample();
+            tempSample.setSamplelID(cursor.getInt(cursor.getColumnIndex(Sample.COLUMN_INTERNAL)));
+            tempSample.setName(cursor.getString(cursor.getColumnIndex(Sample.COLUMN_NAMEOFSAMPLE)));
+            tempSample.setLocation(cursor.getString(cursor.getColumnIndex(Sample.COLUMN_LOCATIONOFSAMPLE)));
+            tempSample.setNumberOfSamples(cursor.getInt(cursor.getColumnIndex(Sample.COLUMN_NUMBEROFSAMPLE)));
+            tempSample.setSampleCollectionDate(cursor.getLong(cursor.getColumnIndex(Sample.COLUMN_SAMPLECOLLECTIONDATE)));
+
+            samplesList.add(tempSample);
+        }
+
+        cursor.close();
+        db.close();
+        return samplesList;
     }
 
     //Searches the database to find a row based on the id.

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".AddSamplesActivity"
+    tools:showIn="@layout/activity_add_samples">
+
+
+
+    <ScrollView
+        android:id="@+id/createsub_sv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="410dp">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/LocationSampleTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Location of Sample"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/group_name_ET"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/location_sample_ET"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:focusable="true"
+                android:hint="Location"
+                android:inputType="text|textMultiLine"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/LocationSampleTV"
+                android:maxLength="255"/>
+
+
+
+            <TextView
+                android:id="@+id/NameOfTheSampleTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Name of Samples"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/location_sample_ET"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/name_of_samples_ET"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:focusable="true"
+                android:hint="Sample Name"
+                android:inputType="text|textMultiLine"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/NameOfTheSampleTV"
+                android:maxLength="30"/>
+
+
+
+            <TextView
+                android:id="@+id/number_of_samples_TV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Number of Samples"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/name_of_samples_ET"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
+
+            <NumberPicker
+                android:id="@+id/number_of_samples_SP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/number_of_samples_TV"
+                android:layout_marginStart="16dp"
+                >
+
+
+            </NumberPicker>
+
+            <TextView
+                android:id="@+id/sampleCollectedDateTitleTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Sample Collection Date"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/number_of_samples_SP"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
+
+            <ImageButton
+                android:id="@+id/CollectionDateBTTN"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/ic_action_calendar"
+                android:padding="20dp"
+                app:background="@drawable/ic_action_calendar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sampleCollectedDateTitleTV"
+                tools:ignore="VectorDrawableCompat"
+
+                />
+
+            <TextView
+                android:id="@+id/CollectionDateTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text=""
+                app:layout_constraintLeft_toRightOf="@id/CollectionDateBTTN"
+                app:layout_constraintTop_toBottomOf="@id/sampleCollectedDateTitleTV" />
+
+            <Button
+                android:id="@+id/add_new_sample_bttn"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@color/colorAccount"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Add Sample"
+                android:textColor="@android:color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/CollectionDateBTTN" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_new_sample_bttn"
+                android:id="@+id/sampleLinearLayout"
+                ></LinearLayout>
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
+<!--clean rebuild sync-->
+
+
+
+</android.support.constraint.ConstraintLayout>

@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -51,9 +52,11 @@ db.addSubmission(sub)
 
     Intent add_pictures_activity;
     Intent view_subs_activity;
+    Intent add_samples_activity;
     ImageButton add_pictures_button;
     Button save_draft_button;
     Button submit_button;
+    Button add_samples_button;
     EditText title_et;
     EditText group_et;
     EditText comment_et;
@@ -63,20 +66,20 @@ db.addSubmission(sub)
     Spinner sexSpinner;
     private String selectedSex;
     private boolean isEuthanized;
-    private Date collectionDate;
     private Date birthDate;
     private Date deathDate;
 
     ImageButton date_of_birth_button;
     ImageButton date_of_death_button;
 
-    static final int SAMPLE_COLLECTED_DATE = 0;
     static final int BIRTH_DATE = 1;
     static final int DEATH_DATE = 2;
     private int selectedCalendar;
 
     static final String LOG_TAG = "CreateSubActivity";
 
+    private final int ADD_SAMPLES_REQUEST_CODE = 2;
+    private ArrayList<Sample> samplesList;
 
     public void createDialog(final Submission submission){
         AlertDialog.Builder dialog = new AlertDialog.Builder(CreateSubActivity.this);
@@ -89,7 +92,13 @@ db.addSubmission(sub)
                 String content = title_et.getText().toString() + " Submitted";
                 Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
                 testToast.show();
-                dbHandler.addSubmission(submission);
+                long internalID = dbHandler.addSubmission(submission);
+
+                for(Sample tempSample: samplesList){
+                    tempSample.setSamplelID(Math.toIntExact(internalID));
+                    dbHandler.addSample(tempSample);
+                }
+
                 startActivity(view_subs_activity);
             }
         })
@@ -114,20 +123,13 @@ db.addSubmission(sub)
         //TODO: Fix Activity Lifecycle so up button restarts main activity
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        samplesList = new ArrayList<Sample>();
+
         view_subs_activity = new Intent(this, ViewSubsActivity.class);
 
         dbHandler = new MyDBHandler(this);
         final Submission newSub = new Submission();
 
-        date_of_submission_button = (ImageButton) findViewById(R.id.CollectionDateBTTN);
-        date_of_submission_button.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                DialogFragment datePicker = new DatePickerFragment();
-                datePicker.show(getSupportFragmentManager(), "date picker");
-                selectedCalendar = SAMPLE_COLLECTED_DATE;
-            }
-        });
 
         date_of_birth_button = (ImageButton) findViewById(R.id.BirthDateBTTN);
         date_of_birth_button.setOnClickListener(new View.OnClickListener(){
@@ -205,6 +207,17 @@ db.addSubmission(sub)
                 }
             }
         });
+
+        add_samples_activity = new Intent(this, AddSamplesActivity.class);
+        add_samples_button = findViewById(R.id.add_sample_bttn);
+        add_samples_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hideSoftKeyboard();
+                add_samples_activity.putExtra("samplesList", samplesList);
+                startActivityForResult(add_samples_activity, ADD_SAMPLES_REQUEST_CODE);
+            }
+        });
     }
 
     /**
@@ -225,12 +238,7 @@ db.addSubmission(sub)
         c.set(Calendar.MONTH, month);
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-        if(selectedCalendar == SAMPLE_COLLECTED_DATE){
-            String currentDateString = "Collected On " + DateFormat.getDateInstance(DateFormat.FULL).format(c.getTime());
-            TextView dateSelectedTV = (TextView) findViewById(R.id.CollectionDateTV);
-            dateSelectedTV.setText(currentDateString);
-            collectionDate = new GregorianCalendar(year, month, dayOfMonth).getTime();
-        }else if (selectedCalendar == BIRTH_DATE){
+        if (selectedCalendar == BIRTH_DATE){
             String currentDateString = "Animal Born On " + DateFormat.getDateInstance(DateFormat.FULL).format(c.getTime());
             TextView dateSelectedTV = (TextView) findViewById(R.id.Birth_Date_Message_TV);
             dateSelectedTV.setText(currentDateString);
@@ -283,21 +291,10 @@ db.addSubmission(sub)
     //Todo: Add checks for empty inputs
     private boolean loadSubmissionData(int status, Submission newSub){
         long curDate = Calendar.getInstance().getTime().getTime();
-        int numberOfSamples;
-        String sampleLocation = ((EditText) findViewById(R.id.location_sample_ET)).getText().toString();
 
-        //check if user entered an integer into the number of samples text field. We many want to add some input validation later
-        //TODO: Change this to a NumberPicker to avoid this problem
-        if (isInteger(((EditText) findViewById(R.id.number_of_samples_ET)).getText().toString())){
-            Log.d(LOG_TAG, "storeDataInDB: Number of samples: in if ");
-            numberOfSamples = Integer.parseInt(((EditText) findViewById(R.id.number_of_samples_ET)).getText().toString());
-        }else{
-            Log.d(LOG_TAG, "storeDataInDB: Number of samples: in else ");
-            numberOfSamples = 0; //for now set it to 0. May want to warn the user and stop the submission from happening later
-        }
+
         Log.d("s", "storeDataInDB: before logging " );
-        Log.d("s", "storeDataInDB: Number of samples: " + numberOfSamples);
-        String sampleName = ((EditText) findViewById(R.id.name_of_samples_ET)).getText().toString();
+//        Log.d("s", "storeDataInDB: Number of samples: " + numberOfSamples);
         String sickElementName = ((EditText) findViewById(R.id.sick_element_name_ET)).getText().toString();
         String species = ((EditText) findViewById(R.id.species_ET)).getText().toString();
 
@@ -330,6 +327,17 @@ db.addSubmission(sub)
         newSub.setComment(comment_et.getText().toString());
 
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("pass", "onActivityResult: back in onActivityResult");
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == ADD_SAMPLES_REQUEST_CODE){
+            if(resultCode == RESULT_OK ){
+                samplesList = (ArrayList<Sample>) data.getSerializableExtra("results");
+            }
+        }
     }
 
 }
