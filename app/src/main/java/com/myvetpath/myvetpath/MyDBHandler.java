@@ -36,7 +36,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.execSQL(Sample.CREATE_TABLE);
         //added below tables
         db.execSQL(Client.CREATE_TABLE);
-        db.execSQL(Group.CREATE_TABLE);
+        db.execSQL(Groups.CREATE_TABLE);
         db.execSQL(Pathologist.CREATE_TABLE);
         db.execSQL(RepliesForASubmission.CREATE_TABLE);
         db.execSQL(Reply.CREATE_TABLE);
@@ -64,8 +64,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
         Log.v("tableCreateSample", Sample.CREATE_TABLE);
         db.execSQL(Client.CREATE_TABLE);
         Log.v("tableCreateClient", Client.CREATE_TABLE);
-        db.execSQL(Group.CREATE_TABLE);
-        Log.v("tableCreateGroup", Group.CREATE_TABLE);
+        db.execSQL(Groups.CREATE_TABLE);
+        Log.v("tableCreateGroup", Groups.CREATE_TABLE);
         db.execSQL(Pathologist.CREATE_TABLE);
         Log.v("tableCreatePathologist", Pathologist.CREATE_TABLE);
         db.execSQL(RepliesForASubmission.CREATE_TABLE);

@@ -2,9 +2,9 @@ package com.myvetpath.myvetpath;
 
 import java.sql.Date;
 
-public class Group {
+public class Groups {
     //Table Fields
-    public static final String TABLE_NAME = "Group";
+    public static final String TABLE_NAME = "Groups";
     public static final String COLUMN_ID = "GroupID";
     public static final String COLUMN_NAME = "GroupName";
     public static final String COLUMN_DATEOFCREATION = "DateOfCreation";
@@ -25,8 +25,8 @@ public class Group {
 
 
     //Constructors
-    public Group() {}
-    public Group(int id, String newName, long newDate) {
+    public Groups() {}
+    public Groups(int id, String newName, long newDate) {
         this.groupID = id;
         this.groupName = newName;
         this.dateOfCreation = newDate;
