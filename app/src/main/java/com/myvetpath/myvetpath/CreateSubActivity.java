@@ -57,6 +57,7 @@ db.addSubmission(sub)
     EditText title_et;
     EditText group_et;
     EditText comment_et;
+    EditText sickElementName;
     MyDBHandler dbHandler;
 
     ImageButton date_of_submission_button;
@@ -118,6 +119,7 @@ db.addSubmission(sub)
 
         dbHandler = new MyDBHandler(this);
         final Submission newSub = new Submission();
+        final SickElement newSickElement = new SickElement();
 
         date_of_submission_button = (ImageButton) findViewById(R.id.CollectionDateBTTN);
         date_of_submission_button.setOnClickListener(new View.OnClickListener(){
@@ -165,6 +167,8 @@ db.addSubmission(sub)
             }
         });
 
+        sickElementName = findViewById(R.id.sick_element_name_ET);
+
         //initialize submission elements
         title_et = findViewById(R.id.sub_title);
         group_et = findViewById(R.id.group_name_ET);
@@ -174,7 +178,7 @@ db.addSubmission(sub)
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard();
-                if(loadSubmissionData(0, newSub)) {
+                if(loadSubmissionData(0, newSub, newSickElement)) {
                     //Display confirmation Toast
                     String content = title_et.getText().toString() + " Saved";
                     Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
@@ -196,7 +200,7 @@ db.addSubmission(sub)
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard();
-                if(loadSubmissionData(1, newSub)) {
+                if(loadSubmissionData(1, newSub, newSickElement)) {
                     createDialog(newSub);
                 }
                 else{
@@ -281,7 +285,7 @@ db.addSubmission(sub)
 
     //This method stores all the data in a Submission. Called whenever the user wants to save or submit a submission
     //Todo: Add checks for empty inputs
-    private boolean loadSubmissionData(int status, Submission newSub){
+    private boolean loadSubmissionData(int status, Submission newSub, SickElement newSickElement){
         long curDate = Calendar.getInstance().getTime().getTime();
         int numberOfSamples;
         String sampleLocation = ((EditText) findViewById(R.id.location_sample_ET)).getText().toString();
@@ -298,7 +302,6 @@ db.addSubmission(sub)
         Log.d("s", "storeDataInDB: before logging " );
         Log.d("s", "storeDataInDB: Number of samples: " + numberOfSamples);
         String sampleName = ((EditText) findViewById(R.id.name_of_samples_ET)).getText().toString();
-        String sickElementName = ((EditText) findViewById(R.id.sick_element_name_ET)).getText().toString();
         String species = ((EditText) findViewById(R.id.species_ET)).getText().toString();
 
         //The following data should have been collected elsewhere in the app:
@@ -328,6 +331,8 @@ db.addSubmission(sub)
         newSub.setStatusFlag(status);
         newSub.setDateOfCreation(curDate);
         newSub.setComment(comment_et.getText().toString());
+
+        newSickElement.setName(sickElementName.getText().toString());
 
         return true;
     }

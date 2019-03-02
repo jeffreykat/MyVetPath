@@ -63,6 +63,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + Picture.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + Sample.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + SickElement.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Client.TABLE_NAME);
+        //db.execSQL("DROP TABLE IF EXISTS " + Pathologist.TABLE_NAME);
     }
 
     @Override
