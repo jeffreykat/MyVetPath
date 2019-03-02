@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.util.Log;
 
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -30,10 +31,17 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(Submission.CREATE_TABLE);
-        //added below tables
         db.execSQL(Picture.CREATE_TABLE);
         db.execSQL(SickElement.CREATE_TABLE);
         db.execSQL(Sample.CREATE_TABLE);
+        //added below tables
+        db.execSQL(Client.CREATE_TABLE);
+        db.execSQL(Group.CREATE_TABLE);
+        db.execSQL(Pathologist.CREATE_TABLE);
+        db.execSQL(RepliesForASubmission.CREATE_TABLE);
+        db.execSQL(Reply.CREATE_TABLE);
+        db.execSQL(Report.CREATE_TABLE);
+        db.execSQL(User.CREATE_TABLE);
     }
 
     @Override
@@ -54,6 +62,20 @@ public class MyDBHandler extends SQLiteOpenHelper {
         Log.v("tableCreateSickElement", SickElement.CREATE_TABLE);
         db.execSQL(Sample.CREATE_TABLE);
         Log.v("tableCreateSample", Sample.CREATE_TABLE);
+        db.execSQL(Client.CREATE_TABLE);
+        Log.v("tableCreateClient", Client.CREATE_TABLE);
+        db.execSQL(Group.CREATE_TABLE);
+        Log.v("tableCreateGroup", Group.CREATE_TABLE);
+        db.execSQL(Pathologist.CREATE_TABLE);
+        Log.v("tableCreatePathologist", Pathologist.CREATE_TABLE);
+        db.execSQL(RepliesForASubmission.CREATE_TABLE);
+        Log.v("tableCreateRFAS", RepliesForASubmission.CREATE_TABLE);
+        db.execSQL(Reply.CREATE_TABLE);
+        Log.v("tableCreateReply", Reply.CREATE_TABLE);
+        db.execSQL(Report.CREATE_TABLE);
+        Log.v("tableCreateReport", Report.CREATE_TABLE);
+        db.execSQL(User.CREATE_TABLE);
+        Log.v("tableCreateUser", User.CREATE_TABLE);
     }
 
     //Remove submission table
