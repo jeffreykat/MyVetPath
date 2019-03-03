@@ -58,12 +58,13 @@ db.addSubmission(sub)
     EditText group_et;
     EditText comment_et;
     EditText sickElementName;
+    EditText species;
     MyDBHandler dbHandler;
 
     ImageButton date_of_submission_button;
     Spinner sexSpinner;
     private String selectedSex;
-    private boolean isEuthanized;
+    private int isEuthanized = 0;
     private Date collectionDate;
     private Date birthDate;
     private Date deathDate;
@@ -79,7 +80,7 @@ db.addSubmission(sub)
     static final String LOG_TAG = "CreateSubActivity";
 
 
-    public void createDialog(final Submission submission){
+    public void createDialog(final Submission submission, final SickElement sickElement){
         AlertDialog.Builder dialog = new AlertDialog.Builder(CreateSubActivity.this);
         dialog.setCancelable(true);
         dialog.setTitle(R.string.action_submit_conformation);
@@ -91,6 +92,8 @@ db.addSubmission(sub)
                 Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
                 testToast.show();
                 dbHandler.addSubmission(submission);
+                sickElement.setInternalID(submission.getInternalID());
+                dbHandler.addSickElement(sickElement);
                 startActivity(view_subs_activity);
             }
         })
@@ -168,6 +171,7 @@ db.addSubmission(sub)
         });
 
         sickElementName = findViewById(R.id.sick_element_name_ET);
+        species = findViewById(R.id.species_ET);
 
         //initialize submission elements
         title_et = findViewById(R.id.sub_title);
@@ -187,6 +191,8 @@ db.addSubmission(sub)
                         dbHandler.updateSubmission(newSub);
                     } else {
                         dbHandler.addSubmission(newSub);
+                        newSickElement.setInternalID(newSub.getInternalID());
+                        dbHandler.addSickElement(newSickElement);
                     }
                 }
                 else {
@@ -201,7 +207,7 @@ db.addSubmission(sub)
             public void onClick(View view) {
                 hideSoftKeyboard();
                 if(loadSubmissionData(1, newSub, newSickElement)) {
-                    createDialog(newSub);
+                    createDialog(newSub, newSickElement);
                 }
                 else{
                     Toast testToast = Toast.makeText(getApplicationContext(), R.string.create_error, Toast.LENGTH_LONG);
@@ -260,7 +266,10 @@ db.addSubmission(sub)
     //This is called whenever the euthanized checkbox is clicked. Changes the data that will be stored in teh database
     public void onCheckboxClicked(View view){
         //Is the view now checked?
-        boolean checked = ((CheckBox) view).isChecked();
+        int checked = 0;
+        if(((CheckBox) view).isChecked()){
+            checked = 1;
+        }
         //Check which checkbox was clicked
 
         switch(view.getId()){
@@ -302,22 +311,17 @@ db.addSubmission(sub)
         Log.d("s", "storeDataInDB: before logging " );
         Log.d("s", "storeDataInDB: Number of samples: " + numberOfSamples);
         String sampleName = ((EditText) findViewById(R.id.name_of_samples_ET)).getText().toString();
-        String species = ((EditText) findViewById(R.id.species_ET)).getText().toString();
 
         //The following data should have been collected elsewhere in the app:
         //deathDate
         //birthDate
         //collectionDate
-        // Boolean isEuthanized = already collected in checkbox listener
-        //selectedSex
 
         //Here are the rest of the data we need for the submissions:
         //Client ID - probably going to get this from login
-        //Submission Date
         //Report Complete Date
         //Sample ID - primary key in form of integer value. Generated with running total on the SQLite database
         //Internal ID - foreign key from Submission table
-        //Sick element ID - running total
         //Internal ID for sick element table - foreign key from submission table
 
         if(title_et.getText().toString().isEmpty() || comment_et.getText().toString().isEmpty()){
@@ -333,6 +337,9 @@ db.addSubmission(sub)
         newSub.setComment(comment_et.getText().toString());
 
         newSickElement.setName(sickElementName.getText().toString());
+        newSickElement.setSex(selectedSex);
+        newSickElement.setEuthanized(isEuthanized);
+        newSickElement.setSpecies(species.getText().toString());
 
         return true;
     }

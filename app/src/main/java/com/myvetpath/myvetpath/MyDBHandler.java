@@ -64,6 +64,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + Sample.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + SickElement.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + Client.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Group.TABLE_NAME);
         //db.execSQL("DROP TABLE IF EXISTS " + Pathologist.TABLE_NAME);
     }
 
@@ -132,7 +133,13 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     public void addSickElement(SickElement sickElement) {
         ContentValues values = new ContentValues();
+        values.put(SickElement.COLUMN_INTERNAL, sickElement.getInternalID());
         values.put(SickElement.COLUMN_SICKELEMENTNAME, sickElement.getNameOfSickElement());
+        values.put(SickElement.COLUMN_EUTAHNIZED, sickElement.getEuthanized());
+        values.put(SickElement.COLUMN_SEX, sickElement.getSex());
+        values.put(SickElement.COLUMN_SPECIES, sickElement.getSpecies());
+        values.put(SickElement.COLUMN_DATEOFBIRTH, sickElement.getDateOfBirth());
+        values.put(SickElement.COLUMN_DATEOFDEATH, sickElement.getDateOfDeath());
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(SickElement.TABLE_NAME, null, values);
         db.close();

@@ -67,10 +67,10 @@ public class SickElement {
     }
     public int getInternalID(){return this.internalID;}
     public int getEuthanized(){return this.Euthanized;}
-    public String setSex(){return this.sex;}
-    public String setSpecies(){return this.species;}
-    public long setDateOfDeath(){return this.dateOfDeath;}
-    public long setDateOfBirth(){return this.dateOfBirth;}
+    public String getSex(){return this.sex;}
+    public String getSpecies(){return this.species;}
+    public long getDateOfDeath(){return this.dateOfDeath;}
+    public long getDateOfBirth(){return this.dateOfBirth;}
 }
 
 

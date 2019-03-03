@@ -21,6 +21,7 @@ public class SubDetailsActivity extends BaseActivity {
     Intent create_sub_activity;
     MyDBHandler myDBHandler;
     Submission currentSub;
+    SickElement currentSickElement;
     Calendar calendar = Calendar.getInstance();
     final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 
