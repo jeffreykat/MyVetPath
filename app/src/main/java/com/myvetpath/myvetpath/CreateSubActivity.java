@@ -37,6 +37,7 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Random;
 
 import static java.sql.Types.NULL;
 
@@ -93,9 +94,9 @@ db.addSubmission(sub)
                 Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
                 testToast.show();
                 dbHandler.addSubmission(submission);
-                sickElement.setInternalID(5);
-                Log.d("CreateSubActivity", "Sick Element " + Integer.toString(sickElement.getInternalID()));
+                Log.d(LOG_TAG, "Submission " + submission.getSickElementID());
                 dbHandler.addSickElement(sickElement);
+                Log.d("CreateSubActivity", "Sick Element " + Integer.toString(sickElement.getInternalID()));
                 startActivity(view_subs_activity);
             }
         })
@@ -333,14 +334,19 @@ db.addSubmission(sub)
             return false;
         }
 
+        Random rand = new Random();
+        int sickInternalID = rand.nextInt(1000);
+
         newSub.setCaseID(NULL);
         newSub.setMasterID(NULL);
+        newSub.setSickElementID(sickInternalID);
         newSub.setTitle(title_et.getText().toString());
         newSub.setGroup(group_et.getText().toString());
         newSub.setStatusFlag(status);
         newSub.setDateOfCreation(curDate);
         newSub.setComment(comment_et.getText().toString());
 
+        newSickElement.setInternalID(sickInternalID);
         newSickElement.setName(sickElementName.getText().toString());
         newSickElement.setSex(selectedSex);
         newSickElement.setEuthanized(isEuthanized);

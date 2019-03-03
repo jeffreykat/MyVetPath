@@ -34,7 +34,8 @@ public class SubDetailsActivity extends BaseActivity {
 
         int internalId = getIntent().getIntExtra("internalID", 1);
         currentSub = myDBHandler.findSubmissionID(internalId);
-        currentSickElement = myDBHandler.findSickElementID(internalId);
+        int sickID = currentSub.getSickElementID();
+        currentSickElement = myDBHandler.findSickElementID(sickID);
         Log.d("SubDetails", "Name: " + currentSickElement.getNameOfSickElement());
         String title = currentSub.getTitle();
 

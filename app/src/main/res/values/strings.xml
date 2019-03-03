@@ -20,7 +20,7 @@
 
     <string name="create_error">Required fields must be filled</string>
     <string name="title_activity_sub_details">SubDetailsActivity</string>
-    <string name="deleted_message">Deleted </string>
+    <string name="deleted_message">Deleted</string>
     <string name="action_yes">Yes</string>
     <string name="action_no">No</string>
     <string name="action_delete_confirmation_prompt_first_part">Are you sure you want to delete \"</string>
