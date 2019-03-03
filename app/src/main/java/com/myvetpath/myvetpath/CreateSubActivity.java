@@ -4,6 +4,8 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -28,6 +30,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,7 +44,7 @@ import java.util.Calendar;
 
 import static java.sql.Types.NULL;
 
-//This is for the "Create Submission screen" test
+//This is for the "Create Submission screen"
 public class CreateSubActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener{
 /*
 Submission sub = new Submission();
@@ -72,6 +75,7 @@ db.addSubmission(sub)
     ImageButton date_of_birth_button;
     ImageButton date_of_death_button;
 
+    static final int SAMPLE_COLLECTED_DATE = 0;
     static final int BIRTH_DATE = 1;
     static final int DEATH_DATE = 2;
     private int selectedCalendar;
@@ -80,6 +84,8 @@ db.addSubmission(sub)
 
     private final int ADD_SAMPLES_REQUEST_CODE = 2;
     private ArrayList<Sample> samplesList;
+    private Picture [] pictures = {null, null, null, null, null};
+    private ArrayList<Picture> picturesList;
 
     public void createDialog(final Submission submission){
         AlertDialog.Builder dialog = new AlertDialog.Builder(CreateSubActivity.this);
@@ -97,6 +103,17 @@ db.addSubmission(sub)
                 for(Sample tempSample: samplesList){
                     tempSample.setSamplelID(Math.toIntExact(internalID));
                     dbHandler.addSample(tempSample);
+                }
+
+
+                for(Picture tempPicture: picturesList){
+                    if(tempPicture != null){
+                        tempPicture.setInternalID(Math.toIntExact(internalID));
+                        Log.d("details", "onClick: current internal id is: " + tempPicture.getInternalID());
+                    }
+
+
+                        dbHandler.addPicture(tempPicture);
                 }
 
                 startActivity(view_subs_activity);
@@ -124,6 +141,8 @@ db.addSubmission(sub)
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         samplesList = new ArrayList<Sample>();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        picturesList = new ArrayList<Picture>(5);
 
         view_subs_activity = new Intent(this, ViewSubsActivity.class);
 
@@ -151,21 +170,22 @@ db.addSubmission(sub)
             }
         });
 
+
+
         sexSpinner = findViewById(R.id.SexSp);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sexString, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sexSpinner.setAdapter(adapter);
         sexSpinner.setOnItemSelectedListener(this);
 
-        //initialize the camera button where users can add pictures
-        add_pictures_activity = new Intent(this, AddPicturesActivity.class);
-        add_pictures_button = findViewById(R.id.addPicturesButton);
-        add_pictures_button.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                startActivity(add_pictures_activity);
-            }
-        });
+        view_subs_activity = new Intent(this, ViewSubsActivity.class);
+
+        dbHandler = new MyDBHandler(this);
+
+
+        //For displaying the current date
+//        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+        //+ simpleDateFormat.format(Calendar.getInstance().getTime());
 
         //initialize submission elements
         title_et = findViewById(R.id.sub_title);
@@ -207,6 +227,28 @@ db.addSubmission(sub)
                 }
             }
         });
+//
+        view_subs_activity = new Intent(this, ViewSubsActivity.class);
+
+
+
+        //initialize the camera button where users can add pictures
+        add_pictures_activity = new Intent(this, AddPicturesActivity.class);
+        Picture p = new Picture();
+        p.setImageTitle("testPic");
+        picturesList.add(p);
+        Log.d("pass", "onCreate: Title of P: " + p.getImageTitle());
+
+
+
+        add_pictures_button = findViewById(R.id.addPicturesButton);
+        add_pictures_button.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                add_pictures_activity.putExtra("pictureList", picturesList);
+                startActivityForResult(add_pictures_activity, 1);
+            }
+        });
 
         add_samples_activity = new Intent(this, AddSamplesActivity.class);
         add_samples_button = findViewById(R.id.add_sample_bttn);
@@ -218,7 +260,26 @@ db.addSubmission(sub)
                 startActivityForResult(add_samples_activity, ADD_SAMPLES_REQUEST_CODE);
             }
         });
+
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("pass", "onActivityResult: back in onActivityResult");
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            if(resultCode == RESULT_OK){
+                picturesList = (ArrayList<Picture>) data.getSerializableExtra("result");
+                Log.d("pass", "onActivityResult: result after returning to createsub is " + picturesList.get(0).getImageTitle() + " longitude: " + picturesList.get(0).getLongitude());
+            }
+        }else if(requestCode == ADD_SAMPLES_REQUEST_CODE){
+            if(resultCode == RESULT_OK ){
+                samplesList = (ArrayList<Sample>) data.getSerializableExtra("results");
+            }
+        }
+    }
+
+
 
     /**
      * Hides the soft keyboard on screen
@@ -329,15 +390,6 @@ db.addSubmission(sub)
         return true;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("pass", "onActivityResult: back in onActivityResult");
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == ADD_SAMPLES_REQUEST_CODE){
-            if(resultCode == RESULT_OK ){
-                samplesList = (ArrayList<Sample>) data.getSerializableExtra("results");
-            }
-        }
-    }
+
 
 }

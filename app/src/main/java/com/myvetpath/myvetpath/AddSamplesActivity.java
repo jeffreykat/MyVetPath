@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -39,6 +40,8 @@ public class AddSamplesActivity extends AppCompatActivity implements DatePickerD
     private final int MIN_NUMBER_OF_SAMPLES = 1;
     private ImageButton collection_date_button;
     private Date collectionDate = null;
+    Calendar calendar = Calendar.getInstance();
+    final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,8 +157,12 @@ public class AddSamplesActivity extends AppCompatActivity implements DatePickerD
                     createSampleDialog(myButton.getId());
                 }
             });
+
+
+            calendar.setTimeInMillis(tempSample.getSampleCollectionDate());
+            String tempSampleDate = simpleDateFormat.format(calendar.getTime());
             myButton.setText(tempSample.getNameOfSample() + ": " + tempSample.getNumberOfSamples() +
-                    " sample(s) collected in " + tempSample.getLocation() + " on " + collectionDate);
+                    " sample(s) collected in " + tempSample.getLocation() + " on " + tempSampleDate);
 
 
             myLayout.addView(sampleTitleTV);

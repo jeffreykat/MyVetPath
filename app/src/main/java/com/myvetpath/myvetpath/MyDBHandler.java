@@ -35,6 +35,14 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.execSQL(Picture.CREATE_TABLE);
         db.execSQL(SickElement.CREATE_TABLE);
         db.execSQL(Sample.CREATE_TABLE);
+        //added below tables
+        db.execSQL(Client.CREATE_TABLE);
+        db.execSQL(Groups.CREATE_TABLE);
+        db.execSQL(Pathologist.CREATE_TABLE);
+        db.execSQL(RepliesForASubmission.CREATE_TABLE);
+        db.execSQL(Reply.CREATE_TABLE);
+        db.execSQL(Report.CREATE_TABLE);
+        db.execSQL(User.CREATE_TABLE);
     }
 
     @Override
@@ -55,6 +63,20 @@ public class MyDBHandler extends SQLiteOpenHelper {
         Log.v("tableCreateSickElement", SickElement.CREATE_TABLE);
         db.execSQL(Sample.CREATE_TABLE);
         Log.v("tableCreateSample", Sample.CREATE_TABLE);
+        db.execSQL(Client.CREATE_TABLE);
+        Log.v("tableCreateClient", Client.CREATE_TABLE);
+        db.execSQL(Groups.CREATE_TABLE);
+        Log.v("tableCreateGroup", Groups.CREATE_TABLE);
+        db.execSQL(Pathologist.CREATE_TABLE);
+        Log.v("tableCreatePathologist", Pathologist.CREATE_TABLE);
+        db.execSQL(RepliesForASubmission.CREATE_TABLE);
+        Log.v("tableCreateRFAS", RepliesForASubmission.CREATE_TABLE);
+        db.execSQL(Reply.CREATE_TABLE);
+        Log.v("tableCreateReply", Reply.CREATE_TABLE);
+        db.execSQL(Report.CREATE_TABLE);
+        Log.v("tableCreateReport", Report.CREATE_TABLE);
+        db.execSQL(User.CREATE_TABLE);
+        Log.v("tableCreateUser", User.CREATE_TABLE);
     }
 
     //Remove submission table
@@ -146,6 +168,12 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public void addPicture(Picture picture) {
         ContentValues values = new ContentValues();
         values.put(Picture.COLUMN_IMAGETITLE, picture.getImageTitle());
+        values.put(Picture.COLUMN_DATETAKEN, picture.getDateTaken());
+        values.put(Picture.COLUMN_IMAGELINK, picture.getPicturePath());
+        values.put(Picture.COLUMN_LATITUDE, picture.getLatitude());
+        values.put(Picture.COLUMN_LONGITUDE, picture.getLongitude());
+        values.put(Picture.COLUMN_INTERNAL, picture.getInternalID());
+
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(picture.TABLE_NAME, null, values);
         db.close();
@@ -197,6 +225,33 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.close();
         return samplesList;
     }
+
+    //Searches the database for all pictures related to a case's internal ID
+    public ArrayList<Picture> findPictures(int internalID) {
+        String query = "Select * FROM " + Picture.TABLE_NAME + " WHERE " + Picture.COLUMN_INTERNAL + " = " + "'" + internalID + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        ArrayList<Picture> pictures = new ArrayList<Picture>();
+
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+            Picture tempPic = new Picture();
+            tempPic.setInternalID(cursor.getInt(cursor.getColumnIndex(Picture.COLUMN_INTERNAL)));
+            tempPic.setPicturePath(cursor.getString(cursor.getColumnIndex(Picture.COLUMN_IMAGELINK)));
+            tempPic.setLongitude(cursor.getString(cursor.getColumnIndex(Picture.COLUMN_LONGITUDE)));
+            tempPic.setLatitude(cursor.getString(cursor.getColumnIndex(Picture.COLUMN_LATITUDE)));
+            tempPic.setImageID(cursor.getInt(cursor.getColumnIndex(Picture.COLUMN_ID)));
+            tempPic.setImageTitle(cursor.getString(cursor.getColumnIndex(Picture.COLUMN_IMAGETITLE)));
+            tempPic.setDateTaken(cursor.getLong(cursor.getColumnIndex(Picture.COLUMN_DATETAKEN)));
+
+            pictures.add(tempPic);
+        }
+
+        cursor.close();
+        db.close();
+        return pictures;
+    }
+
+
 
     //Searches the database to find a row based on the id.
     public Submission findSubmissionID(int id) {
@@ -262,6 +317,20 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public int getNumberOfDrafts(){
         int len = 0;
         String query = "Select Count(" + Submission.COLUMN_ID + ") FROM " + Submission.TABLE_NAME + " WHERE " + Submission.COLUMN_STATUS_FLAG + " = 0";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.moveToFirst()){
+            len = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return len;
+    }
+
+    //return number of drafts in submission table
+    public int getNumberOfPictures(){
+        int len = 0;
+        String query = "Select Count(" + Picture.COLUMN_LATITUDE + ") FROM " + Picture.TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){

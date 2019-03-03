@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -15,10 +16,12 @@ import android.net.ParseException;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -29,9 +32,12 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -51,14 +57,22 @@ public class AddPicturesActivity extends AppCompatActivity {
 
     String [] longitudes = {"", "", "", "", ""};
     String [] latitudes = {"", "", "", "", ""};
-    String [] imageNames = {"", "", "", "", ""};
-    Date[] imageDates = {null, null, null, null, null};
+    String [] imageNames = {null, null, null, null, null};
+    Long [] imageDates = {null, null, null, null, null};
+    Bitmap [] imageBitmaps = {null, null, null, null, null};
+    String[] picturePaths = {"", "", "", "", ""};
 
     private LocationManager locationManager;
     private LocationListener listener;
     Boolean shouldCheckPhoneCoordinates = false;
 
+    private ArrayList<Picture> picturesList;
 
+    private boolean didUploadImages[] = {false, false, false, false, false};
+
+    static final int REQUEST_TAKE_PHOTO = 1;
+    String currentPhotoPath;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,12 +81,21 @@ public class AddPicturesActivity extends AppCompatActivity {
         toolbar.setTitle(R.string.action_addpictures);
         setSupportActionBar(toolbar);
 
+        Intent intent = getIntent();
+
+        picturesList = (ArrayList<Picture>) intent.getSerializableExtra("pictureList");
+        Log.d("pass", "onCreate: passed in: " + picturesList.get(0).getImageTitle());
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 storePicturesInDB();
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("result", picturesList);
+                setResult(RESULT_OK, resultIntent);
+                finish();
             }
 
         });
@@ -117,28 +140,104 @@ public class AddPicturesActivity extends AppCompatActivity {
 
                     longitudes[selectedImageView] = Double.toString(longitude);
                     latitudes[selectedImageView] = Double.toString(latitude);
-                    imageNames[selectedImageView] = "IMG_FROM_CAMERA_" + selectedImageView + ".jpg";
+//                    imageNames[selectedImageView] = "IMG_FROM_CAMERA_" + selectedImageView + ".jpg";
                 }
 
             }
         };
 
+         initializeImages();
+    }
+
+
+
+
+//Purpose: Set the images to whatever the user set earlier. Initializes all the data based on prior inputs
+    private void initializeImages(){
+        for(int i = 0; i < picturesList.size(); i++){
+            Picture tempPicture = picturesList.get(i);
+            if(tempPicture != null){
+                imageNames[i] = tempPicture.getImageTitle();
+                longitudes[i] = tempPicture.getLongitude();
+                latitudes[i] = tempPicture.getLatitude();
+                imageDates[i] = tempPicture.getDateTaken();
+                picturePaths[i] = tempPicture.getPicturePath();
+
+                Bitmap bmp = null;
+
+                String filename = picturesList.get(i).getPicturePath();
+                try { //try to get the bitmap and set the image button to it
+                    FileInputStream is = this.openFileInput(filename);
+                    bmp = BitmapFactory.decodeStream(is);
+                    is.close();
+                    images[i].setImageBitmap(bmp);
+                    imageBitmaps[i] = bmp;
+                    didUploadImages[i] = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
     }
 
 //Purpose: Stores the data gathered from this screen into the db. This is called whenever the user selects the floating action button
     private void storePicturesInDB(){
+
+        ArrayList<Picture> tempList = new ArrayList<Picture>(); //create a temporary list so that it is easier to deal with cases where users skip picture slots to upload
+
         for(int i = 0; i < 5; i++){
-            if(imageNames[i] != ""){ //if user uploaded image in this slot
+
+            if(imageNames[i] != null){ //if user uploaded image in this slot, collect all image data and add it to array list
                //TODO: Store the following in the DB
-                //imageNames[i]
-                //longitudes[i]
-                //latitudes[i]
-                //images[i] <- might need to do some work to convert the imageButton to a blob
-                //imageDates[i]
-                Log.d("MetaData", "storePicturesInDB: index: " + i + ", Image name: " + imageNames[i] + ", longitude: " + longitudes[i] + "latitude " + latitudes[i] + ", dates: " + imageDates[i]);
+                Picture tempPicture = new Picture();
+                tempPicture.setImageTitle(imageNames[i]);
+                tempPicture.setLongitude(longitudes[i]);
+                tempPicture.setLatitude(latitudes[i]);
+                Log.d("pass", "storePicturesInDB: before set image link");
+                tempPicture.setPicturePath(picturePaths[i]);
+                tempPicture.setDateTaken(imageDates[i]);
+//                Log.d("pass", "storePicturesInDB: index: " + i + ", Image name: " + imageNames[i] + ", longitude: " + longitudes[i] + "latitude " + latitudes[i] + ", dates: " + imageDates[i]);
+               if(didUploadImages[i] == false){
+                   try {
+                       //Write file
+                       Bitmap bmp = imageBitmaps[i];
+                       String filename = i + "bitmap.png";
+                       FileOutputStream stream = AddPicturesActivity.this.openFileOutput(filename, Context.MODE_PRIVATE);
+                       bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+                       //Cleanup
+                       stream.close();
+                       bmp.recycle();
+                       tempPicture.setPicturePath(filename);
+
+                   } catch (Exception e) {
+                       e.printStackTrace();
+                   }
+               }else{
+                   tempPicture.setPicturePath(i + "bitmap.png");
+               }
+
+                tempList.add(tempPicture);
+
+            }else{ //if image not uploaded, upload a "null" picture
+                Log.d("pass", "storePicturesInDB: about to set to null ");
+                Picture emptyPicture = new Picture();
+                emptyPicture.setImageTitle(null);
+                emptyPicture.setDateTaken(0);
+                emptyPicture.setPicturePath(null);
+                emptyPicture.setLatitude(null);
+                emptyPicture.setLongitude(null);
+                emptyPicture.setPicturePath(null);
+                tempList.add(emptyPicture);
+
             }
         }
+        picturesList = tempList;
+
     }
+
+
 
     //Purpose: Set a click event for each of the imagebuttons. Clicking on the button should prompt the user to upload a picture
     private void setSingleEvent(GridLayout mainGrid) {
@@ -178,10 +277,12 @@ public class AddPicturesActivity extends AppCompatActivity {
                     public void onClick(DialogInterface arg0, int arg1) { //delete the picture by setting everything to the default values
                         Toast.makeText(AddPicturesActivity.this, "Deleted picture #" + selectedDeleteIndex, Toast.LENGTH_SHORT).show();
                         images[selectedDeleteIndex].setImageResource(defaultAddPictureImageRESID);
-                        imageNames[selectedDeleteIndex] = "";
+                        imageBitmaps[selectedDeleteIndex] = null;
+                        imageNames[selectedDeleteIndex] = null;
                         latitudes[selectedDeleteIndex] = "";
                         longitudes[selectedDeleteIndex] = "";
                         imageDates[selectedDeleteIndex] = null;
+                        picturePaths[selectedDeleteIndex] = null;
                     }
                 });
 
@@ -215,7 +316,6 @@ public class AddPicturesActivity extends AppCompatActivity {
                                 pictureActionIntent,
                                 GALLERY_PICTURE);
 
-
                     }
                 });
 
@@ -223,12 +323,53 @@ public class AddPicturesActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) { //open up the camera
                         chosen_method = 1;
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        startActivityForResult(intent, 0);
+
+                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        // Ensure that there's a camera activity to handle the intent
+                        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                            // Create the File where the photo should go
+                            File photoFile = null;
+                            try {
+                                photoFile = createImageFile();
+                            } catch (IOException ex) {
+                                // Error occurred while creating the File
+                            }
+                            // Continue only if the File was successfully created
+                            if (photoFile != null) {
+                                Uri photoURI = FileProvider.getUriForFile(AddPicturesActivity.this,
+                                        "com.example.android.fileprovider",
+                                        photoFile);
+                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                            }
+                        }
+
+//                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                        startActivityForResult(intent, 0);
 
                     }
                 });
         myAlertDialog.show();
+    }
+
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        imageNames[selectedImageView] = imageFileName + ".jpg";
+
+
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     //purpose: this method is called automatically after the app gets a picture from the UploadPicturesPrompt
@@ -237,9 +378,18 @@ public class AddPicturesActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (chosen_method == 1 && data != null) { //user uploaded a picture using the camera
-            Bitmap bitmap = (Bitmap) data.getExtras().get("data"); //get the actual picture
+            File file = new File(currentPhotoPath);
+            picturePaths [selectedImageView] = currentPhotoPath;
+
+            Bitmap bitmap = null; //get the actual picture
+            try {
+                bitmap = (Bitmap) MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), Uri.fromFile(file));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             images[selectedImageView].setImageBitmap(bitmap);
-            imageDates[selectedImageView] = Calendar.getInstance().getTime(); //get the current date
+            imageBitmaps[selectedImageView] = bitmap;
+            imageDates[selectedImageView] = Calendar.getInstance().getTime().getTime(); //get the current date
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){ //Check for permissions
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.INTERNET}
@@ -250,13 +400,13 @@ public class AddPicturesActivity extends AppCompatActivity {
 
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, listener); //Get the coordinates of the phone. Won't be called if the phone doesn't have permission
             shouldCheckPhoneCoordinates = true;
-
+            Log.d("filepath", "onActivityResult: ");
         }else if(chosen_method == 0){ //The user chose to upload a picture using the gallery
             shouldCheckPhoneCoordinates = false;
             if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) { //check if the data is valid
                 Uri uri = data.getData();
                 String picturePath = getPath( this.getApplicationContext( ), uri ); //this is the path of the file in the SD card
-
+                picturePaths[selectedImageView] = picturePath;
                 //Get and store the image name
                 File f = new File(picturePath);
                 imageNames[selectedImageView] = f.getName();
@@ -278,7 +428,7 @@ public class AddPicturesActivity extends AppCompatActivity {
                     Date convertedDate = new Date();
                     try {
                         convertedDate = dateFormat.parse(dateString);
-                        imageDates[selectedImageView] = convertedDate;
+                        imageDates[selectedImageView] = convertedDate.getTime();
                     } catch (ParseException e) {
                         // Auto-generated exception
                         e.printStackTrace();
@@ -315,7 +465,7 @@ public class AddPicturesActivity extends AppCompatActivity {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
 
                     images[selectedImageView].setImageBitmap(bitmap);
-
+                    imageBitmaps[selectedImageView] = bitmap;
 
                 } catch (IOException e) {
                     e.printStackTrace();
