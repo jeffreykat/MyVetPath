@@ -1,10 +1,8 @@
 package com.myvetpath.myvetpath;
 
-import android.graphics.Bitmap;
+import java.io.Serializable;
 
-import java.sql.Date;
-
-public class Picture { //remaned to picture so we don't get it confused with Image object from android
+public class Picture implements Serializable { //remaned to picture so we don't get it confused with Image object from android
     //Table Fields
     public static final String TABLE_NAME = "Image";
     public static final String COLUMN_ID = "ImageID";
@@ -15,14 +13,16 @@ public class Picture { //remaned to picture so we don't get it confused with Ima
     public static final String COLUMN_LONGITUDE = "Longitude";
     public static final String COLUMN_DATETAKEN = "DateTaken";
 
+
+
     //Create Table String
     public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY, "
             + COLUMN_IMAGETITLE + " TEXT, "
             + COLUMN_INTERNAL + " INTEGER, "
-            + COLUMN_IMAGELINK + " BLOB, " //will have to double check how this works
-            + COLUMN_LATITUDE + " BIGINT, "
-            + COLUMN_LONGITUDE + " BIGINT, " //forgot what we where doing with these.
+            + COLUMN_IMAGELINK + " TEXT, " //will have to double check how this works
+            + COLUMN_LATITUDE + " TEXT, "
+            + COLUMN_LONGITUDE + " TEXT, " //forgot what we where doing with these.
             + COLUMN_DATETAKEN + " BIGINT"
             + " )";
 
@@ -30,12 +30,11 @@ public class Picture { //remaned to picture so we don't get it confused with Ima
     //Object Fields
     private int imageID;
     private int internalID;
-    private Bitmap imageLink;
+    private String picturePath;
     private String imageTitle;
     private String latitude; //not sure about what type to make latitude and longitude
     private String longitude;
     private long dateTaken;
-
 
 
     //Constructors
@@ -52,7 +51,7 @@ public class Picture { //remaned to picture so we don't get it confused with Ima
         this.imageTitle = newTitle;
     }
     public void setInternalID(int newInteranl) { this.internalID = newInteranl;}
-    public void setImageLink(Bitmap newLink){this.imageLink = newLink;}
+    public void setPicturePath(String newLink){this.picturePath = newLink;}
     public void setLatitude(String newLat) {this.latitude = newLat;}
     public void setLongitude(String newLon) {this.longitude = newLon;}
     public void setDateTaken(long newDate) {this.dateTaken = newDate;}
@@ -65,10 +64,11 @@ public class Picture { //remaned to picture so we don't get it confused with Ima
         return this.imageTitle;
     }
     public int getInternalID(){return this.internalID;}
-    public Bitmap getImageLink(){return  this.imageLink;}
+    public String getPicturePath(){return this.picturePath;}
     public String getLatitude(){return this.latitude;}
     public String getLongitude(){return this.longitude;}
     public long getDateTaken(){return this.dateTaken;}
+
 }
 
 

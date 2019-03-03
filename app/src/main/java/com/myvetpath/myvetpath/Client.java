@@ -14,7 +14,8 @@ public class Client {
     //Create Table String
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
-                    "INTEGER PRIMARY KEY, "
+
+                    " INTEGER PRIMARY KEY, "
                     + COLUMN_FIRSTNAME + " TEXT, "
                     + COLUMN_LASTNAME + " TEXT, "
                     + COLUMN_PHONENUMBER + " TEXT, "
