@@ -112,6 +112,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(Submission.COLUMN_CASE_ID, submission.getCaseID());
         values.put(Submission.COLUMN_MASTER_ID, submission.getMasterID());
+        values.put(Submission.COLUMN_SICK_ELEMENT, submission.getSickElementID());
         values.put(Submission.COLUMN_TITLE, submission.getTitle());
         values.put(Submission.COLUMN_GROUP, submission.getGroup());
         values.put(Submission.COLUMN_DATE_CREATION, submission.getDateOfCreation());
@@ -135,13 +136,14 @@ public class MyDBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(SickElement.COLUMN_INTERNAL, sickElement.getInternalID());
         values.put(SickElement.COLUMN_SICKELEMENTNAME, sickElement.getNameOfSickElement());
-        values.put(SickElement.COLUMN_EUTAHNIZED, sickElement.getEuthanized());
+        values.put(SickElement.COLUMN_EUTHANIZED, sickElement.getEuthanized());
         values.put(SickElement.COLUMN_SEX, sickElement.getSex());
         values.put(SickElement.COLUMN_SPECIES, sickElement.getSpecies());
         values.put(SickElement.COLUMN_DATEOFBIRTH, sickElement.getDateOfBirth());
         values.put(SickElement.COLUMN_DATEOFDEATH, sickElement.getDateOfDeath());
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(SickElement.TABLE_NAME, null, values);
+        Log.d("SQLite Database", "addSickElement: " + sickElement.getNameOfSickElement());
         db.close();
     }
 
@@ -164,6 +166,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
             sub.setInternalID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_ID)));
             sub.setCaseID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_CASE_ID)));
             sub.setMasterID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_MASTER_ID)));
+            sub.setSickElementID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_SICK_ELEMENT)));
             sub.setTitle(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_TITLE)));
             sub.setGroup(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_GROUP)));
             sub.setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
@@ -187,6 +190,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
             sub.setInternalID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_ID)));
             sub.setCaseID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_CASE_ID)));
             sub.setMasterID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_MASTER_ID)));
+            sub.setSickElementID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_SICK_ELEMENT)));
             sub.setTitle(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_TITLE)));
             sub.setGroup(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_GROUP)));
             sub.setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
@@ -339,10 +343,11 @@ public class MyDBHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         SickElement sickElement = new SickElement();
         if (cursor.moveToFirst()) {
-            sickElement.setInternalID(id);
+            sickElement.setSickID(cursor.getInt(cursor.getColumnIndex(SickElement.COLUMN_ID)));
+            sickElement.setInternalID(cursor.getInt(cursor.getColumnIndex(SickElement.COLUMN_INTERNAL)));
             sickElement.setName(cursor.getString(cursor.getColumnIndex(SickElement.COLUMN_SICKELEMENTNAME)));
             sickElement.setSpecies(cursor.getString(cursor.getColumnIndex(SickElement.COLUMN_SPECIES)));
-            sickElement.setEuthanized(cursor.getInt(cursor.getColumnIndex(SickElement.COLUMN_EUTAHNIZED)));
+            sickElement.setEuthanized(cursor.getInt(cursor.getColumnIndex(SickElement.COLUMN_EUTHANIZED)));
             sickElement.setSex(cursor.getString(cursor.getColumnIndex(SickElement.COLUMN_SEX)));
             sickElement.setDateOfBirth(cursor.getLong(cursor.getColumnIndex(SickElement.COLUMN_DATEOFBIRTH)));
             sickElement.setDateOfDeath(cursor.getLong(cursor.getColumnIndex(SickElement.COLUMN_DATEOFDEATH)));

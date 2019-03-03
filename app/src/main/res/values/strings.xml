@@ -39,5 +39,7 @@
         <item>Male</item>
         <item>Female</item>
     </string-array>
+    <string name="euthanized_pos">Euthanized</string>
+    <string name="euthanized_neg">Not Euthanized</string>
 
 </resources>

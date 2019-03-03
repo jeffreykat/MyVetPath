@@ -71,6 +71,7 @@ db.addSubmission(sub)
 
     ImageButton date_of_birth_button;
     ImageButton date_of_death_button;
+    CheckBox euthanizedCB;
 
     static final int SAMPLE_COLLECTED_DATE = 0;
     static final int BIRTH_DATE = 1;
@@ -92,7 +93,7 @@ db.addSubmission(sub)
                 Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
                 testToast.show();
                 dbHandler.addSubmission(submission);
-                sickElement.setInternalID(submission.getInternalID());
+                sickElement.setInternalID(5);
                 Log.d("CreateSubActivity", "Sick Element " + Integer.toString(sickElement.getInternalID()));
                 dbHandler.addSickElement(sickElement);
                 startActivity(view_subs_activity);
@@ -156,10 +157,10 @@ db.addSubmission(sub)
         });
 
         sexSpinner = findViewById(R.id.SexSp);
+        sexSpinner.setOnItemSelectedListener(this);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sexString, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sexSpinner.setAdapter(adapter);
-        sexSpinner.setOnItemSelectedListener(this);
 
         //initialize the camera button where users can add pictures
         add_pictures_activity = new Intent(this, AddPicturesActivity.class);
@@ -173,6 +174,7 @@ db.addSubmission(sub)
 
         sickElementName = findViewById(R.id.sick_element_name_ET);
         species = findViewById(R.id.species_ET);
+        euthanizedCB = findViewById(R.id.EuthanizedCB);
 
         //initialize submission elements
         title_et = findViewById(R.id.sub_title);
@@ -268,9 +270,10 @@ db.addSubmission(sub)
     public void onCheckboxClicked(View view){
         //Is the view now checked?
         int checked = 0;
-        if(((CheckBox) view).isChecked()){
+        if(euthanizedCB.isChecked()){
             checked = 1;
         }
+        isEuthanized = checked;
         //Check which checkbox was clicked
 
         switch(view.getId()){
@@ -325,7 +328,8 @@ db.addSubmission(sub)
         //Internal ID - foreign key from Submission table
         //Internal ID for sick element table - foreign key from submission table
 
-        if(title_et.getText().toString().isEmpty() || comment_et.getText().toString().isEmpty()){
+        if(title_et.getText().toString().isEmpty()
+                || comment_et.getText().toString().isEmpty()){
             return false;
         }
 
@@ -341,8 +345,16 @@ db.addSubmission(sub)
         newSickElement.setSex(selectedSex);
         newSickElement.setEuthanized(isEuthanized);
         newSickElement.setSpecies(species.getText().toString());
-        newSickElement.setDateOfBirth(birthDate.getTime());
-        newSickElement.setDateOfDeath(deathDate.getTime());
+        if(birthDate != null) {
+            newSickElement.setDateOfBirth(birthDate.getTime());
+        } else {
+            newSickElement.setDateOfBirth(0);
+        }
+        if(deathDate != null) {
+            newSickElement.setDateOfDeath(deathDate.getTime());
+        } else {
+            newSickElement.setDateOfDeath(0);
+        }
 
         return true;
     }

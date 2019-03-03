@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +35,7 @@ public class SubDetailsActivity extends BaseActivity {
         int internalId = getIntent().getIntExtra("internalID", 1);
         currentSub = myDBHandler.findSubmissionID(internalId);
         currentSickElement = myDBHandler.findSickElementID(internalId);
+        Log.d("SubDetails", "Name: " + currentSickElement.getNameOfSickElement());
         String title = currentSub.getTitle();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -67,8 +69,13 @@ public class SubDetailsActivity extends BaseActivity {
         sickElementSpecies.setText(currentSickElement.getSpecies());
         TextView sickElementSex = findViewById(R.id.sickElementSex);
         sickElementSex.setText(currentSickElement.getSex());
-        TextView sickElementEuthenized = findViewById(R.id.sickElementEuthanized);
-        sickElementEuthenized.setText(Integer.toString(currentSickElement.getEuthanized()));
+        TextView sickElementEuthanized = findViewById(R.id.sickElementEuthanized);
+        if(currentSickElement.getEuthanized() == 0){
+            sickElementEuthanized.setText(R.string.euthanized_neg);
+        }
+        else {
+            sickElementEuthanized.setText(R.string.euthanized_pos);
+        }
         TextView commentText = findViewById(R.id.subComment);
         commentText.setText(comment);
     }

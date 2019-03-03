@@ -7,7 +7,7 @@ public class SickElement {
     public static final String TABLE_NAME = "SickElement";
     public static final String COLUMN_ID = "SickElementID";
     public static final String COLUMN_INTERNAL = "InternalID";
-    public static final String COLUMN_EUTAHNIZED = "Euthanized";
+    public static final String COLUMN_EUTHANIZED = "Euthanized";
     public static final String COLUMN_SEX = "Sex";
     public static final String COLUMN_SPECIES = "Species";
     public static final String COLUMN_SICKELEMENTNAME = "SickElementName";
@@ -18,7 +18,7 @@ public class SickElement {
     public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + COLUMN_INTERNAL + " INTEGER, "
-            + COLUMN_EUTAHNIZED + " INTEGER, "
+            + COLUMN_EUTHANIZED + " INTEGER, "
             + COLUMN_SEX + " TEXT, "
             + COLUMN_SPECIES + " TEXT, "
             + COLUMN_SICKELEMENTNAME + " TEXT, "
@@ -31,7 +31,7 @@ public class SickElement {
 
     private int sickID;
     private int internalID;
-    private int Euthanized; //0 means no 1 means yes //will change once double check lite boolean
+    private int Euthanized; //0 means no 1 means yes
     private String sex;
     private String species;
     private String sickName;
