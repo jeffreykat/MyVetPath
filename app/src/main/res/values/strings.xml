@@ -41,5 +41,6 @@
     </string-array>
     <string name="euthanized_pos">Euthanized</string>
     <string name="euthanized_neg">Not Euthanized</string>
+    <string name="species_display">Species: </string>
 
 </resources>
