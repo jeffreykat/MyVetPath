@@ -33,6 +33,7 @@ public class SubDetailsActivity extends BaseActivity {
 
         int internalId = getIntent().getIntExtra("internalID", 1);
         currentSub = myDBHandler.findSubmissionID(internalId);
+        currentSickElement = myDBHandler.findSickElementID(internalId);
         String title = currentSub.getTitle();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -60,6 +61,14 @@ public class SubDetailsActivity extends BaseActivity {
             TextView groupText = findViewById(R.id.subGroupName);
             groupText.setText("Group: " + group);
         }
+        TextView sickElementName = findViewById(R.id.sickElementName);
+        sickElementName.setText(currentSickElement.getNameOfSickElement());
+        TextView sickElementSpecies = findViewById(R.id.sickElementSpecies);
+        sickElementSpecies.setText(currentSickElement.getSpecies());
+        TextView sickElementSex = findViewById(R.id.sickElementSex);
+        sickElementSex.setText(currentSickElement.getSex());
+        TextView sickElementEuthenized = findViewById(R.id.sickElementEuthanized);
+        sickElementEuthenized.setText(Integer.toString(currentSickElement.getEuthanized()));
         TextView commentText = findViewById(R.id.subComment);
         commentText.setText(comment);
     }

@@ -331,5 +331,25 @@ public class MyDBHandler extends SQLiteOpenHelper {
         Log.d("SQLite Database", "Update: " + submission.getTitle());
         return db.update(Submission.TABLE_NAME, args, Submission.COLUMN_ID + "=" + submission.getInternalID(), null) > 0;
     }
+
+    //returns sick element with arg specified id
+    public SickElement findSickElementID(int id){
+        String query = "Select * FROM " + SickElement.TABLE_NAME + " WHERE " + SickElement.COLUMN_INTERNAL + " = " + "'" + id + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        SickElement sickElement = new SickElement();
+        if (cursor.moveToFirst()) {
+            sickElement.setInternalID(id);
+            sickElement.setName(cursor.getString(cursor.getColumnIndex(SickElement.COLUMN_SICKELEMENTNAME)));
+            sickElement.setSpecies(cursor.getString(cursor.getColumnIndex(SickElement.COLUMN_SPECIES)));
+            sickElement.setEuthanized(cursor.getInt(cursor.getColumnIndex(SickElement.COLUMN_EUTAHNIZED)));
+            sickElement.setSex(cursor.getString(cursor.getColumnIndex(SickElement.COLUMN_SEX)));
+            sickElement.setDateOfBirth(cursor.getLong(cursor.getColumnIndex(SickElement.COLUMN_DATEOFBIRTH)));
+            sickElement.setDateOfDeath(cursor.getLong(cursor.getColumnIndex(SickElement.COLUMN_DATEOFDEATH)));
+        }
+        cursor.close();
+        db.close();
+        return sickElement;
+    }
 }
 

@@ -93,6 +93,7 @@ db.addSubmission(sub)
                 testToast.show();
                 dbHandler.addSubmission(submission);
                 sickElement.setInternalID(submission.getInternalID());
+                Log.d("CreateSubActivity", "Sick Element " + Integer.toString(sickElement.getInternalID()));
                 dbHandler.addSickElement(sickElement);
                 startActivity(view_subs_activity);
             }
@@ -340,6 +341,8 @@ db.addSubmission(sub)
         newSickElement.setSex(selectedSex);
         newSickElement.setEuthanized(isEuthanized);
         newSickElement.setSpecies(species.getText().toString());
+        newSickElement.setDateOfBirth(birthDate.getTime());
+        newSickElement.setDateOfDeath(deathDate.getTime());
 
         return true;
     }
