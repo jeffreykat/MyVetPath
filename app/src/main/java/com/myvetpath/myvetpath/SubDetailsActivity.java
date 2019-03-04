@@ -14,7 +14,6 @@ import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import static java.sql.Types.NULL;
 
@@ -24,10 +23,11 @@ public class SubDetailsActivity extends BaseActivity {
     Intent create_sub_activity;
     MyDBHandler myDBHandler;
     Submission currentSub;
+    SickElement currentSickElement;
     Calendar calendar = Calendar.getInstance();
     final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-    private TextView mSamplesTV;
     private ImageButton[] images;
+    private TextView mSamplesTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,17 +37,14 @@ public class SubDetailsActivity extends BaseActivity {
 
         int internalId = getIntent().getIntExtra("internalID", 1);
         currentSub = myDBHandler.findSubmissionID(internalId);
+        int sickID = currentSub.getSickElementID();
+        currentSickElement = myDBHandler.findSickElementID(internalId);
+        Log.d("SubDetails", "Name: " + currentSickElement.getNameOfSickElement());
 
         ArrayList<Picture> pictures = myDBHandler.findPictures(internalId);
         Log.d("details", "onCreate: number of pictures in DB: " + myDBHandler.getNumberOfPictures());
-        ArrayList<Sample> samplesList = myDBHandler.findSamples(internalId);
-        String title = currentSub.getTitle();
-        calendar.setTimeInMillis(currentSub.getDateOfCreation());
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(title);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        ArrayList<Sample> samplesList = myDBHandler.findSamples(internalId);
         String sampleText = "";
         int index = 0;
         for(Sample tempSample: samplesList){
@@ -59,12 +56,21 @@ public class SubDetailsActivity extends BaseActivity {
             index++;
         }
 
-        mSamplesTV = findViewById(R.id.subSamplesTV);
+        mSamplesTV = findViewById(R.id.SamplesTextTV);
         mSamplesTV.setText(sampleText);
 
         String group = currentSub.getGroup();
         calendar.setTimeInMillis(currentSub.getDateOfCreation());
         String comment = currentSub.getComment();
+
+        String title = currentSub.getTitle();
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(title);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
 
         create_sub_activity = new Intent(this, CreateSubActivity.class);
 
@@ -82,10 +88,21 @@ public class SubDetailsActivity extends BaseActivity {
             TextView groupText = findViewById(R.id.subGroupName);
             groupText.setText("Group: " + group);
         }
+        TextView sickElementName = findViewById(R.id.sickElementName);
+        sickElementName.setText(currentSickElement.getNameOfSickElement());
+        TextView sickElementSpecies = findViewById(R.id.sickElementSpecies);
+        sickElementSpecies.setText(currentSickElement.getSpecies());
+        TextView sickElementSex = findViewById(R.id.sickElementSex);
+        sickElementSex.setText(currentSickElement.getSex());
+        TextView sickElementEuthanized = findViewById(R.id.sickElementEuthanized);
+        if(currentSickElement.getEuthanized() == 0){
+            sickElementEuthanized.setText(R.string.euthanized_neg);
+        }
+        else {
+            sickElementEuthanized.setText(R.string.euthanized_pos);
+        }
         TextView commentText = findViewById(R.id.subComment);
         commentText.setText(comment);
-
-
         //set images
         images = new ImageButton[]{findViewById(R.id.first_ImageDetails_bttn), findViewById(R.id.second_ImageDetails_bttn),
                 findViewById(R.id.third_ImageDetails_bttn), findViewById(R.id.fourth_ImageDetails_bttn),
@@ -110,7 +127,6 @@ public class SubDetailsActivity extends BaseActivity {
                 images[i].setVisibility(View.INVISIBLE);
             }
         }
-
 
     }
 

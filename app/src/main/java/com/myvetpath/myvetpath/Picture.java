@@ -30,12 +30,11 @@ public class Picture implements Serializable { //remaned to picture so we don't 
     //Object Fields
     private int imageID;
     private int internalID;
-    private String picturePath;
     private String imageTitle;
     private String latitude; //not sure about what type to make latitude and longitude
     private String longitude;
     private long dateTaken;
-
+    private String picturePath;
 
     //Constructors
     public Picture() {}
@@ -51,11 +50,10 @@ public class Picture implements Serializable { //remaned to picture so we don't 
         this.imageTitle = newTitle;
     }
     public void setInternalID(int newInteranl) { this.internalID = newInteranl;}
-    public void setPicturePath(String newLink){this.picturePath = newLink;}
     public void setLatitude(String newLat) {this.latitude = newLat;}
     public void setLongitude(String newLon) {this.longitude = newLon;}
     public void setDateTaken(long newDate) {this.dateTaken = newDate;}
-
+    public void setPicturePath(String newLink){this.picturePath = newLink;}
     //Accessors
     public int getImageID(){
         return this.imageID;
@@ -64,11 +62,10 @@ public class Picture implements Serializable { //remaned to picture so we don't 
         return this.imageTitle;
     }
     public int getInternalID(){return this.internalID;}
-    public String getPicturePath(){return this.picturePath;}
     public String getLatitude(){return this.latitude;}
     public String getLongitude(){return this.longitude;}
     public long getDateTaken(){return this.dateTaken;}
-
+    public String getPicturePath(){return this.picturePath;}
 }
 
 

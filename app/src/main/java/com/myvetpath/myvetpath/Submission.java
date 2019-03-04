@@ -7,6 +7,7 @@ public class Submission {
     public static final String COLUMN_ID = "internalID";
     public static final String COLUMN_CASE_ID = "caseID";
     public static final String COLUMN_MASTER_ID = "masterID";
+    public static final String COLUMN_SICK_ELEMENT = "sickElementID";
     public static final String COLUMN_TITLE = "title";
     public static final String COLUMN_GROUP = "groupName";
     public static final String COLUMN_DATE_CREATION = "dateOfCreation";
@@ -19,6 +20,7 @@ public class Submission {
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_CASE_ID + " INTEGER, " +
             COLUMN_MASTER_ID + " INTEGER, " +
+            COLUMN_SICK_ELEMENT + " INTEGER, " +
             COLUMN_TITLE + " TEXT, " +
             COLUMN_DATE_CREATION + " BIGINT, " +
             COLUMN_STATUS_FLAG + " INT, " +
@@ -31,6 +33,7 @@ public class Submission {
     private int internalID; //Primary key for the internal database.
     private int caseID; //An identifier currently used by Pathologist
     private int masterID; //Primary key for the Server database
+    private int sickElementID; //FK for the Sick Element
     private int statusFlag; // Stage of the submission 0 = draft, 1 = submitted, 2 = received by server
     private String title; //user created title
     private String group; //name of group
@@ -58,6 +61,10 @@ public class Submission {
 
     public void setMasterID(int masterID) {
         this.masterID = masterID;
+    }
+
+    public void setSickElementID(int sickElementID) {
+        this.sickElementID = sickElementID;
     }
 
     public void setTitle(String newTitle){
@@ -89,6 +96,10 @@ public class Submission {
 
     public int getMasterID() {
         return masterID;
+    }
+
+    public int getSickElementID() {
+        return sickElementID;
     }
 
     public String getTitle(){
