@@ -82,10 +82,17 @@ public class MyDBHandler extends SQLiteOpenHelper {
     //Remove submission table
     //Remove the Picture table, SickElement, Sample
     public void dropTable(SQLiteDatabase db){
+        db.execSQL("DROP TABLE IF EXISTS " + Client.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Groups.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Pathologist.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + Submission.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + Picture.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + RepliesForASubmission.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Reply.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Report.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + Sample.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + SickElement.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + User.TABLE_NAME);
     }
 
     @Override
@@ -159,7 +166,13 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     public void addSickElement(SickElement sickElement) {
         ContentValues values = new ContentValues();
+        values.put(SickElement.COLUMN_INTERNAL, sickElement.getInternalID());
         values.put(SickElement.COLUMN_SICKELEMENTNAME, sickElement.getNameOfSickElement());
+        values.put(SickElement.COLUMN_EUTHANIZED, sickElement.getEuthanized());
+        values.put(SickElement.COLUMN_SEX, sickElement.getSex());
+        values.put(SickElement.COLUMN_SPECIES, sickElement.getSpecies());
+        values.put(SickElement.COLUMN_DATEOFBIRTH, sickElement.getDateOfBirth());
+        values.put(SickElement.COLUMN_DATEOFDEATH, sickElement.getDateOfDeath());
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(SickElement.TABLE_NAME, null, values);
         db.close();
@@ -420,6 +433,27 @@ public class MyDBHandler extends SQLiteOpenHelper {
         args.put(Submission.COLUMN_COMMENT, submission.getComment());
         Log.d("SQLite Database", "Update: " + submission.getTitle());
         return db.update(Submission.TABLE_NAME, args, Submission.COLUMN_ID + "=" + submission.getInternalID(), null) > 0;
+    }
+
+    //returns sick element with arg specified id
+    public SickElement findSickElementID(int id){
+        String query = "Select * FROM " + SickElement.TABLE_NAME + " WHERE " + SickElement.COLUMN_INTERNAL + " = " + "'" + id + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        SickElement sickElement = new SickElement();
+        if (cursor.moveToFirst()) {
+            sickElement.setSickID(cursor.getInt(cursor.getColumnIndex(SickElement.COLUMN_ID)));
+            sickElement.setInternalID(cursor.getInt(cursor.getColumnIndex(SickElement.COLUMN_INTERNAL)));
+            sickElement.setName(cursor.getString(cursor.getColumnIndex(SickElement.COLUMN_SICKELEMENTNAME)));
+            sickElement.setSpecies(cursor.getString(cursor.getColumnIndex(SickElement.COLUMN_SPECIES)));
+            sickElement.setEuthanized(cursor.getInt(cursor.getColumnIndex(SickElement.COLUMN_EUTHANIZED)));
+            sickElement.setSex(cursor.getString(cursor.getColumnIndex(SickElement.COLUMN_SEX)));
+            sickElement.setDateOfBirth(cursor.getLong(cursor.getColumnIndex(SickElement.COLUMN_DATEOFBIRTH)));
+            sickElement.setDateOfDeath(cursor.getLong(cursor.getColumnIndex(SickElement.COLUMN_DATEOFDEATH)));
+        }
+        cursor.close();
+        db.close();
+        return sickElement;
     }
 }
 

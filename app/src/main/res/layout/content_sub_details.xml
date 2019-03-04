@@ -69,6 +69,57 @@
         android:background="@color/cardview_dark_background"
         app:layout_constraintTop_toBottomOf="@id/subCaseID" />
 
+            <TextView
+                android:id="@+id/sickElementName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="20dp"
+                android:textColor="@color/colorHeader"
+                app:layout_constraintTop_toBottomOf="@id/subHeaderView"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <TextView
+                android:id="@+id/sickElementSpeciesTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="20dp"
+                android:textColor="@color/colorHeader"
+                android:text="@string/species_display"
+                app:layout_constraintTop_toBottomOf="@id/sickElementName"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <TextView
+                android:id="@+id/sickElementSpecies"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="20dp"
+                android:textColor="@color/colorHeader"
+                app:layout_constraintTop_toBottomOf="@id/sickElementName"
+                app:layout_constraintLeft_toRightOf="@id/sickElementSpeciesTitle" />
+
+            <TextView
+                android:id="@+id/sickElementSex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="20dp"
+                android:textColor="@color/colorHeader"
+                app:layout_constraintTop_toBottomOf="@id/sickElementSpecies"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <TextView
+                android:id="@+id/sickElementEuthanized"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="20dp"
+                android:textColor="@color/colorHeader"
+                app:layout_constraintTop_toBottomOf="@id/sickElementSpecies"
+                app:layout_constraintLeft_toRightOf="@id/sickElementSex" />
+
     <TextView
         android:id="@+id/subComment"
         android:layout_width="wrap_content"
@@ -76,7 +127,7 @@
         android:padding="10dp"
         android:textSize="20dp"
         android:textColor="@color/colorHeader"
-        app:layout_constraintTop_toBottomOf="@id/subHeaderView"
+        app:layout_constraintTop_toBottomOf="@id/sickElementSex"
         app:layout_constraintLeft_toLeftOf="parent"/>
 
     <TextView

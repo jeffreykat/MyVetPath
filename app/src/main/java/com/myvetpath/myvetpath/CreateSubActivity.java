@@ -63,17 +63,20 @@ db.addSubmission(sub)
     EditText title_et;
     EditText group_et;
     EditText comment_et;
+    EditText sickElementName;
+    EditText species;
     MyDBHandler dbHandler;
 
     ImageButton date_of_submission_button;
     Spinner sexSpinner;
     private String selectedSex;
-    private boolean isEuthanized;
+    private int isEuthanized = 0;
     private Date birthDate;
     private Date deathDate;
 
     ImageButton date_of_birth_button;
     ImageButton date_of_death_button;
+    CheckBox euthanizedCB;
 
     static final int SAMPLE_COLLECTED_DATE = 0;
     static final int BIRTH_DATE = 1;
@@ -87,7 +90,7 @@ db.addSubmission(sub)
     private Picture [] pictures = {null, null, null, null, null};
     private ArrayList<Picture> picturesList;
 
-    public void createDialog(final Submission submission){
+    public void createDialog(final Submission submission, final SickElement sickElement){
         AlertDialog.Builder dialog = new AlertDialog.Builder(CreateSubActivity.this);
         dialog.setCancelable(true);
         dialog.setTitle(R.string.action_submit_conformation);
@@ -116,6 +119,8 @@ db.addSubmission(sub)
                         dbHandler.addPicture(tempPicture);
                 }
 
+                sickElement.setInternalID(Math.toIntExact(internalID));
+                dbHandler.addSickElement(sickElement);
                 startActivity(view_subs_activity);
             }
         })
@@ -148,7 +153,7 @@ db.addSubmission(sub)
 
         dbHandler = new MyDBHandler(this);
         final Submission newSub = new Submission();
-
+        final SickElement newSickElement = new SickElement();
 
         date_of_birth_button = (ImageButton) findViewById(R.id.BirthDateBTTN);
         date_of_birth_button.setOnClickListener(new View.OnClickListener(){
@@ -183,9 +188,9 @@ db.addSubmission(sub)
         dbHandler = new MyDBHandler(this);
 
 
-        //For displaying the current date
-//        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-        //+ simpleDateFormat.format(Calendar.getInstance().getTime());
+        sickElementName = findViewById(R.id.sick_element_name_ET);
+        species = findViewById(R.id.species_ET);
+        euthanizedCB = findViewById(R.id.EuthanizedCB);
 
         //initialize submission elements
         title_et = findViewById(R.id.sub_title);
@@ -196,15 +201,18 @@ db.addSubmission(sub)
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard();
-                if(loadSubmissionData(0, newSub)) {
+                if(loadSubmissionData(0, newSub, newSickElement)) {
                     //Display confirmation Toast
                     String content = title_et.getText().toString() + " Saved";
                     Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
                     testToast.show();
                     if (dbHandler.findSubmissionTitle(newSub.getTitle()) != null) {
                         dbHandler.updateSubmission(newSub);
+                        //TODO: Add Update Sample and SickElement
                     } else {
-                        dbHandler.addSubmission(newSub);
+                        long intID = dbHandler.addSubmission(newSub);
+                        newSickElement.setInternalID(Math.toIntExact(intID));
+                        dbHandler.addSickElement(newSickElement);
                     }
                 }
                 else {
@@ -218,8 +226,8 @@ db.addSubmission(sub)
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard();
-                if(loadSubmissionData(1, newSub)) {
-                    createDialog(newSub);
+                if(loadSubmissionData(1, newSub, newSickElement)) {
+                    createDialog(newSub, newSickElement);
                 }
                 else{
                     Toast testToast = Toast.makeText(getApplicationContext(), R.string.create_error, Toast.LENGTH_LONG);
@@ -325,14 +333,11 @@ db.addSubmission(sub)
     //This is called whenever the euthanized checkbox is clicked. Changes the data that will be stored in teh database
     public void onCheckboxClicked(View view){
         //Is the view now checked?
-        boolean checked = ((CheckBox) view).isChecked();
-        //Check which checkbox was clicked
-
-        switch(view.getId()){
-            case R.id.EuthanizedCB:
-                isEuthanized = checked;
-                break;
+        int checked = 0;
+        if(euthanizedCB.isChecked()){
+            checked = 1;
         }
+        isEuthanized = checked;
     }
 
     // Purpose: check if string is an integer. This will be used to validate that the user entered an integer into a numeric field
@@ -350,14 +355,12 @@ db.addSubmission(sub)
 
     //This method stores all the data in a Submission. Called whenever the user wants to save or submit a submission
     //Todo: Add checks for empty inputs
-    private boolean loadSubmissionData(int status, Submission newSub){
+    private boolean loadSubmissionData(int status, Submission newSub, SickElement newSickElement){
         long curDate = Calendar.getInstance().getTime().getTime();
 
 
         Log.d("s", "storeDataInDB: before logging " );
 //        Log.d("s", "storeDataInDB: Number of samples: " + numberOfSamples);
-        String sickElementName = ((EditText) findViewById(R.id.sick_element_name_ET)).getText().toString();
-        String species = ((EditText) findViewById(R.id.species_ET)).getText().toString();
 
         //The following data should have been collected elsewhere in the app:
         //deathDate
@@ -386,6 +389,21 @@ db.addSubmission(sub)
         newSub.setStatusFlag(status);
         newSub.setDateOfCreation(curDate);
         newSub.setComment(comment_et.getText().toString());
+
+        newSickElement.setName(sickElementName.getText().toString());
+        newSickElement.setSex(selectedSex);
+        newSickElement.setEuthanized(isEuthanized);
+        newSickElement.setSpecies(species.getText().toString());
+        if(birthDate != null) {
+            newSickElement.setDateOfBirth(birthDate.getTime());
+        } else {
+            newSickElement.setDateOfBirth(0);
+        }
+        if(deathDate != null) {
+            newSickElement.setDateOfDeath(deathDate.getTime());
+        } else {
+            newSickElement.setDateOfDeath(0);
+        }
 
         return true;
     }
