@@ -4,6 +4,8 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -28,8 +30,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -81,6 +85,9 @@ db.addSubmission(sub)
 
     static final String LOG_TAG = "CreateSubActivity";
 
+    private Picture [] pictures = {null, null, null, null, null};
+    private ArrayList<Picture> picturesList;
+
 
     public void createDialog(final Submission submission, final SickElement sickElement){
         AlertDialog.Builder dialog = new AlertDialog.Builder(CreateSubActivity.this);
@@ -93,10 +100,21 @@ db.addSubmission(sub)
                 String content = title_et.getText().toString() + " Submitted";
                 Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
                 testToast.show();
-                dbHandler.addSubmission(submission);
-                Log.d(LOG_TAG, "Submission " + submission.getSickElementID());
-                dbHandler.addSickElement(sickElement);
-                Log.d("CreateSubActivity", "Sick Element " + Integer.toString(sickElement.getInternalID()));
+                long internalID;
+                internalID = dbHandler.addSubmission(submission);
+
+                for(Picture tempPicture: picturesList){
+                    if(tempPicture != null){
+                        tempPicture.setInternalID(Math.toIntExact(internalID));
+                        Log.d("details", "onClick: current internal id is: " + tempPicture.getInternalID());
+                    }
+
+
+                        dbHandler.addPicture(tempPicture);
+                }
+              sickElement.setInternalID(internalID);
+              dbHandler.addSickElement(sickElement);
+
                 startActivity(view_subs_activity);
             }
         })
@@ -126,6 +144,8 @@ db.addSubmission(sub)
         dbHandler = new MyDBHandler(this);
         final Submission newSub = new Submission();
         final SickElement newSickElement = new SickElement();
+
+        picturesList = new ArrayList<Picture>(5);
 
         date_of_submission_button = (ImageButton) findViewById(R.id.CollectionDateBTTN);
         date_of_submission_button.setOnClickListener(new View.OnClickListener(){
@@ -219,6 +239,45 @@ db.addSubmission(sub)
                 }
             }
         });
+//
+        view_subs_activity = new Intent(this, ViewSubsActivity.class);
+
+
+
+        //initialize the camera button where users can add pictures
+        add_pictures_activity = new Intent(this, AddPicturesActivity.class);
+        Picture p = new Picture();
+        p.setImageTitle("testPic");
+        picturesList.add(p);
+        Log.d("pass", "onCreate: Title of P: " + p.getImageTitle());
+
+
+
+        add_pictures_button = findViewById(R.id.addPicturesButton);
+        add_pictures_button.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                add_pictures_activity.putExtra("pictureList", picturesList);
+                startActivityForResult(add_pictures_activity, 1);
+            }
+        });
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("pass", "onActivityResult: back in onActivityResult");
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            if(resultCode == RESULT_OK){
+                picturesList = (ArrayList<Picture>) data.getSerializableExtra("result");
+                Log.d("pass", "onActivityResult: result after returning to createsub is " + picturesList.get(0).getImageTitle() + " longitude: " + picturesList.get(0).getLongitude());
+
+
+
+
+            }
+        }
     }
 
     /**
@@ -334,19 +393,15 @@ db.addSubmission(sub)
             return false;
         }
 
-        Random rand = new Random();
-        int sickInternalID = rand.nextInt(1000);
 
         newSub.setCaseID(NULL);
         newSub.setMasterID(NULL);
-        newSub.setSickElementID(sickInternalID);
         newSub.setTitle(title_et.getText().toString());
         newSub.setGroup(group_et.getText().toString());
         newSub.setStatusFlag(status);
         newSub.setDateOfCreation(curDate);
         newSub.setComment(comment_et.getText().toString());
 
-        newSickElement.setInternalID(sickInternalID);
         newSickElement.setName(sickElementName.getText().toString());
         newSickElement.setSex(selectedSex);
         newSickElement.setEuthanized(isEuthanized);

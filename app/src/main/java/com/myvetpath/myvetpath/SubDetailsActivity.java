@@ -1,17 +1,18 @@
 package com.myvetpath.myvetpath;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
+
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import static java.sql.Types.NULL;
@@ -25,6 +26,7 @@ public class SubDetailsActivity extends BaseActivity {
     SickElement currentSickElement;
     Calendar calendar = Calendar.getInstance();
     final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+    private ImageButton[] images;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,10 @@ public class SubDetailsActivity extends BaseActivity {
         int sickID = currentSub.getSickElementID();
         currentSickElement = myDBHandler.findSickElementID(sickID);
         Log.d("SubDetails", "Name: " + currentSickElement.getNameOfSickElement());
+
+        ArrayList<Picture> pictures = myDBHandler.findPictures(internalId);
+        Log.d("details", "onCreate: number of pictures in DB: " + myDBHandler.getNumberOfPictures());
+
         String title = currentSub.getTitle();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -79,6 +85,31 @@ public class SubDetailsActivity extends BaseActivity {
         }
         TextView commentText = findViewById(R.id.subComment);
         commentText.setText(comment);
+        //set images
+        images = new ImageButton[]{findViewById(R.id.first_ImageDetails_bttn), findViewById(R.id.second_ImageDetails_bttn),
+                findViewById(R.id.third_ImageDetails_bttn), findViewById(R.id.fourth_ImageDetails_bttn),
+                findViewById(R.id.fifth_ImageDetails_bttn)};
+
+        for(int i = 0; i < 5; i++){
+            if(pictures.size() > i && pictures.get(i).getImageTitle() != null){
+                Bitmap bmp = null;
+                ImageButton bttn = (ImageButton) findViewById(R.id.first_ImageDetails_bttn);
+
+                String filename = pictures.get(i).getPicturePath();
+                try { //try to get the bitmap and set the image button to it
+                    FileInputStream is = this.openFileInput(filename);
+                    bmp = BitmapFactory.decodeStream(is);
+                    is.close();
+                    images[i].setImageBitmap(bmp);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else{
+                images[i].setVisibility(View.INVISIBLE);
+            }
+        }
+
     }
 
 

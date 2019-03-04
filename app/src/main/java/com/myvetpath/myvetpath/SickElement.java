@@ -71,6 +71,7 @@ public class SickElement {
     public String getSpecies(){return this.species;}
     public long getDateOfDeath(){return this.dateOfDeath;}
     public long getDateOfBirth(){return this.dateOfBirth;}
+
 }
 
 

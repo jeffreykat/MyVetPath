@@ -7,8 +7,19 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".SubDetailsActivity"
     tools:showIn="@layout/activity_sub_details">
+    
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
 
-    <TextView
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <TextView
         android:id="@+id/subTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,7 +49,7 @@
         app:layout_constraintTop_toBottomOf="@id/subDate"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <TextView
+            <TextView
         android:id="@+id/subGroupName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -76,7 +87,7 @@
         app:layout_constraintTop_toBottomOf="@id/sickElementName"
         app:layout_constraintLeft_toLeftOf="parent" />
 
-    <TextView
+<TextView
         android:id="@+id/sickElementSpecies"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -115,5 +126,68 @@
         android:textColor="@color/colorHeader"
         app:layout_constraintTop_toBottomOf="@id/sickElementSex"
         app:layout_constraintLeft_toLeftOf="parent"/>
+
+            <TextView
+                android:id="@+id/picturesTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="20sp"
+                android:textColor="@color/colorHeader"
+                app:layout_constraintTop_toBottomOf="@id/subComment"
+                app:layout_constraintLeft_toLeftOf="parent"
+
+                android:gravity = "center"
+                android:text = "Pictures"
+                />
+
+            <ImageButton
+                android:id="@+id/first_ImageDetails_bttn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/picturesTV"
+                android:gravity = "center"
+                />
+
+            <ImageButton
+
+                android:id="@+id/second_ImageDetails_bttn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/first_ImageDetails_bttn"
+                android:gravity = "center"
+                />
+
+            <ImageButton
+                android:id="@+id/third_ImageDetails_bttn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/second_ImageDetails_bttn"
+                android:gravity = "center"
+                />
+
+            <ImageButton
+                android:id="@+id/fourth_ImageDetails_bttn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/third_ImageDetails_bttn"
+                android:gravity = "center"
+                />
+
+            <ImageButton
+                android:id="@+id/fifth_ImageDetails_bttn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/fourth_ImageDetails_bttn"
+                android:gravity = "center"
+                />
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 
 </android.support.constraint.ConstraintLayout>
