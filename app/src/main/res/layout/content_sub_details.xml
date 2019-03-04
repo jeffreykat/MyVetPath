@@ -7,9 +7,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".SubDetailsActivity"
     tools:showIn="@layout/activity_sub_details">
-
-
-
+    
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -22,46 +20,112 @@
 
 
             <TextView
-                android:id="@+id/subTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:textSize="20sp"
-                android:textColor="@color/colorHeader"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"/>
+        android:id="@+id/subTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="22sp"
+        android:textColor="@color/colorHeader"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <TextView
+        android:id="@+id/subDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="20sp"
+        android:textColor="@color/colorHeader"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:id="@+id/subCaseID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="20sp"
+        android:textColor="@color/colorHeader"
+        app:layout_constraintTop_toBottomOf="@id/subDate"
+        app:layout_constraintRight_toRightOf="parent" />
 
             <TextView
-                android:id="@+id/subDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:textSize="20sp"
-                android:textColor="@color/colorHeader"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintRight_toRightOf="parent"/>
+        android:id="@+id/subGroupName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorHeader"
+        app:layout_constraintTop_toBottomOf="@id/subTitle"
+        app:layout_constraintLeft_toLeftOf="parent"/>
 
-            <TextView
-                android:id="@+id/subCaseID"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:textSize="20sp"
-                android:textColor="@color/colorHeader"
-                app:layout_constraintTop_toBottomOf="@id/subDate"
-                app:layout_constraintRight_toRightOf="parent" />
+    <View
+        android:id="@+id/subHeaderView"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/cardview_dark_background"
+        app:layout_constraintTop_toBottomOf="@id/subCaseID" />
 
-            <TextView
-                android:id="@+id/subInternalID"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:textSize="20sp"
-                android:textColor="@color/colorHeader"
-                app:layout_constraintTop_toBottomOf="@id/subTitle"
-                app:layout_constraintLeft_toLeftOf="parent" />
+    <TextView
+        android:id="@+id/sickElementName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorHeader"
+        app:layout_constraintTop_toBottomOf="@id/subHeaderView"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
+    <TextView
+        android:id="@+id/sickElementSpeciesTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorHeader"
+        android:text="@string/species_display"
+        app:layout_constraintTop_toBottomOf="@id/sickElementName"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
+<TextView
+        android:id="@+id/sickElementSpecies"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorHeader"
+        app:layout_constraintTop_toBottomOf="@id/sickElementName"
+        app:layout_constraintLeft_toRightOf="@id/sickElementSpeciesTitle" />
+
+    <TextView
+        android:id="@+id/sickElementSex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorHeader"
+        app:layout_constraintTop_toBottomOf="@id/sickElementSpecies"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/sickElementEuthanized"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorHeader"
+        app:layout_constraintTop_toBottomOf="@id/sickElementSpecies"
+        app:layout_constraintLeft_toRightOf="@id/sickElementSex" />
+
+    <TextView
+        android:id="@+id/subComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorHeader"
+        app:layout_constraintTop_toBottomOf="@id/sickElementSex"
+        app:layout_constraintLeft_toLeftOf="parent"/>
 
             <TextView
                 android:id="@+id/picturesTV"
@@ -70,7 +134,7 @@
                 android:padding="10dp"
                 android:textSize="20sp"
                 android:textColor="@color/colorHeader"
-                app:layout_constraintTop_toBottomOf="@id/subInternalID"
+                app:layout_constraintTop_toBottomOf="@id/subComment"
                 app:layout_constraintLeft_toLeftOf="parent"
 
                 android:gravity = "center"
@@ -125,6 +189,5 @@
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
-
 
 </android.support.constraint.ConstraintLayout>

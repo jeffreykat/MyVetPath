@@ -18,7 +18,8 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="5dp">
 
             <TextView
                 android:id="@+id/SubmissionTitleTV"
@@ -27,7 +28,7 @@
                 android:layout_margin="5dp"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
-                android:text="Submission Title"
+                android:text="Submission Title*"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:textColor="@color/colorBlack"
@@ -113,6 +114,7 @@
                 android:textColor="@color/colorBlack"
                 android:textStyle="bold"/>
 
+            <!--TODO: Change to NumberPicker -->
             <EditText
                 android:id="@+id/number_of_samples_ET"
                 style="@style/Widget.AppCompat.EditText"
@@ -198,7 +200,6 @@
                 android:layout_margin="5dp"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
-
                 android:text="Sick Element Name"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/CollectionDateBTTN"
@@ -370,7 +371,7 @@
                 android:layout_margin="5dp"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
-                android:text="Comment"
+                android:text="Comment*"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/DeathDateBTTN"
                 android:textColor="@color/colorBlack"

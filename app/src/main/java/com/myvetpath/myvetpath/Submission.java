@@ -6,27 +6,40 @@ public class Submission {
     public static final String TABLE_NAME = "Submission";
     public static final String COLUMN_ID = "internalID";
     public static final String COLUMN_CASE_ID = "caseID";
+    public static final String COLUMN_MASTER_ID = "masterID";
+    public static final String COLUMN_SICK_ELEMENT = "sickElementID";
     public static final String COLUMN_TITLE = "title";
+    public static final String COLUMN_GROUP = "groupName";
     public static final String COLUMN_DATE_CREATION = "dateOfCreation";
     public static final String COLUMN_STATUS_FLAG = "statusFlag";
     public static final String COLUMN_COMMENT = "comment";
 
     //Create Table String
 
-    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ( " + COLUMN_ID +
-            " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_CASE_ID + " INTEGER, " + COLUMN_TITLE + " TEXT, " + COLUMN_DATE_CREATION + " BIGINT, " +
-            COLUMN_STATUS_FLAG + " INT" + " )";
+    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ( " +
+            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_CASE_ID + " INTEGER, " +
+            COLUMN_MASTER_ID + " INTEGER, " +
+            COLUMN_SICK_ELEMENT + " INTEGER, " +
+            COLUMN_TITLE + " TEXT, " +
+            COLUMN_DATE_CREATION + " BIGINT, " +
+            COLUMN_STATUS_FLAG + " INT, " +
+            COLUMN_COMMENT + " TEXT, " +
+            COLUMN_GROUP + " TEXT" +
+            " )";
 
     //Object Fields
     //Commented out variables in order to reduce the amount of testing needed.
     private int internalID; //Primary key for the internal database.
     private int caseID; //An identifier currently used by Pathologist
     private int masterID; //Primary key for the Server database
+    private int sickElementID; //FK for the Sick Element
     private int statusFlag; // Stage of the submission 0 = draft, 1 = submitted, 2 = received by server
     private String title; //user created title
+    private String group; //name of group
     private String comment; //Contains the comment of a submission.
     private long dateOfCreation; // Date the submission was created
-    //private long dateOfSubmission; // Date the submission was sent to the server
+    private long dateOfSubmission; // Date the submission was sent to the server
     //private long dateOfCompletion; //Date the submission is closed and complete
 
     //Constructors
@@ -50,6 +63,10 @@ public class Submission {
         this.masterID = masterID;
     }
 
+    public void setSickElementID(int sickElementID) {
+        this.sickElementID = sickElementID;
+    }
+
     public void setTitle(String newTitle){
         this.title = newTitle;
     }
@@ -60,6 +77,10 @@ public class Submission {
 
     public void setStatusFlag(int statusFlag) {
         this.statusFlag = statusFlag;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
     }
 
     public void setComment(String comment) {
@@ -77,6 +98,10 @@ public class Submission {
         return masterID;
     }
 
+    public int getSickElementID() {
+        return sickElementID;
+    }
+
     public String getTitle(){
         return this.title;
     }
@@ -87,6 +112,10 @@ public class Submission {
 
     public int getStatusFlag() {
         return statusFlag;
+    }
+
+    public String getGroup() {
+        return group;
     }
 
     public String getComment() {
