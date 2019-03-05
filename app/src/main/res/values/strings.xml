@@ -18,9 +18,9 @@
     <string name="subs">Submissions</string>
 
 
-    <string name="create_error">Required fields must be filled</string>
+    <string name="create_error">Required* fields are empty</string>
     <string name="title_activity_sub_details">SubDetailsActivity</string>
-    <string name="deleted_message">Deleted</string>
+    <string name="deleted_message">Deleted </string>
     <string name="action_yes">Yes</string>
     <string name="action_no">No</string>
     <string name="action_delete_confirmation_prompt_first_part">Are you sure you want to delete \"</string>
@@ -34,13 +34,15 @@
     <string name="action_submit_conformation">Are you sure you are ready to submit?</string>
     <string name="web_URL">https://vetmed.oregonstate.edu/diagnostic</string>
     <string name="pending">Pending</string>
+    <string name="add_samples">Add Samples</string>
     <string-array name="sexString">
         <item></item>
         <item>Male</item>
         <item>Female</item>
     </string-array>
-    <string name="euthanized_pos">Euthanized</string>
-    <string name="euthanized_neg">Not Euthanized</string>
+    <string name="title_activity_add_samples">AddSamplesActivity</string>
     <string name="species_display">Species: </string>
+    <string name="euthanized_neg">Not Euthanized</string>
+    <string name="euthanized_pos">Euthanized</string>
 
 </resources>

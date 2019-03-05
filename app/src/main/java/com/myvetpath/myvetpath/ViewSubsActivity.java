@@ -43,8 +43,7 @@ public class ViewSubsActivity extends BaseActivity {
         dialog.setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                String content = getString(R.string.deleted_message);
-                Toast.makeText(ViewSubsActivity.this, content + " " + submissions[selectedSubmissionPosition].getTitle(),
+                Toast.makeText(ViewSubsActivity.this, getString(R.string.deleted_message) + submissions[selectedSubmissionPosition].getTitle(),
                         Toast.LENGTH_LONG).show();
                 dbHandler.deleteSubmission(submissions[selectedSubmissionPosition].getInternalID());
                 mAdapter.notifyItemRemoved(selectedSubmissionPosition);

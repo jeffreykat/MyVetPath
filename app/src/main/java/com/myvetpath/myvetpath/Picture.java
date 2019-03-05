@@ -34,7 +34,7 @@ public class Picture implements Serializable { //remaned to picture so we don't 
     private String latitude; //not sure about what type to make latitude and longitude
     private String longitude;
     private long dateTaken;
-
+    private String picturePath;
 
     //Constructors
     public Picture() {}
@@ -53,7 +53,7 @@ public class Picture implements Serializable { //remaned to picture so we don't 
     public void setLatitude(String newLat) {this.latitude = newLat;}
     public void setLongitude(String newLon) {this.longitude = newLon;}
     public void setDateTaken(long newDate) {this.dateTaken = newDate;}
-
+    public void setPicturePath(String newLink){this.picturePath = newLink;}
     //Accessors
     public int getImageID(){
         return this.imageID;
@@ -65,7 +65,7 @@ public class Picture implements Serializable { //remaned to picture so we don't 
     public String getLatitude(){return this.latitude;}
     public String getLongitude(){return this.longitude;}
     public long getDateTaken(){return this.dateTaken;}
-
+    public String getPicturePath(){return this.picturePath;}
 }
 
 

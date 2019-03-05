@@ -31,6 +31,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(Submission.CREATE_TABLE);
+        //added below tables
         db.execSQL(Picture.CREATE_TABLE);
         db.execSQL(SickElement.CREATE_TABLE);
         db.execSQL(Sample.CREATE_TABLE);
@@ -81,13 +82,17 @@ public class MyDBHandler extends SQLiteOpenHelper {
     //Remove submission table
     //Remove the Picture table, SickElement, Sample
     public void dropTable(SQLiteDatabase db){
+        db.execSQL("DROP TABLE IF EXISTS " + Client.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Groups.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Pathologist.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + Submission.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + Picture.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + RepliesForASubmission.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Reply.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Report.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + Sample.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + SickElement.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + Client.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + Group.TABLE_NAME);
-        //db.execSQL("DROP TABLE IF EXISTS " + Pathologist.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + User.TABLE_NAME);
     }
 
     @Override
@@ -134,22 +139,26 @@ public class MyDBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(Submission.COLUMN_CASE_ID, submission.getCaseID());
         values.put(Submission.COLUMN_MASTER_ID, submission.getMasterID());
-        values.put(Submission.COLUMN_SICK_ELEMENT, submission.getSickElementID());
         values.put(Submission.COLUMN_TITLE, submission.getTitle());
         values.put(Submission.COLUMN_GROUP, submission.getGroup());
         values.put(Submission.COLUMN_DATE_CREATION, submission.getDateOfCreation());
         values.put(Submission.COLUMN_STATUS_FLAG, submission.getStatusFlag());
         values.put(Submission.COLUMN_COMMENT, submission.getComment());
         SQLiteDatabase db = this.getWritableDatabase();
+        long internalID = db.insert(Submission.TABLE_NAME, null, values);
         Log.d("SQLite Database", "addSubmission: " + submission.getTitle());
-        long internlID = db.insert(Submission.TABLE_NAME, null, values);
         db.close();
-        return internlID;
+        return internalID;
     }
 
+    //This adds the given sample into the db
     public void addSample(Sample sample) {
         ContentValues values = new ContentValues();
         values.put(Sample.COLUMN_NAMEOFSAMPLE, sample.getNameOfSample());
+        values.put(Sample.COLUMN_LOCATIONOFSAMPLE, sample.getLocation());
+        values.put(Sample.COLUMN_NUMBEROFSAMPLE, sample.getNumberOfSamples());
+        values.put(Sample.COLUMN_SAMPLECOLLECTIONDATE, sample.getSampleCollectionDate());
+        values.put(Sample.COLUMN_INTERNAL, sample.getInternalID());
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(Sample.TABLE_NAME, null, values);
         db.close();
@@ -166,7 +175,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         values.put(SickElement.COLUMN_DATEOFDEATH, sickElement.getDateOfDeath());
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(SickElement.TABLE_NAME, null, values);
-        Log.d("SQLite Database", "addSickElement: " + sickElement.getNameOfSickElement());
         db.close();
     }
 
@@ -195,7 +203,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
             sub.setInternalID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_ID)));
             sub.setCaseID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_CASE_ID)));
             sub.setMasterID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_MASTER_ID)));
-            sub.setSickElementID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_SICK_ELEMENT)));
             sub.setTitle(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_TITLE)));
             sub.setGroup(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_GROUP)));
             sub.setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
@@ -207,6 +214,29 @@ public class MyDBHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return sub;
+    }
+
+    //Searches the database for all samples related to a case's internal ID
+    public ArrayList<Sample> findSamples(int internalID) {
+        String query = "Select * FROM " + Sample.TABLE_NAME + " WHERE " + Sample.COLUMN_INTERNAL + " = " + "'" + internalID + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        ArrayList<Sample> samplesList = new ArrayList<Sample>();
+
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+            Sample tempSample = new Sample();
+            tempSample.setSamplelID(cursor.getInt(cursor.getColumnIndex(Sample.COLUMN_INTERNAL)));
+            tempSample.setName(cursor.getString(cursor.getColumnIndex(Sample.COLUMN_NAMEOFSAMPLE)));
+            tempSample.setLocation(cursor.getString(cursor.getColumnIndex(Sample.COLUMN_LOCATIONOFSAMPLE)));
+            tempSample.setNumberOfSamples(cursor.getInt(cursor.getColumnIndex(Sample.COLUMN_NUMBEROFSAMPLE)));
+            tempSample.setSampleCollectionDate(cursor.getLong(cursor.getColumnIndex(Sample.COLUMN_SAMPLECOLLECTIONDATE)));
+
+            samplesList.add(tempSample);
+        }
+
+        cursor.close();
+        db.close();
+        return samplesList;
     }
 
     //Searches the database for all pictures related to a case's internal ID
@@ -246,7 +276,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
             sub.setInternalID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_ID)));
             sub.setCaseID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_CASE_ID)));
             sub.setMasterID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_MASTER_ID)));
-            sub.setSickElementID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_SICK_ELEMENT)));
             sub.setTitle(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_TITLE)));
             sub.setGroup(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_GROUP)));
             sub.setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));

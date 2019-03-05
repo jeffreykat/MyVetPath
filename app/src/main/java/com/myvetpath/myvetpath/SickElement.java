@@ -31,7 +31,7 @@ public class SickElement {
 
     private int sickID;
     private int internalID;
-    private int Euthanized; //0 means no 1 means yes
+    private int Euthanized; //0 means no 1 means yes //will change once double check lite boolean
     private String sex;
     private String species;
     private String sickName;
@@ -57,7 +57,6 @@ public class SickElement {
     public void setSpecies (String newSpecies){this.species = newSpecies;}
     public void setDateOfBirth (long newBirth){this.dateOfBirth = newBirth;}
     public void setDateOfDeath (long newDeath){this.dateOfDeath = newDeath;}
-
     //Accessors
     public int getSickID(){
         return this.sickID;
@@ -71,7 +70,6 @@ public class SickElement {
     public String getSpecies(){return this.species;}
     public long getDateOfDeath(){return this.dateOfDeath;}
     public long getDateOfBirth(){return this.dateOfBirth;}
-
 }
 
 
