@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#4bb3fd</color>
     <color name="colorAccount">#22c15c</color>
+    <color name="colorLogOut">#22995c</color>
     <color name="colorSubmission">#1f2c9e</color>
     <color name="colorViewsubs">#561213</color>
     <color name="colorDrafts">#325f71</color>

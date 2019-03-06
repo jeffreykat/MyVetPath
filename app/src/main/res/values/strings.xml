@@ -44,5 +44,22 @@
     <string name="species_display">Species: </string>
     <string name="euthanized_neg">Not Euthanized</string>
     <string name="euthanized_pos">Euthanized</string>
+    <string name="registering_a_new_user">Registering a New User</string>
+    <string name="registeringNewUserSubText">Registering a new user can only be done on the website. Click on the \'Create Account\' button in the home screen in order to be taken to that page.</string>
+    <string name="creating_a_report">Creating a Report</string>
+    <string name="creating_a_report_subtext">You can get to this screen by clicking on the \'Create Report\' button in the homescreen. The fields that are required are marked with an asterisk. It is also possible to attach pictures and sample data by clicking on the corresponding buttons in the \'Create Submission Screen\'</string>
+    <string name="sending_a_report">Sending a Report</string>
+    <string name="sending_a_report_subtext">Submissions will be automatically sent to the server after they\'re submitted as long as there is a stable internet connection. If a submission wasn\'t sent to the server because there wasn\'t an internet connection, then you will have to try to manually resend it.</string>
+    <string name="submissions">Submissions</string>
+    <string name="submissions_subtext">Submissions are the reports that is being sent to pathologists in the laboratory. Please include all relevant information in submission. All mandatory fields are marked with an asterisk. Pictures and sample information are optional but are encouraged. All fields in the sample submission need to be filled out if you want to add a sample. Pictures can be added by either uploading a picture from your phone\'s gallery or by taking a picture within the app (which will not be stored in the gallery).</string>
+    <string name="ovdl_contact_info">OVDL Contact Info</string>
+    <string name="OVDL_contact_info_subtext">The OVDL can be contacted by email at \'vetmed@oregonstate.edu\' or by phone at \'541-737-2141\'.</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="username_key">logged_in_username</string>
+    <string name="username_preference_key">Username_key</string>
 
 </resources>

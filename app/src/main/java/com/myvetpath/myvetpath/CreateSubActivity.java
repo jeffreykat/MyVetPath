@@ -3,10 +3,12 @@ package com.myvetpath.myvetpath;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -226,6 +228,22 @@ db.addSubmission(sub)
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard();
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(CreateSubActivity.this);
+                String userName = preferences.getString(getString(R.string.username_preference_key), "");
+
+                if(userName.equals("")){//if user isn't logged in, then make them login first
+                    Toast.makeText(CreateSubActivity.this, "Please login first " + userName,
+                            Toast.LENGTH_LONG).show();
+                    Intent login_activity;
+                    login_activity = new Intent(CreateSubActivity.this, LoginActivity.class);
+                    startActivity(login_activity);
+                    return;
+                }else{ // set clientID if user is logged in
+                    newSub.setClientID(userName);
+                }
+
+
                 if(loadSubmissionData(1, newSub, newSickElement)) {
                     createDialog(newSub, newSickElement);
                 }

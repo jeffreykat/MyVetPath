@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".LoginActivity"
+    tools:showIn="@layout/activity_login">
+
+
+    <TextView
+        android:id="@+id/UserNameTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:text="Username: "
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/colorBlack"
+        android:textStyle="bold"
+        />
+
+    <EditText
+        android:id="@+id/UserNameET"
+        style="@style/Widget.AppCompat.EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:focusable="true"
+        android:hint="@string/username"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/UserNameTV"
+        android:inputType="text|textMultiLine"
+        android:maxLength="255"
+        />
+
+    <TextView
+        android:id="@+id/PasswordTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:text="Password: "
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/UserNameET"
+        android:textColor="@color/colorBlack"
+        android:textStyle="bold"
+        />
+
+    <EditText
+        android:id="@+id/PasswordET"
+        style="@style/Widget.AppCompat.EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:focusable="true"
+        android:hint="@string/password"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/PasswordTV"
+        android:inputType="textPassword|textMultiLine"
+        android:maxLength="255"
+
+
+        />
+
+    <Button
+        android:id="@+id/loginBTTN"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="265dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="50dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/colorPrimaryDark"
+        android:padding="@dimen/button_padding"
+        android:text="@string/login"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/PasswordET" />
+
+
+</android.support.constraint.ConstraintLayout>
