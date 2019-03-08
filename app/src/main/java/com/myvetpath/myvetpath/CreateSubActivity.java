@@ -3,17 +3,11 @@ package com.myvetpath.myvetpath;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -22,7 +16,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -67,7 +60,6 @@ db.addSubmission(sub)
     EditText species;
     MyDBHandler dbHandler;
 
-    ImageButton date_of_submission_button;
     Spinner sexSpinner;
     private String selectedSex;
     private int isEuthanized = 0;
@@ -97,6 +89,7 @@ db.addSubmission(sub)
         dialog.setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                //TODO: Move all Submit tasks to function with AsyncTask + ViewModel
                 //Display confirmation Toast
                 String content = title_et.getText().toString() + " Submitted";
                 Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
@@ -145,15 +138,35 @@ db.addSubmission(sub)
         //TODO: Fix Activity Lifecycle so up button restarts main activity
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        samplesList = new ArrayList<Sample>();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        picturesList = new ArrayList<Picture>(5);
-
         view_subs_activity = new Intent(this, ViewSubsActivity.class);
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
 
         dbHandler = new MyDBHandler(this);
-        final Submission newSub = new Submission();
-        final SickElement newSickElement = new SickElement();
+        final Submission newSub;
+        final SickElement newSickElement;
+
+        boolean updatingDraft = false;
+
+        samplesList = new ArrayList<Sample>();
+        picturesList = new ArrayList<Picture>(5);
+
+        /*TODO: Add check if Intent contains Extras, if extras exist, populate fields with them*/
+        Submission draftSub;
+        if(extras != null){
+            if(extras.containsKey("draft")) {
+                int internalID = extras.getInt("draft", 0);
+                newSub = dbHandler.findSubmissionID(internalID);
+                newSickElement = dbHandler.findSickElementID(internalID);
+                updatingDraft = true;
+            } else {
+                newSub = new Submission();
+                newSickElement = new SickElement();
+            }
+        } else {
+            newSub = new Submission();
+            newSickElement = new SickElement();
+        }
 
         date_of_birth_button = (ImageButton) findViewById(R.id.BirthDateBTTN);
         date_of_birth_button.setOnClickListener(new View.OnClickListener(){
@@ -208,11 +221,13 @@ db.addSubmission(sub)
                     testToast.show();
                     if (dbHandler.findSubmissionTitle(newSub.getTitle()) != null) {
                         dbHandler.updateSubmission(newSub);
-                        //TODO: Add Update Sample and SickElement
+                        dbHandler.updateSickElement(newSickElement);
+                        //TODO: Add Update Sample
                     } else {
                         long intID = dbHandler.addSubmission(newSub);
                         newSickElement.setInternalID(Math.toIntExact(intID));
                         dbHandler.addSickElement(newSickElement);
+                        //TODO: Add Sample
                     }
                 }
                 else {
@@ -269,6 +284,22 @@ db.addSubmission(sub)
             }
         });
 
+        if(updatingDraft){
+            title_et.setText(newSub.getTitle(), TextView.BufferType.EDITABLE);
+            group_et.setText(newSub.getGroup(), TextView.BufferType.EDITABLE);
+            sickElementName.setText(newSickElement.getNameOfSickElement(), TextView.BufferType.EDITABLE);
+            species.setText(newSickElement.getSpecies(), TextView.BufferType.EDITABLE);
+            if(newSickElement.getSex().matches("Female")) {
+                sexSpinner.setSelection(2);
+            }
+            if(newSickElement.getSex().matches("Male")){
+                sexSpinner.setSelection(1);
+            }
+            if(newSickElement.getEuthanized() == 1) {
+                euthanizedCB.setChecked(true);
+            }
+            comment_et.setText(newSub.getComment(), TextView.BufferType.EDITABLE);
+        }
     }
 
     @Override

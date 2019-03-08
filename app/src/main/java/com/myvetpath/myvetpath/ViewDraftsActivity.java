@@ -1,6 +1,7 @@
 package com.myvetpath.myvetpath;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -123,6 +124,7 @@ public class ViewDraftsActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.draftsRecyclerView);
+        final Intent create_sub_intent = new Intent(this, CreateSubActivity.class);
 
         dbHandler = new MyDBHandler(this);
         subTableExists = dbHandler.doesTableExist(Submission.TABLE_NAME);
@@ -131,8 +133,9 @@ public class ViewDraftsActivity extends BaseActivity {
 
         mAdapter = new DraftsAdapter(drafts, new CustomSubClickListener() {
             @Override
-            public void onSubClick(View v, int caseID) {
-
+            public void onSubClick(View v, int internalID) {
+                create_sub_intent.putExtra("draft", internalID);
+                startActivity(create_sub_intent);
             }
 
             @Override

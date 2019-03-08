@@ -455,5 +455,33 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.close();
         return sickElement;
     }
+
+    public boolean updateSickElement(SickElement sickElement){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put(SickElement.COLUMN_ID, sickElement.getSickID());
+        args.put(SickElement.COLUMN_INTERNAL, sickElement.getInternalID());
+        args.put(SickElement.COLUMN_SICKELEMENTNAME, sickElement.getNameOfSickElement());
+        args.put(SickElement.COLUMN_SPECIES, sickElement.getSpecies());
+        args.put(SickElement.COLUMN_SEX, sickElement.getSex());
+        args.put(SickElement.COLUMN_EUTHANIZED, sickElement.getEuthanized());
+        args.put(SickElement.COLUMN_DATEOFBIRTH, sickElement.getDateOfBirth());
+        args.put(SickElement.COLUMN_DATEOFDEATH, sickElement.getDateOfDeath());
+        Log.d("SQLite Database", "Update: " + sickElement.getNameOfSickElement());
+        return db.update(SickElement.TABLE_NAME, args, SickElement.COLUMN_ID + "=" + sickElement.getSickID(), null) > 0;
+    }
+
+    public boolean updateSample(Sample sample){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put(Sample.COLUMN_ID, sample.getInternalID());
+        args.put(Sample.COLUMN_INTERNAL, sample.getInternalID());
+        args.put(Sample.COLUMN_LOCATIONOFSAMPLE, sample.getLocation());
+        args.put(Sample.COLUMN_NAMEOFSAMPLE, sample.getNameOfSample());
+        args.put(Sample.COLUMN_NUMBEROFSAMPLE, sample.getNumberOfSamples());
+        args.put(Sample.COLUMN_SAMPLECOLLECTIONDATE, sample.getSampleCollectionDate());
+        Log.d("SQLite Datebase", "Update: " + sample.getNameOfSample());
+        return db.update(Sample.TABLE_NAME, args, Sample.COLUMN_ID + "=" + sample.getInternalID(), null) > 0;
+    }
 }
 
