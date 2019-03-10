@@ -49,37 +49,34 @@ db.addSubmission(sub)
     Intent add_pictures_activity;
     Intent view_subs_activity;
     Intent add_samples_activity;
+
     ImageButton add_pictures_button;
     Button save_draft_button;
     Button submit_button;
     Button add_samples_button;
+    ImageButton date_of_birth_button;
+    ImageButton date_of_death_button;
+    CheckBox euthanizedCB;
     EditText title_et;
     EditText group_et;
     EditText comment_et;
     EditText sickElementName;
     EditText species;
-    MyDBHandler dbHandler;
-
     Spinner sexSpinner;
+
     private String selectedSex;
     private int isEuthanized = 0;
     private Date birthDate;
     private Date deathDate;
-
-    ImageButton date_of_birth_button;
-    ImageButton date_of_death_button;
-    CheckBox euthanizedCB;
-
-    static final int SAMPLE_COLLECTED_DATE = 0;
     static final int BIRTH_DATE = 1;
     static final int DEATH_DATE = 2;
     private int selectedCalendar;
 
+    MyDBHandler dbHandler;
     static final String LOG_TAG = "CreateSubActivity";
 
     private final int ADD_SAMPLES_REQUEST_CODE = 2;
     private ArrayList<Sample> samplesList;
-    private Picture [] pictures = {null, null, null, null, null};
     private ArrayList<Picture> picturesList;
 
     public void createDialog(final Submission submission, final SickElement sickElement){
@@ -89,7 +86,7 @@ db.addSubmission(sub)
         dialog.setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                //TODO: Move all Submit tasks to function with AsyncTask + ViewModel
+                //TODO: Move all Submit tasks to function with AsyncTask
                 //Display confirmation Toast
                 String content = title_et.getText().toString() + " Submitted";
                 Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
@@ -101,14 +98,11 @@ db.addSubmission(sub)
                     dbHandler.addSample(tempSample);
                 }
 
-
                 for(Picture tempPicture: picturesList){
                     if(tempPicture != null){
                         tempPicture.setInternalID(Math.toIntExact(internalID));
-                        Log.d("details", "onClick: current internal id is: " + tempPicture.getInternalID());
+                        Log.d(LOG_TAG, "onClick: current internal id is: " + tempPicture.getInternalID());
                     }
-
-
                         dbHandler.addPicture(tempPicture);
                 }
 
@@ -139,6 +133,8 @@ db.addSubmission(sub)
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         view_subs_activity = new Intent(this, ViewSubsActivity.class);
+        add_pictures_activity = new Intent(this, AddPicturesActivity.class);
+        add_samples_activity = new Intent(this, AddSamplesActivity.class);
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
@@ -148,9 +144,6 @@ db.addSubmission(sub)
 
         boolean updatingDraft = false;
 
-        samplesList = new ArrayList<Sample>();
-        picturesList = new ArrayList<Picture>(5);
-
         /*TODO: Add check if Intent contains Extras, if extras exist, populate fields with them*/
         Submission draftSub;
         if(extras != null){
@@ -158,14 +151,21 @@ db.addSubmission(sub)
                 int internalID = extras.getInt("draft", 0);
                 newSub = dbHandler.findSubmissionID(internalID);
                 newSickElement = dbHandler.findSickElementID(internalID);
+                samplesList = dbHandler.findSamples(internalID);
+                picturesList = dbHandler.findPictures(internalID);
                 updatingDraft = true;
-            } else {
+            }
+            else{
                 newSub = new Submission();
                 newSickElement = new SickElement();
+                samplesList = new ArrayList<Sample>();
+                picturesList = new ArrayList<Picture>(5);
             }
         } else {
             newSub = new Submission();
             newSickElement = new SickElement();
+            samplesList = new ArrayList<Sample>();
+            picturesList = new ArrayList<Picture>(5);
         }
 
         date_of_birth_button = (ImageButton) findViewById(R.id.BirthDateBTTN);
@@ -188,18 +188,11 @@ db.addSubmission(sub)
             }
         });
 
-
-
         sexSpinner = findViewById(R.id.SexSp);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sexString, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sexSpinner.setAdapter(adapter);
         sexSpinner.setOnItemSelectedListener(this);
-
-        view_subs_activity = new Intent(this, ViewSubsActivity.class);
-
-        dbHandler = new MyDBHandler(this);
-
 
         sickElementName = findViewById(R.id.sick_element_name_ET);
         species = findViewById(R.id.species_ET);
@@ -222,12 +215,25 @@ db.addSubmission(sub)
                     if (dbHandler.findSubmissionTitle(newSub.getTitle()) != null) {
                         dbHandler.updateSubmission(newSub);
                         dbHandler.updateSickElement(newSickElement);
-                        //TODO: Add Update Sample
+                        for(Sample tempSample: samplesList){
+                            dbHandler.updateSample(tempSample);
+                        }
                     } else {
                         long intID = dbHandler.addSubmission(newSub);
                         newSickElement.setInternalID(Math.toIntExact(intID));
                         dbHandler.addSickElement(newSickElement);
-                        //TODO: Add Sample
+                        for(Sample tempSample: samplesList){
+                            tempSample.setSamplelID(Math.toIntExact(intID));
+                            dbHandler.addSample(tempSample);
+                        }
+
+                        for(Picture tempPicture: picturesList){
+                            if(tempPicture != null){
+                                tempPicture.setInternalID(Math.toIntExact(intID));
+                                Log.d(LOG_TAG, "onClick: current internal id is: " + tempPicture.getInternalID());
+                            }
+                            dbHandler.addPicture(tempPicture);
+                        }
                     }
                 }
                 else {
@@ -250,19 +256,12 @@ db.addSubmission(sub)
                 }
             }
         });
-//
-        view_subs_activity = new Intent(this, ViewSubsActivity.class);
-
-
 
         //initialize the camera button where users can add pictures
-        add_pictures_activity = new Intent(this, AddPicturesActivity.class);
         Picture p = new Picture();
         p.setImageTitle("testPic");
         picturesList.add(p);
         Log.d("pass", "onCreate: Title of P: " + p.getImageTitle());
-
-
 
         add_pictures_button = findViewById(R.id.addPicturesButton);
         add_pictures_button.setOnClickListener(new View.OnClickListener(){
@@ -273,7 +272,6 @@ db.addSubmission(sub)
             }
         });
 
-        add_samples_activity = new Intent(this, AddSamplesActivity.class);
         add_samples_button = findViewById(R.id.add_sample_bttn);
         add_samples_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -308,17 +306,15 @@ db.addSubmission(sub)
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1){
             if(resultCode == RESULT_OK){
-                picturesList = (ArrayList<Picture>) data.getSerializableExtra("result");
+                picturesList = (ArrayList<Picture>) data.getSerializableExtra("pictureResults");
                 Log.d("pass", "onActivityResult: result after returning to createsub is " + picturesList.get(0).getImageTitle() + " longitude: " + picturesList.get(0).getLongitude());
             }
         }else if(requestCode == ADD_SAMPLES_REQUEST_CODE){
             if(resultCode == RESULT_OK ){
-                samplesList = (ArrayList<Sample>) data.getSerializableExtra("results");
+                samplesList = (ArrayList<Sample>) data.getSerializableExtra("sampleResults");
             }
         }
     }
-
-
 
     /**
      * Hides the soft keyboard on screen
@@ -397,8 +393,6 @@ db.addSubmission(sub)
         //deathDate
         //birthDate
         //collectionDate
-        // Boolean isEuthanized = already collected in checkbox listener
-        //selectedSex
 
         //Here are the rest of the data we need for the submissions:
         //Client ID - probably going to get this from login
