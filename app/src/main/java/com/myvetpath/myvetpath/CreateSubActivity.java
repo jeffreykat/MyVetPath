@@ -144,7 +144,6 @@ db.addSubmission(sub)
 
         boolean updatingDraft = false;
 
-        /*TODO: Add check if Intent contains Extras, if extras exist, populate fields with them*/
         Submission draftSub;
         if(extras != null){
             if(extras.containsKey("draft")) {
@@ -217,6 +216,9 @@ db.addSubmission(sub)
                         dbHandler.updateSickElement(newSickElement);
                         for(Sample tempSample: samplesList){
                             dbHandler.updateSample(tempSample);
+                        }
+                        for(Picture tempPicture: picturesList){
+                            dbHandler.updatePicture(tempPicture);
                         }
                     } else {
                         long intID = dbHandler.addSubmission(newSub);
@@ -381,7 +383,6 @@ db.addSubmission(sub)
     }
 
     //This method stores all the data in a Submission. Called whenever the user wants to save or submit a submission
-    //Todo: Add checks for empty inputs
     private boolean loadSubmissionData(int status, Submission newSub, SickElement newSickElement){
         long curDate = Calendar.getInstance().getTime().getTime();
 
@@ -403,7 +404,7 @@ db.addSubmission(sub)
         //Sick element ID - running total
         //Internal ID for sick element table - foreign key from submission table
 
-        if(title_et.getText().toString().isEmpty() || comment_et.getText().toString().isEmpty()){
+        if(title_et.getText().toString().isEmpty() || comment_et.getText().toString().isEmpty() || species.getText().toString().isEmpty()){
             return false;
         }
 

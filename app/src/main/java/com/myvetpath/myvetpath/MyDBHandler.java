@@ -483,5 +483,19 @@ public class MyDBHandler extends SQLiteOpenHelper {
         Log.d("SQLite Datebase", "Update: " + sample.getNameOfSample());
         return db.update(Sample.TABLE_NAME, args, Sample.COLUMN_ID + "=" + sample.getInternalID(), null) > 0;
     }
+
+    public boolean updatePicture(Picture picture){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put(Picture.COLUMN_ID, picture.getImageID());
+        args.put(Picture.COLUMN_INTERNAL, picture.getInternalID());
+        args.put(Picture.COLUMN_IMAGETITLE, picture.getImageTitle());
+        args.put(Picture.COLUMN_DATETAKEN, picture.getDateTaken());
+        args.put(Picture.COLUMN_LATITUDE, picture.getLatitude());
+        args.put(Picture.COLUMN_LONGITUDE, picture.getLongitude());
+        args.put(Picture.COLUMN_IMAGELINK, picture.getPicturePath());
+        Log.d("SQLite Database", "Update: " + picture.getImageTitle());
+        return db.update(Picture.TABLE_NAME, args, Picture.COLUMN_INTERNAL + "=" + picture.getInternalID(), null) > 0;
+    }
 }
 
