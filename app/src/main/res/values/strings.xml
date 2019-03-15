@@ -32,7 +32,7 @@
     <string name="save_draft">Save Draft</string>
     <string name="no_subs">No Submissions</string>
     <string name="action_submit_conformation">Are you sure you are ready to submit?</string>
-    <string name="web_URL">https://vetmed.oregonstate.edu/diagnostic</string>
+    <string name="web_URL">https://myvetpath.com/register.html</string>
     <string name="pending">Pending</string>
     <string name="add_samples">Add Samples</string>
     <string-array name="sexString">
