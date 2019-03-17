@@ -130,7 +130,7 @@ public class AddSamplesActivity extends AppCompatActivity implements DatePickerD
 
     //This is what dynamically adds views to the screen. There is probably a more efficient way of doing this, but it should work for now
     private void updateSamplesView(){
-        //myLayout.removeAllViews();
+        myLayout.removeAllViews();
         int index = 0;
         for(Sample tempSample: samples){
 
