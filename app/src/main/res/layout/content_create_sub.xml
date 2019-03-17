@@ -110,7 +110,7 @@
                 android:layout_margin="5dp"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
-                android:text="Species"
+                android:text="Species*"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/sick_element_name_ET"
                 android:textColor="@color/colorBlack"

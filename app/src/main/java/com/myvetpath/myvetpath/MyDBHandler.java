@@ -355,29 +355,28 @@ public class MyDBHandler extends SQLiteOpenHelper {
     }
 
     //return Submission array of drafts
-    public Submission[] getDrafts(){
-        Submission [] subs = new Submission[getNumberOfSubmissions()];
+    public ArrayList<Submission> getDrafts(){
+        ArrayList<Submission> submissions = new ArrayList<Submission>();
         String query = "Select * FROM " + Submission.TABLE_NAME + " WHERE " + Submission.COLUMN_STATUS_FLAG + " = 0 ORDER BY " + Submission.COLUMN_DATE_CREATION + " DESC";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-        int i = 0;
         if(cursor.moveToFirst()){
             do{
-                subs[i] = new Submission();
-                subs[i].setInternalID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_ID)));
-                subs[i].setCaseID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_CASE_ID)));
-                subs[i].setMasterID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_MASTER_ID)));
-                subs[i].setTitle(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_TITLE)));
-                subs[i].setGroup(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_GROUP)));
-                subs[i].setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
-                subs[i].setStatusFlag(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_STATUS_FLAG)));
-                subs[i].setComment(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_COMMENT)));
-                i++;
+                Submission sub = new Submission();
+                sub.setInternalID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_ID)));
+                sub.setCaseID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_CASE_ID)));
+                sub.setMasterID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_MASTER_ID)));
+                sub.setTitle(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_TITLE)));
+                sub.setGroup(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_GROUP)));
+                sub.setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
+                sub.setStatusFlag(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_STATUS_FLAG)));
+                sub.setComment(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_COMMENT)));
+                submissions.add(sub);
             } while (cursor.moveToNext());
         }
         cursor.close();
         db.close();
-        return subs;
+        return submissions;
     }
 
     //return the number of rows in the submission table

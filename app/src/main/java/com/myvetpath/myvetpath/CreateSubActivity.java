@@ -79,6 +79,8 @@ db.addSubmission(sub)
     private ArrayList<Sample> samplesList;
     private ArrayList<Picture> picturesList;
 
+    private String draftName = "";
+
     public void createDialog(final Submission submission, final SickElement sickElement){
         AlertDialog.Builder dialog = new AlertDialog.Builder(CreateSubActivity.this);
         dialog.setCancelable(true);
@@ -153,6 +155,7 @@ db.addSubmission(sub)
                 samplesList = dbHandler.findSamples(internalID);
                 picturesList = dbHandler.findPictures(internalID);
                 updatingDraft = true;
+                draftName = newSub.getTitle();
             }
             else{
                 newSub = new Submission();
@@ -211,7 +214,7 @@ db.addSubmission(sub)
                     String content = title_et.getText().toString() + " Saved";
                     Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
                     testToast.show();
-                    if (dbHandler.findSubmissionTitle(newSub.getTitle()) != null) {
+                    if (dbHandler.findSubmissionTitle(draftName) != null) {
                         dbHandler.updateSubmission(newSub);
                         dbHandler.updateSickElement(newSickElement);
                         for(Sample tempSample: samplesList){
@@ -222,6 +225,7 @@ db.addSubmission(sub)
                         }
                     } else {
                         long intID = dbHandler.addSubmission(newSub);
+                        draftName = newSub.getTitle();
                         newSickElement.setInternalID(Math.toIntExact(intID));
                         dbHandler.addSickElement(newSickElement);
                         for(Sample tempSample: samplesList){

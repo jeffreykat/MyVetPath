@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import static java.sql.Types.NULL;
@@ -29,21 +30,21 @@ public class ViewDraftsActivity extends BaseActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private Submission[] drafts;
+    private ArrayList<Submission> drafts;
 
     public void createDeleteDialog(final int selectedSubmissionPosition){
         AlertDialog.Builder dialog = new AlertDialog.Builder(ViewDraftsActivity.this);
         dialog.setCancelable(true);
         String title = getString(R.string.action_delete_confirmation_prompt_first_part)
-                + drafts[selectedSubmissionPosition].getTitle()
+                + drafts.get(selectedSubmissionPosition).getTitle()
                 + getString(R.string.action_delete_confirmation_second_part);
         dialog.setTitle(title);
         dialog.setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(ViewDraftsActivity.this,  getString(R.string.deleted_message) + drafts[selectedSubmissionPosition].getTitle(),
+                Toast.makeText(ViewDraftsActivity.this,  getString(R.string.deleted_message) + drafts.get(selectedSubmissionPosition).getTitle(),
                         Toast.LENGTH_LONG).show();
-                dbHandler.deleteSubmission(drafts[selectedSubmissionPosition].getInternalID());
+                dbHandler.deleteSubmission(drafts.get(selectedSubmissionPosition).getInternalID());
                 mAdapter.notifyItemRemoved(selectedSubmissionPosition);
             }
         }).setNegativeButton(R.string.action_no, null);
@@ -52,7 +53,7 @@ public class ViewDraftsActivity extends BaseActivity {
     }
 
     public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.MyViewHolder> {
-        private Submission[] mDrafts;
+        private ArrayList<Submission> mDrafts;
         CustomSubClickListener subClickListener;
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -68,7 +69,7 @@ public class ViewDraftsActivity extends BaseActivity {
             }
         }
 
-        public DraftsAdapter(Submission[] myDrafts, CustomSubClickListener listener){
+        public DraftsAdapter(ArrayList<Submission> myDrafts, CustomSubClickListener listener){
             mDrafts = myDrafts;
             subClickListener = listener;
         }
@@ -81,7 +82,7 @@ public class ViewDraftsActivity extends BaseActivity {
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    subClickListener.onSubClick(view, mDrafts[myViewHolder.getAdapterPosition()].getInternalID());
+                    subClickListener.onSubClick(view, mDrafts.get(myViewHolder.getAdapterPosition()).getInternalID());
                 }
             });
             v.setOnLongClickListener(new View.OnLongClickListener() { //Enable long click on a case entry
@@ -98,13 +99,13 @@ public class ViewDraftsActivity extends BaseActivity {
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-            if(drafts[position].getCaseID() == NULL){
+            if(drafts.get(position).getCaseID() == NULL){
                 holder.caseTextView.setText(R.string.pending);
             } else {
-                holder.caseTextView.setText(String.valueOf(drafts[position].getCaseID()));
+                holder.caseTextView.setText(String.valueOf(drafts.get(position).getCaseID()));
             }
-            holder.titleTextView.setText(drafts[position].getTitle());
-            calendar.setTimeInMillis(drafts[position].getDateOfCreation());
+            holder.titleTextView.setText(drafts.get(position).getTitle());
+            calendar.setTimeInMillis(drafts.get(position).getDateOfCreation());
             holder.dateTextView.setText(simpleDateFormat.format(calendar.getTime()));
         }
 
