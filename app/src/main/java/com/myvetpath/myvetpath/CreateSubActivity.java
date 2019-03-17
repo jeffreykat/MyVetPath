@@ -265,8 +265,6 @@ db.addSubmission(sub)
 
         //initialize the camera button where users can add pictures
         Picture p = new Picture();
-        p.setImageTitle("testPic");
-        picturesList.add(p);
         Log.d("pass", "onCreate: Title of P: " + p.getImageTitle());
 
         add_pictures_button = findViewById(R.id.addPicturesButton);
