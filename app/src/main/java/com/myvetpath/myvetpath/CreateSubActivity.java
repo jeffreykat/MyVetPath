@@ -302,6 +302,21 @@ db.addSubmission(sub)
             if(newSickElement.getEuthanized() == 1) {
                 euthanizedCB.setChecked(true);
             }
+            Long bDateMS = newSickElement.getDateOfBirth();
+            Long dDateMS = newSickElement.getDateOfDeath();
+            Calendar c = Calendar.getInstance();
+            if(bDateMS != 0) {
+                c.setTimeInMillis(bDateMS);
+                birthDate = c.getTime();
+                selectedCalendar = BIRTH_DATE;
+                showDateText(c);
+            }
+            if(dDateMS != 0) {
+                c.setTimeInMillis(dDateMS);
+                deathDate = c.getTime();
+                selectedCalendar = DEATH_DATE;
+                showDateText(c);
+            }
             comment_et.setText(newSub.getComment(), TextView.BufferType.EDITABLE);
         }
     }
@@ -341,15 +356,23 @@ db.addSubmission(sub)
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
         if (selectedCalendar == BIRTH_DATE){
-            String currentDateString = "Animal Born On " + DateFormat.getDateInstance(DateFormat.FULL).format(c.getTime());
-            TextView dateSelectedTV = (TextView) findViewById(R.id.Birth_Date_Message_TV);
-            dateSelectedTV.setText(currentDateString);
+            showDateText(c);
             birthDate = new GregorianCalendar(year, month, dayOfMonth).getTime();
         }else if (selectedCalendar == DEATH_DATE){
-            String currentDateString = "Animal Died On " + DateFormat.getDateInstance(DateFormat.FULL).format(c.getTime());
+            showDateText(c);
+            deathDate = new GregorianCalendar(year, month, dayOfMonth).getTime();
+        }
+    }
+
+    public void showDateText(Calendar calendar){
+        if(selectedCalendar == BIRTH_DATE){
+            String currentDateString = "Animal Born On " + DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
+            TextView dateSelectedTV = (TextView) findViewById(R.id.Birth_Date_Message_TV);
+            dateSelectedTV.setText(currentDateString);
+        } else if(selectedCalendar == DEATH_DATE){
+            String currentDateString = "Animal Died On " + DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
             TextView dateSelectedTV = (TextView) findViewById(R.id.Death_Date_Message_TV);
             dateSelectedTV.setText(currentDateString);
-            deathDate = new GregorianCalendar(year, month, dayOfMonth).getTime();
         }
     }
 
