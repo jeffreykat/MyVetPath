@@ -13,6 +13,7 @@ public class Submission {
     public static final String COLUMN_DATE_CREATION = "dateOfCreation";
     public static final String COLUMN_STATUS_FLAG = "statusFlag";
     public static final String COLUMN_COMMENT = "comment";
+    public static final String COLUMN_CLIENT_ID = "clientID";
 
     //Create Table String
 
@@ -25,7 +26,8 @@ public class Submission {
             COLUMN_DATE_CREATION + " BIGINT, " +
             COLUMN_STATUS_FLAG + " INT, " +
             COLUMN_COMMENT + " TEXT, " +
-            COLUMN_GROUP + " TEXT" +
+            COLUMN_GROUP + " TEXT, " +
+            COLUMN_CLIENT_ID + " TEXT" +
             " )";
 
     //Object Fields
@@ -40,6 +42,7 @@ public class Submission {
     private String comment; //Contains the comment of a submission.
     private long dateOfCreation; // Date the submission was created
     private long dateOfSubmission; // Date the submission was sent to the server
+    private String clientID; //username of who created submission
     //private long dateOfCompletion; //Date the submission is closed and complete
 
     //Constructors
@@ -87,6 +90,8 @@ public class Submission {
         this.comment = comment;
     }
 
+    public void setClientID(String id){this.clientID = id;}
+
     //Accessors
     public int getInternalID(){
         return this.internalID;
@@ -121,6 +126,11 @@ public class Submission {
     public String getComment() {
         return comment;
     }
+
+    public String getClientID(){
+        return clientID;
+    }
+
 }
 
 

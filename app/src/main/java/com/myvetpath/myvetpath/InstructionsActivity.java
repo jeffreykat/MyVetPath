@@ -16,8 +16,6 @@ public class InstructionsActivity extends BaseActivity {
         toolbar.setTitle(R.string.action_instructions);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
