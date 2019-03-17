@@ -358,29 +358,28 @@ public class MyDBHandler extends SQLiteOpenHelper {
     }
 
     //return Submission array of drafts
-    public Submission[] getDrafts(){
-        Submission [] subs = new Submission[getNumberOfSubmissions()];
+    public ArrayList<Submission> getDrafts(){
+        ArrayList<Submission> submissions = new ArrayList<Submission>();
         String query = "Select * FROM " + Submission.TABLE_NAME + " WHERE " + Submission.COLUMN_STATUS_FLAG + " = 0 ORDER BY " + Submission.COLUMN_DATE_CREATION + " DESC";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-        int i = 0;
         if(cursor.moveToFirst()){
             do{
-                subs[i] = new Submission();
-                subs[i].setInternalID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_ID)));
-                subs[i].setCaseID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_CASE_ID)));
-                subs[i].setMasterID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_MASTER_ID)));
-                subs[i].setTitle(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_TITLE)));
-                subs[i].setGroup(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_GROUP)));
-                subs[i].setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
-                subs[i].setStatusFlag(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_STATUS_FLAG)));
-                subs[i].setComment(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_COMMENT)));
-                i++;
+                Submission sub = new Submission();
+                sub.setInternalID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_ID)));
+                sub.setCaseID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_CASE_ID)));
+                sub.setMasterID(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_MASTER_ID)));
+                sub.setTitle(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_TITLE)));
+                sub.setGroup(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_GROUP)));
+                sub.setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
+                sub.setStatusFlag(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_STATUS_FLAG)));
+                sub.setComment(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_COMMENT)));
+                submissions.add(sub);
             } while (cursor.moveToNext());
         }
         cursor.close();
         db.close();
-        return subs;
+        return submissions;
     }
 
     //return the number of rows in the submission table
@@ -457,6 +456,48 @@ public class MyDBHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return sickElement;
+    }
+
+    public boolean updateSickElement(SickElement sickElement){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put(SickElement.COLUMN_ID, sickElement.getSickID());
+        args.put(SickElement.COLUMN_INTERNAL, sickElement.getInternalID());
+        args.put(SickElement.COLUMN_SICKELEMENTNAME, sickElement.getNameOfSickElement());
+        args.put(SickElement.COLUMN_SPECIES, sickElement.getSpecies());
+        args.put(SickElement.COLUMN_SEX, sickElement.getSex());
+        args.put(SickElement.COLUMN_EUTHANIZED, sickElement.getEuthanized());
+        args.put(SickElement.COLUMN_DATEOFBIRTH, sickElement.getDateOfBirth());
+        args.put(SickElement.COLUMN_DATEOFDEATH, sickElement.getDateOfDeath());
+        Log.d("SQLite Database", "Update: " + sickElement.getNameOfSickElement());
+        return db.update(SickElement.TABLE_NAME, args, SickElement.COLUMN_ID + "=" + sickElement.getSickID(), null) > 0;
+    }
+
+    public boolean updateSample(Sample sample){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put(Sample.COLUMN_ID, sample.getInternalID());
+        args.put(Sample.COLUMN_INTERNAL, sample.getInternalID());
+        args.put(Sample.COLUMN_LOCATIONOFSAMPLE, sample.getLocation());
+        args.put(Sample.COLUMN_NAMEOFSAMPLE, sample.getNameOfSample());
+        args.put(Sample.COLUMN_NUMBEROFSAMPLE, sample.getNumberOfSamples());
+        args.put(Sample.COLUMN_SAMPLECOLLECTIONDATE, sample.getSampleCollectionDate());
+        Log.d("SQLite Datebase", "Update: " + sample.getNameOfSample());
+        return db.update(Sample.TABLE_NAME, args, Sample.COLUMN_ID + "=" + sample.getInternalID(), null) > 0;
+    }
+
+    public boolean updatePicture(Picture picture){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put(Picture.COLUMN_ID, picture.getImageID());
+        args.put(Picture.COLUMN_INTERNAL, picture.getInternalID());
+        args.put(Picture.COLUMN_IMAGETITLE, picture.getImageTitle());
+        args.put(Picture.COLUMN_DATETAKEN, picture.getDateTaken());
+        args.put(Picture.COLUMN_LATITUDE, picture.getLatitude());
+        args.put(Picture.COLUMN_LONGITUDE, picture.getLongitude());
+        args.put(Picture.COLUMN_IMAGELINK, picture.getPicturePath());
+        Log.d("SQLite Database", "Update: " + picture.getImageTitle());
+        return db.update(Picture.TABLE_NAME, args, Picture.COLUMN_INTERNAL + "=" + picture.getInternalID(), null) > 0;
     }
 }
 

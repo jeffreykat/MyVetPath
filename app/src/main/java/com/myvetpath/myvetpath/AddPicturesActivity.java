@@ -93,7 +93,7 @@ public class AddPicturesActivity extends AppCompatActivity {
             public void onClick(View view) {
                 storePicturesInDB();
                 Intent resultIntent = new Intent();
-                resultIntent.putExtra("result", picturesList);
+                resultIntent.putExtra("pictureResults", picturesList);
                 setResult(RESULT_OK, resultIntent);
                 finish();
             }

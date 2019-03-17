@@ -60,15 +60,11 @@ public class AddSamplesActivity extends AppCompatActivity implements DatePickerD
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Samples added", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Toast.makeText(getApplicationContext(), "" + Integer.toString(samples.size()) + " Samples Added", Toast.LENGTH_LONG).show();
                 Intent resultIntent = new Intent();
-                resultIntent.putExtra("results", samples);
+                resultIntent.putExtra("sampleResults", samples);
                 setResult(RESULT_OK, resultIntent);
                 finish();
-
-//                myLayout.removeAllViews();
-
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -87,7 +83,6 @@ public class AddSamplesActivity extends AppCompatActivity implements DatePickerD
                 String sampleLocation = ((EditText) findViewById(R.id.location_sample_ET)).getText().toString();
                 int numberOfSamples = number_of_samples_NP.getValue();
 
-
                 if(collectionDate == null || sampleName.equals("") || sampleLocation.equals("")){ //check user input information
                     Toast.makeText(AddSamplesActivity.this, "You are missing a sample field.",
                             Toast.LENGTH_LONG).show();
@@ -98,10 +93,10 @@ public class AddSamplesActivity extends AppCompatActivity implements DatePickerD
                     tempSample.setNumberOfSamples(numberOfSamples);
                     tempSample.setSampleCollectionDate(collectionDate.getTime());
                     samples.add(tempSample);
+                    Snackbar.make(v, "Sample added: " + tempSample.getNameOfSample(), Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
                     updateSamplesView();
                 }
-
-
             }
         });
 
@@ -116,7 +111,6 @@ public class AddSamplesActivity extends AppCompatActivity implements DatePickerD
         });
 
      updateSamplesView();
-
     }
 
 //This is called whenever the user selects a date. It updates a textview and variable
@@ -136,7 +130,7 @@ public class AddSamplesActivity extends AppCompatActivity implements DatePickerD
 
     //This is what dynamically adds views to the screen. There is probably a more efficient way of doing this, but it should work for now
     private void updateSamplesView(){
-        myLayout.removeAllViews();
+        //myLayout.removeAllViews();
         int index = 0;
         for(Sample tempSample: samples){
 
