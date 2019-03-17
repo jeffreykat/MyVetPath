@@ -84,7 +84,6 @@ public class AddPicturesActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         picturesList = (ArrayList<Picture>) intent.getSerializableExtra("pictureList");
-        Log.d("pass", "onCreate: passed in: " + picturesList.get(0).getImageTitle());
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
