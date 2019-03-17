@@ -144,6 +144,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         values.put(Submission.COLUMN_DATE_CREATION, submission.getDateOfCreation());
         values.put(Submission.COLUMN_STATUS_FLAG, submission.getStatusFlag());
         values.put(Submission.COLUMN_COMMENT, submission.getComment());
+        values.put(Submission.COLUMN_CLIENT_ID, submission.getClientID());
         SQLiteDatabase db = this.getWritableDatabase();
         long internalID = db.insert(Submission.TABLE_NAME, null, values);
         Log.d("SQLite Database", "addSubmission: " + submission.getTitle());
@@ -208,6 +209,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
             sub.setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
             sub.setStatusFlag(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_STATUS_FLAG)));
             sub.setComment(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_COMMENT)));
+            sub.setClientID(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_CLIENT_ID)));
         } else {
             sub = null;
         }
@@ -281,6 +283,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
             sub.setDateOfCreation(cursor.getLong(cursor.getColumnIndex(Submission.COLUMN_DATE_CREATION)));
             sub.setStatusFlag(cursor.getInt(cursor.getColumnIndex(Submission.COLUMN_STATUS_FLAG)));
             sub.setComment(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_COMMENT)));
+            sub.setClientID(cursor.getString(cursor.getColumnIndex(Submission.COLUMN_CLIENT_ID)));
         }
         cursor.close();
         db.close();

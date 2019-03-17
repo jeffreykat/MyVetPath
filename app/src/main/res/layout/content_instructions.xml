@@ -8,4 +8,148 @@
     tools:context=".InstructionsActivity"
     tools:showIn="@layout/activity_instructions">
 
+
+
+    <ScrollView
+        android:id="@+id/Instructions_SV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="410dp">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/RegisterNewUserTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="@string/registering_a_new_user"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/group_name_ET"
+                android:textColor="@color/colorBlack"
+                android:textSize="25sp"/>
+            <TextView
+                android:id="@+id/RegisterNewUserSubTextTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="@string/registeringNewUserSubText"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/RegisterNewUserTV"
+                android:textColor="@color/colorBlack"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/CreateReportTitleTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="@string/creating_a_submission"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/RegisterNewUserSubTextTV"
+                android:textColor="@color/colorBlack"
+                android:textSize="25sp"/>
+            <TextView
+                android:id="@+id/CreateReportSubTextTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="@string/creating_a_submission_subtext"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/CreateReportTitleTV"
+                android:textColor="@color/colorBlack"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/SendingReportTitleTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="@string/sending_a_submission"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/CreateReportSubTextTV"
+                android:textColor="@color/colorBlack"
+                android:textSize="25sp"/>
+            <TextView
+                android:id="@+id/SendingReportSubTitleTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="@string/sending_a_submission_subtext"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/SendingReportTitleTV"
+                android:textColor="@color/colorBlack"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/SubmissionsTitleTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="@string/submissions"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/SendingReportSubTitleTV"
+                android:textColor="@color/colorBlack"
+                android:textSize="25sp"/>
+            <TextView
+                android:id="@+id/SubmissionsSubTextTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="@string/submissions_subtext"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/SubmissionsTitleTV"
+                android:textColor="@color/colorBlack"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/OVDLContactInfoTitleTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="@string/ovdl_contact_info"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/SubmissionsSubTextTV"
+                android:textColor="@color/colorBlack"
+                android:textSize="25sp"/>
+            <TextView
+                android:id="@+id/OVDLContactInfoSubTextTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="@string/OVDL_contact_info_subtext"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/OVDLContactInfoTitleTV"
+                android:textColor="@color/colorBlack"
+                android:textSize="15sp"/>
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
+
 </android.support.constraint.ConstraintLayout>
