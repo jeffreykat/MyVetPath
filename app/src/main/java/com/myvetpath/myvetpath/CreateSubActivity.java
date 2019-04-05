@@ -159,12 +159,11 @@ db.addSubmission(sub)
                 newSickElement = dbHandler.findSickElementID(internalID);
                 samplesList = dbHandler.findSamples(internalID);
 
+                //Delete existing samples related to the submission in the database so that the user can add or remove samples.
                 for(Sample tempSample : samplesList){
                     dbHandler.deleteSample(internalID);
                 }
 
-                ArrayList<Sample> newSamplesList = dbHandler.findSamples(internalID);
-                
                 picturesList = dbHandler.findPictures(internalID);
                 updatingDraft = true;
                 draftName = newSub.getTitle();
