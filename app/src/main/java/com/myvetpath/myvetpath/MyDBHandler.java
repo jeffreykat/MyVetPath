@@ -310,6 +310,27 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return result;
     }
 
+
+    //Deletes sample based on the ID
+    public boolean deleteSample(int ID) {
+        boolean result = false;
+        String query = "Select * FROM " + Sample.TABLE_NAME + " WHERE " + Sample.COLUMN_INTERNAL + " = '" + String.valueOf(ID) + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        Sample tempSample = new Sample();
+        if (cursor.moveToFirst()) {
+            tempSample.setSamplelID(Integer.parseInt(cursor.getString(cursor.getColumnIndex(Sample.COLUMN_ID))));
+            db.delete(Sample.TABLE_NAME, Sample.COLUMN_ID + "=?",
+                    new String[] {
+                            String.valueOf(tempSample.getInternalID())
+                    });
+            result = true;
+        }
+        cursor.close();
+        db.close();
+        return result;
+    }
+
     public boolean deletePicutre(int ID, String imageName) {
         boolean result = false;
         String query = "Select * FROM " + imageName + " WHERE " + Picture.COLUMN_ID + " = '" + String.valueOf(ID) + "'";

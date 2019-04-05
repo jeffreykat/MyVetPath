@@ -158,6 +158,13 @@ db.addSubmission(sub)
                 newSub = dbHandler.findSubmissionID(internalID);
                 newSickElement = dbHandler.findSickElementID(internalID);
                 samplesList = dbHandler.findSamples(internalID);
+
+                for(Sample tempSample : samplesList){
+                    dbHandler.deleteSample(internalID);
+                }
+
+                ArrayList<Sample> newSamplesList = dbHandler.findSamples(internalID);
+                
                 picturesList = dbHandler.findPictures(internalID);
                 updatingDraft = true;
                 draftName = newSub.getTitle();
@@ -223,7 +230,8 @@ db.addSubmission(sub)
                         dbHandler.updateSubmission(newSub);
                         dbHandler.updateSickElement(newSickElement);
                         for(Sample tempSample: samplesList){
-                            dbHandler.updateSample(tempSample);
+                            tempSample.setSamplelID(newSub.getInternalID());
+                            dbHandler.addSample(tempSample);
                         }
                         for(Picture tempPicture: picturesList){
                             dbHandler.updatePicture(tempPicture);
