@@ -84,7 +84,6 @@ public class AddPicturesActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         picturesList = (ArrayList<Picture>) intent.getSerializableExtra("pictureList");
-        Log.d("pass", "onCreate: passed in: " + picturesList.get(0).getImageTitle());
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -415,7 +414,10 @@ public class AddPicturesActivity extends AppCompatActivity {
                 InputStream in = null;
                 try {
                     in = getContentResolver().openInputStream(uri);
-                    ExifInterface exifInterface = new ExifInterface(in);
+                    ExifInterface exifInterface = null;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                        exifInterface = new ExifInterface(in);
+                    }
 
                     String longitude = exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
                     String latitude = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
