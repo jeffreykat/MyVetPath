@@ -1,12 +1,22 @@
 package com.myvetpath.myvetpath;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import com.myvetpath.myvetpath.data.CategoryItem;
+import com.myvetpath.myvetpath.data.PlanetItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends BaseActivity {
 
@@ -21,10 +31,12 @@ public class MainActivity extends BaseActivity {
 
     Intent view_drafts_activity;
     Button view_drafts_button;
-
+    private EntryViewModel mEntryViewModel;
 
     //The database would be in this variable
     MyDBHandler dbHelper;
+    private List<CategoryItem> mCategoryItems;
+    ArrayList<PlanetItem> planetsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +116,58 @@ public class MainActivity extends BaseActivity {
             view_drafts_button.setVisibility(View.INVISIBLE);
         }
 
+
+        //query
+        mEntryViewModel = ViewModelProviders.of(this).get(EntryViewModel.class);
+        mCategoryItems = new ArrayList<>();
+        setObserverCategory();
+        mEntryViewModel.loadCategoryItems("planets", null); //query
+
+        Log.d("k", "onCreate: list:");
     }
+
+
+    public void setObserverCategory() {
+
+        planetsList = new ArrayList<PlanetItem>();
+
+        //planets
+        mEntryViewModel.getPlanet().observe(this, new Observer<List<PlanetItem>>() {
+            @Override
+            public void onChanged(@Nullable List<PlanetItem> planetItems) {
+                if(planetItems != null) {
+                    for (PlanetItem item : planetItems) {
+                        CategoryItem categoryItem = new CategoryItem();
+                        categoryItem.name = item.name;
+                        categoryItem.title = null;
+                        categoryItem.url = item.url;
+                        categoryItem.nextURL = item.nextUrl;
+                        mCategoryItems.add(categoryItem);
+                    }
+                    //do another query
+                    if(mCategoryItems.get(mCategoryItems.size()-1).nextURL != null){
+                        mEntryViewModel.loadCategoryItems("planets", mCategoryItems.get(mCategoryItems.size()-1).nextURL);
+                    }else{
+                        List<CategoryItem> tempCategoryItemsList;
+                        tempCategoryItemsList = new ArrayList<>();
+                        for(PlanetItem item : planetItems){
+                            CategoryItem temp = new CategoryItem();
+                            temp.nextURL = item.nextUrl;
+                            temp.name = item.name;
+                            temp.title = null;
+                            temp.url = item.url;
+                            tempCategoryItemsList.add(temp);
+                        }
+                        int j= 3;
+//                        mEntryAdapter.updateEntryItems(tempCategoryItemsList);
+                    }
+
+
+                }
+            }
+        });
+    }
+
 
 
 }
