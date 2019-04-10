@@ -1,8 +1,11 @@
 package com.myvetpath.myvetpath;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,114 +16,57 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.myvetpath.myvetpath.adapters.SubmissionAdapter;
+import com.myvetpath.myvetpath.data.SubmissionTable;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 import static java.sql.Types.NULL;
 
 
-public class ViewSubsActivity extends BaseActivity {
+public class ViewSubsActivity extends BaseActivity implements SubmissionAdapter.OnSubmissionClickListener {
+
+    private MyVetPathViewModel viewModel;
 
     Intent create_sub_activity;
     Intent sub_details_activity;
-    MyDBHandler dbHandler;
     boolean subTableExists;
-    Calendar calendar = Calendar.getInstance();
-    final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private Submission[] submissions;
+    private List<SubmissionTable> submissions;
 
-    public void createDeleteDialog(final int selectedSubmissionPosition){
+    public void createDeleteDialog(final SubmissionTable submission){
         AlertDialog.Builder dialog = new AlertDialog.Builder(ViewSubsActivity.this);
         dialog.setCancelable(true);
         String title = getString(R.string.action_delete_confirmation_prompt_first_part)
-                + submissions[selectedSubmissionPosition].getTitle()
+                + submission.title
                 + getString(R.string.action_delete_confirmation_second_part);
         dialog.setTitle(title);
         dialog.setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(ViewSubsActivity.this, getString(R.string.deleted_message) + submissions[selectedSubmissionPosition].getTitle(),
+                Toast.makeText(ViewSubsActivity.this, getString(R.string.deleted_message) + submission.title,
                         Toast.LENGTH_LONG).show();
-                dbHandler.deleteSubmission(submissions[selectedSubmissionPosition].getInternalID());
-                mAdapter.notifyItemRemoved(selectedSubmissionPosition);
+                viewModel.deleteSubmission(submission);
             }
         }).setNegativeButton(R.string.action_no, null);
         AlertDialog alertDialog = dialog.create();
         alertDialog.show();
     }
 
-    /*Fills View with Submission elements*/
-    public class SubsAdapter extends RecyclerView.Adapter<SubsAdapter.MyViewHolder> {
-        private Submission[] mSubmissions;
-        CustomSubClickListener clickListener;
+    @Override
+    public void onSubmissionClick(SubmissionTable sub) {
+        sub_details_activity.putExtra("internalID", sub.internal_ID);
+        startActivity(sub_details_activity);
+    }
 
-        public class MyViewHolder extends RecyclerView.ViewHolder {
-            // each data item is just a string in this case
-            public TextView titleTextView;
-            public TextView dateTextView;
-            public TextView caseTextView;
-            public MyViewHolder(View v) {
-                super(v);
-                this.titleTextView = (TextView) v.findViewById(R.id.subHeader);
-                this.dateTextView = (TextView) v.findViewById(R.id.subDate);
-                this.caseTextView = (TextView) v.findViewById(R.id.subCaseID);
-            }
-        }
-
-        public SubsAdapter(Submission[] mySubmissions, CustomSubClickListener listener) {
-            mSubmissions = mySubmissions;
-            clickListener = listener;
-        }
-
-        // Create new views (invoked by the layout manager)
-        @Override
-        public SubsAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            // create a new view
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.subrow, parent, false);
-            final MyViewHolder myViewHolder = new MyViewHolder(v);
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    clickListener.onSubClick(view, mSubmissions[myViewHolder.getAdapterPosition()].getInternalID());
-                }
-            });
-            v.setOnLongClickListener(new View.OnLongClickListener() { //Enable long click on a case entry
-                @Override
-                public boolean onLongClick(View view) {
-                    clickListener.onSubLongClick(view, myViewHolder.getAdapterPosition());
-                    notifyDataSetChanged();
-                    return true;
-                }
-            });
-
-            return myViewHolder;
-        }
-
-        // Replace the contents of a view (invoked by the layout manager)
-        @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
-            // - get element from your dataset at this position
-            // - replace the contents of the view with that element
-            holder.titleTextView.setText(mSubmissions[position].getTitle());
-            calendar.setTimeInMillis(mSubmissions[position].getDateOfCreation());
-            holder.dateTextView.setText(simpleDateFormat.format(calendar.getTime()));
-            if(mSubmissions[position].getCaseID() == NULL){
-                holder.caseTextView.setText(R.string.pending);
-            } else {
-                holder.caseTextView.setText(String.valueOf(mSubmissions[position].getCaseID()));
-            }
-        }
-
-        @Override
-        public int getItemCount() {
-            return dbHandler.getNumberOfSubmissions();
-        }
-
+    @Override
+    public void onSubmissionLongClick(SubmissionTable sub) {
+        createDeleteDialog(sub);
     }
 
     @Override
@@ -138,33 +84,21 @@ public class ViewSubsActivity extends BaseActivity {
 
         mRecyclerView = (RecyclerView) findViewById(R.id.subsRecyclerView);
 
-        dbHandler = new MyDBHandler(this);
-
-        submissions = dbHandler.getSubmissions();
-
-        mAdapter = new SubsAdapter(submissions, new CustomSubClickListener() {
-            @Override
-            public void onSubClick(View v, int caseID) {
-                sub_details_activity.putExtra("internalID", caseID);
-                startActivity(sub_details_activity);
-            }
-
-            @Override
-            public boolean onSubLongClick(View v, int position) {
-                //Set it so long clicking on an entry shows the dialog
-                createDeleteDialog(position);
-                return true;
-            }
-        });
-
-        mLayoutManager = new LinearLayoutManager(this);
-
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new SubmissionAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-    }
 
+        viewModel = ViewModelProviders.of(this).get(MyVetPathViewModel.class);
+
+        viewModel.getSubmissions().observe(this, new Observer<List<SubmissionTable>>() {
+            @Override
+            public void onChanged(@Nullable List<SubmissionTable> submissionTables) {
+                //TODO: figure out why update function is inaccessible
+            }
+        });
+    }
 
 
 }

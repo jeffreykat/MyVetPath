@@ -11,7 +11,10 @@ public class LocalRepository {
 
     private MyVetPathDao dao;
 
-    public LocalRepository(Application application){}
+    public LocalRepository(Application application){
+        AppDatabase db = AppDatabase.getDatabase(application);
+        dao = db.myVetPathDao();
+    }
 
     public void insertGroup(GroupTable groupTable){new InsertGroupAsyncTask(dao).execute(groupTable);}
 
@@ -57,19 +60,19 @@ public class LocalRepository {
         return dao.getRepliesBySender(id);
     }
 
-    public void insertReport(ReportTable reportTable){}
+    public void insertReport(ReportTable reportTable){new InsertReportAsyncTask(dao).execute(reportTable);}
 
-    public void updateReport(ReportTable reportTable){}
+    public void updateReport(ReportTable reportTable){new UpdateReportAsyncTask(dao).execute(reportTable);}
 
     public LiveData<ReportTable> getReportByID(int id){
         return dao.getReportByID(id);
     }
 
-    public void insertSample(SampleTable sampleTable){}
+    public void insertSample(SampleTable sampleTable){new InsertSampleAsyncTask(dao).execute(sampleTable);}
 
-    public void deleteSample(SampleTable sampleTable){}
+    public void deleteSample(SampleTable sampleTable){new DeleteSampleAsyncTask(dao).execute(sampleTable);}
 
-    public void updateSample(SampleTable sampleTable){}
+    public void updateSample(SampleTable sampleTable){new UpdateSampleAsyncTask(dao).execute(sampleTable);}
 
     public LiveData<List<SampleTable>> getSamplesByID(int id){
         return dao.getSamplesByID(id);
@@ -79,11 +82,11 @@ public class LocalRepository {
         return dao.getSampleByName(name);
     }
 
-    public void insertSubmission(SubmissionTable submissionTable){}
+    public void insertSubmission(SubmissionTable submissionTable){new InsertSubmissionAsyncTask(dao).execute(submissionTable);}
 
-    public void deleteSubmission(SubmissionTable submissionTable){}
+    public void deleteSubmission(SubmissionTable submissionTable){new DeleteSubmissionAsyncTask(dao).execute(submissionTable);}
 
-    public void updateSubmission(SubmissionTable submissionTable){}
+    public void updateSubmission(SubmissionTable submissionTable){new UpdateSubmissionAsyncTask(dao).execute(submissionTable);}
 
     public LiveData<List<SubmissionTable>> getSubmissions(){
         return dao.getSubmissions();
@@ -101,11 +104,11 @@ public class LocalRepository {
         return dao.getSubmissionByID(id);
     }
 
-    public void insertUser(UserTable userTable){}
+    public void insertUser(UserTable userTable){new InsertUserAsyncTask(dao).execute(userTable);}
 
-    public void deleteUser(UserTable userTable){}
+    public void deleteUser(UserTable userTable){new DeleteUserAsyncTask(dao).execute(userTable);}
 
-    public void updateUser(UserTable userTable){}
+    public void updateUser(UserTable userTable){new UpdateUserAsyncTask(dao).execute(userTable);}
 
     public LiveData<List<UserTable>> getUsers(){
         return dao.getUsers();
@@ -251,6 +254,160 @@ public class LocalRepository {
         @Override
         protected Void doInBackground(ReplyTable... replyTables) {
             dao.insertReply(replyTables[0]);
+            return null;
+        }
+    }
+
+    private static class InsertReportAsyncTask extends AsyncTask<ReportTable, Void, Void>{
+        MyVetPathDao dao;
+
+        InsertReportAsyncTask(MyVetPathDao myVetPathDao){
+            dao = myVetPathDao;
+        }
+
+        @Override
+        protected Void doInBackground(ReportTable... reportTables) {
+            dao.insertReport(reportTables[0]);
+            return null;
+        }
+    }
+
+    private static class UpdateReportAsyncTask extends AsyncTask<ReportTable, Void, Void>{
+        MyVetPathDao dao;
+
+        UpdateReportAsyncTask(MyVetPathDao myVetPathDao){
+            dao = myVetPathDao;
+        }
+
+        @Override
+        protected Void doInBackground(ReportTable... reportTables) {
+            dao.updateReport(reportTables[0]);
+            return null;
+        }
+    }
+
+    private static class InsertSampleAsyncTask extends AsyncTask<SampleTable, Void, Void>{
+        MyVetPathDao dao;
+
+        InsertSampleAsyncTask(MyVetPathDao myVetPathDao){
+            dao = myVetPathDao;
+        }
+
+        @Override
+        protected Void doInBackground(SampleTable... sampleTables) {
+            dao.insertSample(sampleTables[0]);
+            return null;
+        }
+    }
+
+    private static class DeleteSampleAsyncTask extends AsyncTask<SampleTable, Void, Void>{
+        MyVetPathDao dao;
+
+        DeleteSampleAsyncTask(MyVetPathDao myVetPathDao){
+            dao = myVetPathDao;
+        }
+
+        @Override
+        protected Void doInBackground(SampleTable... sampleTables) {
+            dao.deleteSample(sampleTables[0]);
+            return null;
+        }
+    }
+
+    private static class UpdateSampleAsyncTask extends AsyncTask<SampleTable, Void, Void>{
+        MyVetPathDao dao;
+
+        UpdateSampleAsyncTask(MyVetPathDao myVetPathDao){
+            dao = myVetPathDao;
+        }
+
+        @Override
+        protected Void doInBackground(SampleTable... sampleTables) {
+            dao.updateSample(sampleTables[0]);
+            return null;
+        }
+    }
+
+    private static class InsertSubmissionAsyncTask extends AsyncTask<SubmissionTable, Void, Void>{
+        MyVetPathDao dao;
+
+        InsertSubmissionAsyncTask(MyVetPathDao myVetPathDao){
+            dao = myVetPathDao;
+        }
+
+        @Override
+        protected Void doInBackground(SubmissionTable... submissionTables) {
+            dao.insertSubmission(submissionTables[0]);
+            return null;
+        }
+    }
+
+    private static class DeleteSubmissionAsyncTask extends AsyncTask<SubmissionTable, Void, Void>{
+        MyVetPathDao dao;
+
+        DeleteSubmissionAsyncTask(MyVetPathDao myVetPathDao){
+            dao = myVetPathDao;
+        }
+
+        @Override
+        protected Void doInBackground(SubmissionTable... submissionTables) {
+            dao.deleteSubmission(submissionTables[0]);
+            return null;
+        }
+    }
+
+    private static class UpdateSubmissionAsyncTask extends AsyncTask<SubmissionTable, Void, Void>{
+        MyVetPathDao dao;
+
+        UpdateSubmissionAsyncTask(MyVetPathDao myVetPathDao){
+            dao = myVetPathDao;
+        }
+
+        @Override
+        protected Void doInBackground(SubmissionTable... submissionTables) {
+            dao.updateSubmission(submissionTables[0]);
+            return null;
+        }
+    }
+
+    private static class InsertUserAsyncTask extends AsyncTask<UserTable, Void, Void>{
+        MyVetPathDao dao;
+
+        InsertUserAsyncTask(MyVetPathDao myVetPathDao){
+            dao = myVetPathDao;
+        }
+
+        @Override
+        protected Void doInBackground(UserTable... userTables) {
+            dao.insertUser(userTables[0]);
+            return null;
+        }
+    }
+
+    private static class DeleteUserAsyncTask extends AsyncTask<UserTable, Void, Void>{
+        MyVetPathDao dao;
+
+        DeleteUserAsyncTask(MyVetPathDao myVetPathDao){
+            dao = myVetPathDao;
+        }
+
+        @Override
+        protected Void doInBackground(UserTable... userTables) {
+            dao.deleteUser(userTables[0]);
+            return null;
+        }
+    }
+
+    private static class UpdateUserAsyncTask extends AsyncTask<UserTable, Void, Void>{
+        MyVetPathDao dao;
+
+        UpdateUserAsyncTask(MyVetPathDao myVetPathDao){
+            dao = myVetPathDao;
+        }
+
+        @Override
+        protected Void doInBackground(UserTable... userTables) {
+            dao.updateUser(userTables[0]);
             return null;
         }
     }

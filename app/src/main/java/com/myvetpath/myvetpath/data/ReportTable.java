@@ -2,6 +2,7 @@ package com.myvetpath.myvetpath.data;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.PrimaryKey;
 
 import java.io.Serializable;
 
@@ -10,6 +11,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 @Entity(tableName = "report_table")
 public class ReportTable implements Serializable {
 
+    @PrimaryKey
     @ForeignKey(entity = UserTable.class, parentColumns = "user_ID", childColumns = "user_ID", onDelete = CASCADE, onUpdate = CASCADE)
     public int user_ID; //The pathologist responsible
 
