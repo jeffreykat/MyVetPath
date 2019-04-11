@@ -16,7 +16,7 @@ public class PictureTable implements Serializable {
     public int Image_ID;
 
     @ForeignKey(entity = SubmissionTable.class, parentColumns = "Master_ID", childColumns = "Master_ID", onUpdate = CASCADE, onDelete = CASCADE)
-    public int Master_ID;
+    public long Master_ID;
 
     public String Title;
     public String Latitude;

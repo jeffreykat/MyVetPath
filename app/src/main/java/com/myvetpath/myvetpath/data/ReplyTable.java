@@ -15,7 +15,7 @@ public class ReplyTable implements Serializable {
     public int Reply_ID; //internal id
 
     @ForeignKey(entity = SubmissionTable.class, parentColumns = "Master_ID", childColumns = "Master_ID", onDelete = CASCADE, onUpdate = CASCADE)
-    public int Master_ID;
+    public long Master_ID;
 
     public int Sender_ID;
     public int Receiver_ID;

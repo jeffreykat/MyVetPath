@@ -12,7 +12,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 public class SubmissionTable implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
-    public int Master_ID; //Primary key for the internal database.
+    public long Master_ID; //Primary key for the internal database.
 
     @ForeignKey(entity = GroupTable.class, parentColumns = "Group_ID", childColumns = "Group_ID", onUpdate = CASCADE, onDelete = CASCADE)
     public int Group_ID; //name of group

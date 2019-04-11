@@ -43,7 +43,7 @@ public class MyVetPathViewModel extends AndroidViewModel {
 
     public void updatePatient(PatientTable patientTable){repo.updatePatient(patientTable);}
 
-    public LiveData<PatientTable> getPatientByID(int id){return repo.getPatientByID(id);}
+    public LiveData<PatientTable> getPatientByID(long id){return repo.getPatientByID(id);}
 
     public void insertPicture(PictureTable pictureTable){repo.insertPicture(pictureTable);}
 
@@ -51,13 +51,13 @@ public class MyVetPathViewModel extends AndroidViewModel {
 
     public void updatePicture(PictureTable pictureTable){repo.updatePicture(pictureTable);}
 
-    public LiveData<List<PictureTable>> getPicturesByID(int id){return repo.getPicturesByID(id);}
+    public LiveData<List<PictureTable>> getPicturesByID(long id){return repo.getPicturesByID(id);}
 
     public LiveData<PictureTable> getPictureByTitle(String title){return repo.getPictureByTitle(title);}
 
     public void insertReply(ReplyTable replyTable){repo.insertReply(replyTable);}
 
-    public LiveData<List<ReplyTable>> getRepliesByID(int id){return repo.getRepliesByID(id);}
+    public LiveData<List<ReplyTable>> getRepliesByID(long id){return repo.getRepliesByID(id);}
 
     public LiveData<List<ReplyTable>> getRepliesBySender(int senderID){return repo.getRepliesBySender(senderID);}
 
@@ -65,7 +65,7 @@ public class MyVetPathViewModel extends AndroidViewModel {
 
     public void updateReport(ReportTable reportTable){repo.updateReport(reportTable);}
 
-    public LiveData<ReportTable> getReportByID(int id){return repo.getReportByID(id);}
+    public LiveData<ReportTable> getReportByID(long id){return repo.getReportByID(id);}
 
     public void insertSample(SampleTable sampleTable){repo.insertSample(sampleTable);}
 
@@ -73,7 +73,7 @@ public class MyVetPathViewModel extends AndroidViewModel {
 
     public void updateSample(SampleTable sampleTable){repo.updateSample(sampleTable);}
 
-    public LiveData<List<SampleTable>> getSamplesByID(int id){return repo.getSamplesByID(id);}
+    public LiveData<List<SampleTable>> getSamplesByID(long id){return repo.getSamplesByID(id);}
 
     public LiveData<SampleTable> getSampleByName(String name){return repo.getSampleByName(name);}
 
@@ -89,7 +89,7 @@ public class MyVetPathViewModel extends AndroidViewModel {
 
     public LiveData<SubmissionTable> getSubmissionByTitle(String title){return repo.getSubmissionByTitle(title);}
 
-    public LiveData<SubmissionTable> getSubmissionByID(int id){return repo.getSubmissionByID(id);}
+    public LiveData<SubmissionTable> getSubmissionByID(long id){return repo.getSubmissionByID(id);}
 
     public void insertUser(UserTable userTable){repo.insertUser(userTable);}
 

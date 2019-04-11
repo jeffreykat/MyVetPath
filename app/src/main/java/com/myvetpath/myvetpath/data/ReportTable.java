@@ -16,7 +16,7 @@ public class ReportTable implements Serializable {
     public int User_ID; //The pathologist responsible
 
     @ForeignKey(entity = SubmissionTable.class, parentColumns = "Master_ID", childColumns = "Master_ID", onUpdate = CASCADE, onDelete = CASCADE)
-    public int Master_ID; //The submission
+    public long Master_ID; //The submission
 
     public String SubmissionReview; //initial pathologist review
     public String Conclusion; //final pathologist review

@@ -15,7 +15,7 @@ public class PatientTable implements Serializable {
     public int Patient_ID;
 
     @ForeignKey(entity = SubmissionTable.class, parentColumns = "Master_ID", childColumns = "Master_ID", onDelete = CASCADE, onUpdate = CASCADE)
-    public int Master_ID;
+    public long Master_ID;
 
     public int Euthanized; //0 means no 1 means yes
     public String Sex;

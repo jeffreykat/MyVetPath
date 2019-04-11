@@ -15,7 +15,7 @@ public class SampleTable implements Serializable {
     public int Sample_ID;
 
     @ForeignKey(entity = SubmissionTable.class, parentColumns = "Master_ID", childColumns = "Master_ID", onUpdate = CASCADE, onDelete = CASCADE)
-    public int Master_ID;
+    public long Master_ID;
 
     public String LocationOfSample;
     public int NumberOfSample;

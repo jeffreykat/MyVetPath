@@ -114,19 +114,19 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                 long internalID = viewModel.insertSubmission(submission);
 
                 for(SampleTable tempSample: samplesList){
-                    tempSample.Sample_ID = (int)internalID;
+                    tempSample.Master_ID = internalID;
                     viewModel.insertSample(tempSample);
                 }
 
                 for(PictureTable tempPicture: picturesList){
                     if(tempPicture != null){
-                        tempPicture.Master_ID = (int)internalID;
+                        tempPicture.Master_ID = internalID;
                         Log.d(LOG_TAG, "onClick: current internal id is: " + tempPicture.Master_ID);
                     }
                         viewModel.insertPicture(tempPicture);
                 }
 
-                patient.Master_ID = (int)internalID;
+                patient.Master_ID = internalID;
                 viewModel.insertPatient(patient);
                 startActivity(view_subs_activity);
             }
@@ -149,8 +149,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
         setMenuOptionItemToRemove(this);
         toolbar.setTitle(R.string.action_submission);
         setSupportActionBar(toolbar);
-        //TODO: Fix Activity Lifecycle so up button restarts main activity
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         view_subs_activity = new Intent(this, ViewSubsActivity.class);
         add_pictures_activity = new Intent(this, AddPicturesActivity.class);
@@ -158,13 +157,13 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
-        ViewModelProviders.of(this).get(MyVetPathViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(MyVetPathViewModel.class);
 
         boolean updatingDraft = false;
 
         if(extras != null){
             if(extras.containsKey("draft")) {
-                int internalID = extras.getInt("draft", 0);
+                long internalID = extras.getInt("draft", 0);
                 viewModel.getSubmissionByID(internalID).observe(this, new Observer<SubmissionTable>() {
                     @Override
                     public void onChanged(@Nullable SubmissionTable submissionTable) {
@@ -268,17 +267,17 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                     } else{
                         long intID = viewModel.insertSubmission(newSub);
                         draftName = newSub.Title;
-                        newPatient.Master_ID = (int)intID;
+                        newPatient.Master_ID = intID;
                         viewModel.insertPatient(newPatient);
                         for(SampleTable tempSample: samplesList){
-                            tempSample.Master_ID = (int)intID;
+                            tempSample.Master_ID = intID;
                             viewModel.insertSample(tempSample);
                         }
 
                         for(PictureTable tempPicture: picturesList){
                             if(tempPicture != null){
-                                tempPicture.Master_ID = (int)intID;
-                                Log.d(LOG_TAG, "onClick: current internal id is: " + tempPicture.Master_ID);
+                                tempPicture.Master_ID = intID;
+                                Log.d(LOG_TAG, "onClick: current internal id is: " + Long.toString(tempPicture.Master_ID));
                             }
                             viewModel.insertPicture(tempPicture);
                         }

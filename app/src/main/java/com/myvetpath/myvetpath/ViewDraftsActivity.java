@@ -145,7 +145,7 @@ public class ViewDraftsActivity extends BaseActivity {
 
         mAdapter = new DraftsAdapter(new CustomSubClickListener() {
             @Override
-            public void onSubClick(View v, int internalID) {
+            public void onSubClick(View v, long internalID) {
                 create_sub_intent.putExtra("draft", internalID);
                 startActivity(create_sub_intent);
             }

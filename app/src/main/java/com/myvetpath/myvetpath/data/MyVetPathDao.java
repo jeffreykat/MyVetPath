@@ -40,7 +40,7 @@ public interface MyVetPathDao {
     void updatePatient(PatientTable patientTable);
 
     @Query("SELECT * FROM patient_table WHERE Master_ID = :id LIMIT 1")
-    LiveData<PatientTable> getPatientByID(int id);
+    LiveData<PatientTable> getPatientByID(long id);
 
     @Insert
     void insertPicture(PictureTable pictureTable);
@@ -52,7 +52,7 @@ public interface MyVetPathDao {
     void updatePicture(PictureTable pictureTable);
 
     @Query("SELECT * FROM picture_table WHERE Master_ID = :id")
-    LiveData<List<PictureTable>> getPicturesByID(int id);
+    LiveData<List<PictureTable>> getPicturesByID(long id);
 
     @Query("SELECT * FROM picture_table WHERE Title = :title LIMIT 1")
     LiveData<PictureTable> getPictureByTitle(String title);
@@ -61,7 +61,7 @@ public interface MyVetPathDao {
     void insertReply(ReplyTable replyTable);
 
     @Query("SELECT * FROM reply_table WHERE Master_ID = :id ORDER BY DateOfMessage")
-    LiveData<List<ReplyTable>> getRepliesByID(int id);
+    LiveData<List<ReplyTable>> getRepliesByID(long id);
 
     @Query("SELECT * FROM reply_table WHERE Sender_ID = :id ORDER BY DateOfMessage")
     LiveData<List<ReplyTable>> getRepliesBySender(int id);
@@ -76,7 +76,7 @@ public interface MyVetPathDao {
     void updateReport(ReportTable reportTable);
 
     @Query("SELECT * FROM report_table WHERE Master_ID = :id")
-    LiveData<ReportTable> getReportByID(int id);
+    LiveData<ReportTable> getReportByID(long id);
 
     @Insert
     void insertSample(SampleTable sampleTable);
@@ -88,7 +88,7 @@ public interface MyVetPathDao {
     void updateSample(SampleTable sampleTable);
 
     @Query("SELECT * FROM sample_table WHERE Master_ID = :id ORDER BY SampleCollectionDate")
-    LiveData<List<SampleTable>> getSamplesByID(int id);
+    LiveData<List<SampleTable>> getSamplesByID(long id);
 
     @Query("SELECT * FROM sample_table WHERE NameOfSample = :name")
     LiveData<SampleTable> getSampleByName(String name);
@@ -112,7 +112,7 @@ public interface MyVetPathDao {
     LiveData<SubmissionTable> getSubmissionByTitle(String title);
 
     @Query("SELECT * FROM submission_table WHERE Master_ID = :id LIMIT 1")
-    LiveData<SubmissionTable> getSubmissionByID(int id);
+    LiveData<SubmissionTable> getSubmissionByID(long id);
 
     @Insert
     void insertUser(UserTable userTable);

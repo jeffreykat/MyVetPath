@@ -36,7 +36,7 @@ public class LocalRepository {
 
     public void updatePatient(PatientTable patientTable){new UpdatePatientAsyncTask(dao).execute(patientTable);}
 
-    public LiveData<PatientTable> getPatientByID(int id){
+    public LiveData<PatientTable> getPatientByID(long id){
         return dao.getPatientByID(id);
     }
 
@@ -46,7 +46,7 @@ public class LocalRepository {
 
     public void updatePicture(PictureTable pictureTable){new UpdatePictureAsyncTask(dao).execute(pictureTable);}
 
-    public LiveData<List<PictureTable>> getPicturesByID(int id){
+    public LiveData<List<PictureTable>> getPicturesByID(long id){
         return dao.getPicturesByID(id);
     }
 
@@ -56,7 +56,7 @@ public class LocalRepository {
 
     public void insertReply(ReplyTable replyTable){new InsertReplyAsyncTask(dao).execute(replyTable);}
 
-    public LiveData<List<ReplyTable>> getRepliesByID(int id){
+    public LiveData<List<ReplyTable>> getRepliesByID(long id){
         return dao.getRepliesByID(id);
     }
 
@@ -68,7 +68,7 @@ public class LocalRepository {
 
     public void updateReport(ReportTable reportTable){new UpdateReportAsyncTask(dao).execute(reportTable);}
 
-    public LiveData<ReportTable> getReportByID(int id){
+    public LiveData<ReportTable> getReportByID(long id){
         return dao.getReportByID(id);
     }
 
@@ -78,7 +78,7 @@ public class LocalRepository {
 
     public void updateSample(SampleTable sampleTable){new UpdateSampleAsyncTask(dao).execute(sampleTable);}
 
-    public LiveData<List<SampleTable>> getSamplesByID(int id){
+    public LiveData<List<SampleTable>> getSamplesByID(long id){
         return dao.getSamplesByID(id);
     }
 
@@ -107,7 +107,7 @@ public class LocalRepository {
         return dao.getSubmissionByTitle(title);
     }
 
-    public LiveData<SubmissionTable> getSubmissionByID(int id){
+    public LiveData<SubmissionTable> getSubmissionByID(long id){
         return dao.getSubmissionByID(id);
     }
 

@@ -1,6 +1,7 @@
 package com.myvetpath.myvetpath;
 
 import android.app.DatePickerDialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,16 +23,21 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.myvetpath.myvetpath.data.SampleTable;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 public class AddSamplesActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
     private ArrayList<Sample> samples = new ArrayList<Sample>();
     private ArrayList<Button> buttons = new ArrayList<Button>();
+
+    List<SampleTable> allSamples;
 
     LinearLayout myLayout;
     private Button add_sample_button;
@@ -42,6 +48,8 @@ public class AddSamplesActivity extends AppCompatActivity implements DatePickerD
     private Date collectionDate = null;
     Calendar calendar = Calendar.getInstance();
     final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+
+    MyVetPathViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +76,8 @@ public class AddSamplesActivity extends AppCompatActivity implements DatePickerD
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        viewModel = ViewModelProviders.of(this).get(MyVetPathViewModel.class);
 
         //set up number picker
         number_of_samples_NP = findViewById(R.id.number_of_samples_SP);
