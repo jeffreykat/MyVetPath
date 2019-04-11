@@ -70,7 +70,7 @@ public class AddPicturesActivity extends AppCompatActivity {
     private LocationListener listener;
     Boolean shouldCheckPhoneCoordinates = false;
 
-    private List<PictureTable> picturesList;
+    private ArrayList<PictureTable> picturesList;
 
     private boolean didUploadImages[] = {false, false, false, false, false};
 
@@ -86,10 +86,11 @@ public class AddPicturesActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.action_addpictures);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
 
-        picturesList = (List<PictureTable>) intent.getSerializableExtra("pictureList");
+        picturesList = (ArrayList<PictureTable>) intent.getSerializableExtra("pictureList");
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -98,14 +99,13 @@ public class AddPicturesActivity extends AppCompatActivity {
             public void onClick(View view) {
                 storePicturesInDB();
                 Intent resultIntent = new Intent();
-                resultIntent.putExtra("pictureResults", (ArrayList<PictureTable>)picturesList);
+                resultIntent.putExtra("pictureResults", picturesList);
                 setResult(RESULT_OK, resultIntent);
                 finish();
             }
 
         });
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mainGrid = (GridLayout) findViewById(R.id.mainGrid);
         setSingleEvent(mainGrid);
         images = new ImageButton[]{findViewById(R.id.firstImageBttn), findViewById(R.id.secondImageBttn),
@@ -190,21 +190,16 @@ public class AddPicturesActivity extends AppCompatActivity {
 
 //Purpose: Stores the data gathered from this screen into the db. This is called whenever the user selects the floating action button
     private void storePicturesInDB(){
-
-        ArrayList<PictureTable> tempList = new ArrayList<PictureTable>(); //create a temporary list so that it is easier to deal with cases where users skip picture slots to upload
+        ArrayList<PictureTable> tempList = new ArrayList<PictureTable>(5); //create a temporary list so that it is easier to deal with cases where users skip picture slots to upload
 
         for(int i = 0; i < 5; i++){
-
             if(imageNames[i] != null){ //if user uploaded image in this slot, collect all image data and add it to array list
-               //TODO: Store the following in the DB
                 PictureTable tempPicture = new PictureTable();
                 tempPicture.Title = imageNames[i];
                 tempPicture.Longitude = longitudes[i];
                 tempPicture.Latitude = latitudes[i];
-                Log.d("pass", "storePicturesInDB: before set image link");
                 tempPicture.ImagePath = picturePaths[i];
                 tempPicture.DateTaken = imageDates[i];
-//                Log.d("pass", "storePicturesInDB: index: " + i + ", Image name: " + imageNames[i] + ", longitude: " + longitudes[i] + "latitude " + latitudes[i] + ", dates: " + imageDates[i]);
                if(didUploadImages[i] == false){
                    try {
                        //Write file

@@ -36,8 +36,8 @@ public class SubDetailsActivity extends BaseActivity {
     SubmissionTable currentSub;
     PatientTable currentPatient;
     GroupTable currentGroup;
-    List<PictureTable> pictures;
-    List<SampleTable> samples;
+    ArrayList<PictureTable> pictures;
+    ArrayList<SampleTable> samples;
     Calendar calendar = Calendar.getInstance();
     final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
     private TextView mSamplesTV;
@@ -48,46 +48,19 @@ public class SubDetailsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sub_details);
 
-        ViewModelProviders.of(this).get(MyVetPathViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(MyVetPathViewModel.class);
 
-        int internalId = getIntent().getIntExtra("internalID", 1);
+        long internalId = getIntent().getLongExtra("internalID", 1);
 
-        viewModel.getSubmissionByID(internalId).observe(this, new Observer<SubmissionTable>() {
-            @Override
-            public void onChanged(@Nullable SubmissionTable submissionTable) {
-                currentSub = submissionTable;
-            }
-        });
+        currentSub = viewModel.getSubmissionByID(internalId).getValue();
 
-        viewModel.getPatientByID(internalId).observe(this, new Observer<PatientTable>() {
-            @Override
-            public void onChanged(@Nullable PatientTable patientTable) {
-                currentPatient = patientTable;
-                Log.d("SubDetails", "Name: " + currentPatient.PatientName);
-            }
-        });
+        currentPatient = viewModel.getPatientByID(internalId).getValue();
 
-        viewModel.getPicturesByID(internalId).observe(this, new Observer<List<PictureTable>>() {
-            @Override
-            public void onChanged(@Nullable List<PictureTable> pictureTables) {
-                pictures = pictureTables;
-                Log.d("details", "onCreate: number of pictures in DB: " + pictures.size());
-            }
-        });
+        pictures.addAll(viewModel.getPicturesByID(internalId).getValue());
 
-        viewModel.getSamplesByID(internalId).observe(this, new Observer<List<SampleTable>>() {
-            @Override
-            public void onChanged(@Nullable List<SampleTable> sampleTables) {
-                samples = sampleTables;
-            }
-        });
+        samples.addAll(viewModel.getSamplesByID(internalId).getValue());
 
-        viewModel.getGroupByID(currentSub.Group_ID).observe(this, new Observer<GroupTable>() {
-            @Override
-            public void onChanged(@Nullable GroupTable groupTable) {
-                currentGroup = groupTable;
-            }
-        });
+        currentGroup = viewModel.getGroupByID(currentSub.Group_ID).getValue();
 
         String title = currentSub.Title;
 

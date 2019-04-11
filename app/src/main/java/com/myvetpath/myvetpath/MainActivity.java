@@ -88,7 +88,7 @@ public class MainActivity extends BaseActivity {
         viewModel.getDrafts().observe(this, new Observer<List<SubmissionTable>>() {
             @Override
             public void onChanged(@Nullable List<SubmissionTable> submissionTables) {
-                if(submissionTables == null){
+                if(submissionTables == null || submissionTables.size() < 1){
                     view_drafts_button.setVisibility(View.INVISIBLE);
                 }
                 else{

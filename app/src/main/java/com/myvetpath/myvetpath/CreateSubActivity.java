@@ -66,8 +66,11 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
     PatientTable newPatient;
     GroupTable newGroup;
     UserTable newUser;
+    ArrayList<SampleTable> samplesList = new ArrayList<SampleTable>(5);
+    ArrayList<PictureTable> picturesList = new ArrayList<PictureTable>(5);
 
     String userName;
+    long master_id;
 
     ImageButton add_pictures_button;
     Button save_draft_button;
@@ -94,8 +97,6 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
     static final String LOG_TAG = "CreateSubActivity";
 
     private final int ADD_SAMPLES_REQUEST_CODE = 2;
-    private List<SampleTable> samplesList;
-    private List<PictureTable> picturesList;
 
     private String draftName = "";
     boolean draftExists = false;
@@ -122,8 +123,8 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                     if(tempPicture != null){
                         tempPicture.Master_ID = internalID;
                         Log.d(LOG_TAG, "onClick: current internal id is: " + tempPicture.Master_ID);
-                    }
                         viewModel.insertPicture(tempPicture);
+                    }
                 }
 
                 patient.Master_ID = internalID;
@@ -139,6 +140,13 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                 });
         final AlertDialog alertDialog = dialog.create();
         alertDialog.show();
+    }
+
+    public void setupNew(){
+        newSub = new SubmissionTable();
+        newPatient = new PatientTable();
+        newGroup = new GroupTable();
+        newUser = new UserTable();
     }
 
     @Override
@@ -163,41 +171,24 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
 
         if(extras != null){
             if(extras.containsKey("draft")) {
-                long internalID = extras.getInt("draft", 0);
-                viewModel.getSubmissionByID(internalID).observe(this, new Observer<SubmissionTable>() {
-                    @Override
-                    public void onChanged(@Nullable SubmissionTable submissionTable) {
-                        newSub = submissionTable;
-                    }
-                });
-                viewModel.getPatientByID(internalID).observe(this, new Observer<PatientTable>() {
-                    @Override
-                    public void onChanged(@Nullable PatientTable patientTable) {
-                        newPatient = patientTable;
-                    }
-                });
-                viewModel.getSamplesByID(internalID).observe(this, new Observer<List<SampleTable>>() {
-                    @Override
-                    public void onChanged(@Nullable List<SampleTable> sampleTables) {
-                        samplesList = sampleTables;
-                    }
-                });
-                viewModel.getPicturesByID(internalID).observe(this, new Observer<List<PictureTable>>() {
-                    @Override
-                    public void onChanged(@Nullable List<PictureTable> pictureTables) {
-                        picturesList = pictureTables;
-                    }
-                });
+                long internalID = extras.getLong("draft", 0);
+                Log.d(LOG_TAG, "draft id: " + Long.toString(internalID));
+                newSub = viewModel.getSubmissionByID(internalID).getValue();
+                newPatient = viewModel.getPatientByID(internalID).getValue();
+                if(viewModel.getSamplesByID(internalID).getValue() != null) {
+                    samplesList.addAll(viewModel.getSamplesByID(internalID).getValue());
+                }
+                if(viewModel.getPicturesByID(internalID).getValue() != null) {
+                    picturesList.addAll(viewModel.getPicturesByID(internalID).getValue());
+                }
                 updatingDraft = true;
                 draftName = newSub.Title;
             }
             else{
-                newSub = new SubmissionTable();
-                newPatient = new PatientTable();
+                setupNew();
             }
         } else {
-            newSub = new SubmissionTable();
-            newPatient = new PatientTable();
+            setupNew();
         }
 
         date_of_birth_button = (ImageButton) findViewById(R.id.BirthDateBTTN);
@@ -262,7 +253,9 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                             viewModel.updateSample(tempSample);
                         }
                         for(PictureTable tempPicture: picturesList){
-                            viewModel.updatePicture(tempPicture);
+                            if(tempPicture != null) {
+                                viewModel.updatePicture(tempPicture);
+                            }
                         }
                     } else{
                         long intID = viewModel.insertSubmission(newSub);
@@ -278,8 +271,8 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                             if(tempPicture != null){
                                 tempPicture.Master_ID = intID;
                                 Log.d(LOG_TAG, "onClick: current internal id is: " + Long.toString(tempPicture.Master_ID));
+                                viewModel.insertPicture(tempPicture);
                             }
-                            viewModel.insertPicture(tempPicture);
                         }
                     }
                 }
@@ -296,7 +289,9 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
         viewModel.getUserByUsername(userName).observe(this, new Observer<UserTable>() {
             @Override
             public void onChanged(@Nullable UserTable userTable) {
-                newUser = userTable;
+                if(userTable != null) {
+                    newUser = userTable;
+                }
             }
         });
 
@@ -307,11 +302,12 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                 hideSoftKeyboard();
 
                 if(userName.equals("")){//if user isn't logged in, then make them login first
-                    Toast.makeText(CreateSubActivity.this, "Please login first " + userName,
+                    Toast.makeText(CreateSubActivity.this, "Please save draft and login first " + userName,
                             Toast.LENGTH_LONG).show();
                     Intent login_activity;
                     login_activity = new Intent(CreateSubActivity.this, LoginActivity.class);
-                    startActivity(login_activity);
+
+                    //startActivity(login_activity);
                     return;
                 }else{ // set clientID if user is logged in
                     newSub.User_ID = newUser.User_ID;
@@ -336,7 +332,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
         add_pictures_button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                add_pictures_activity.putExtra("pictureList", (ArrayList<PictureTable>)picturesList);
+                add_pictures_activity.putExtra("pictureList", picturesList);
                 startActivityForResult(add_pictures_activity, 1);
             }
         });
@@ -346,7 +342,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard();
-                add_samples_activity.putExtra("samplesList", (ArrayList<SampleTable>)samplesList);
+                add_samples_activity.putExtra("samplesList", samplesList);
                 startActivityForResult(add_samples_activity, ADD_SAMPLES_REQUEST_CODE);
             }
         });
@@ -390,12 +386,12 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1){
             if(resultCode == RESULT_OK){
-                picturesList = (List<PictureTable>) data.getSerializableExtra("pictureResults");
+                picturesList = (ArrayList<PictureTable>) data.getSerializableExtra("pictureResults");
                 Log.d("pass", "onActivityResult: result after returning to createsub is " + picturesList.get(0).Title + " longitude: " + picturesList.get(0).Longitude);
             }
         }else if(requestCode == ADD_SAMPLES_REQUEST_CODE){
             if(resultCode == RESULT_OK ){
-                samplesList = (List<SampleTable>) data.getSerializableExtra("sampleResults");
+                samplesList = (ArrayList<SampleTable>) data.getSerializableExtra("sampleResults");
             }
         }
     }
@@ -459,26 +455,9 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
         isEuthanized = checked;
     }
 
-    // Purpose: check if string is an integer. This will be used to validate that the user entered an integer into a numeric field
-    private boolean isInteger(String str) {
-        try
-        {
-            Integer.parseInt(str);
-            return true;
-        }
-        catch (NumberFormatException e)
-        {
-            return false;
-        }
-    }
-
     //This method stores all the data in a submission. Called whenever the user wants to save or submit a submission
     private boolean loadSubmissionData(int status, SubmissionTable newSub, PatientTable newPatient){
         final long curDate = Calendar.getInstance().getTime().getTime();
-
-
-        Log.d("s", "storeDataInDB: before logging " );
-//        Log.d("s", "storeDataInDB: Number of samples: " + numberOfSamples);
 
         //The following data should have been collected elsewhere in the app:
         //deathDate

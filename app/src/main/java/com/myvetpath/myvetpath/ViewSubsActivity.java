@@ -36,7 +36,7 @@ public class ViewSubsActivity extends BaseActivity implements SubmissionAdapter.
     boolean subTableExists;
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private SubmissionAdapter mAdapter;
     private List<SubmissionTable> submissions;
 
     public void createDeleteDialog(final SubmissionTable submission){
@@ -95,7 +95,7 @@ public class ViewSubsActivity extends BaseActivity implements SubmissionAdapter.
         viewModel.getSubmissions().observe(this, new Observer<List<SubmissionTable>>() {
             @Override
             public void onChanged(@Nullable List<SubmissionTable> submissionTables) {
-                //TODO: figure out why update function is inaccessible
+                mAdapter.updateSubs(submissionTables);
             }
         });
     }

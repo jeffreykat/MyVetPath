@@ -36,7 +36,7 @@ public class ViewDraftsActivity extends BaseActivity {
     final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private DraftsAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<SubmissionTable> drafts;
 
@@ -163,13 +163,13 @@ public class ViewDraftsActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        ViewModelProviders.of(this).get(MyVetPathViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(MyVetPathViewModel.class);
 
         viewModel.getDrafts().observe(this, new Observer<List<SubmissionTable>>() {
             @Override
             public void onChanged(@Nullable List<SubmissionTable> submissionTables) {
                 drafts = submissionTables;
-                mAdapter.notifyDataSetChanged();
+                mAdapter.updateDrafts(submissionTables);
             }
         });
     }

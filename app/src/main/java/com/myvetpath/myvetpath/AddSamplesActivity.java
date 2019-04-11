@@ -34,10 +34,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 public class AddSamplesActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
-    private ArrayList<Sample> samples = new ArrayList<Sample>();
+    private ArrayList<SampleTable> samples = new ArrayList<SampleTable>();
     private ArrayList<Button> buttons = new ArrayList<Button>();
-
-    List<SampleTable> allSamples;
 
     LinearLayout myLayout;
     private Button add_sample_button;
@@ -58,9 +56,10 @@ public class AddSamplesActivity extends AppCompatActivity implements DatePickerD
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Add Samples");
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
-        samples =  (ArrayList<Sample>) intent.getSerializableExtra("samplesList");
+        samples =  (ArrayList<SampleTable>) intent.getSerializableExtra("samplesList");
 
         myLayout = findViewById(R.id.sampleLinearLayout); //this is the linear layout that we will programatically add to
 
@@ -75,7 +74,6 @@ public class AddSamplesActivity extends AppCompatActivity implements DatePickerD
                 finish();
             }
         });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         viewModel = ViewModelProviders.of(this).get(MyVetPathViewModel.class);
 
@@ -97,13 +95,13 @@ public class AddSamplesActivity extends AppCompatActivity implements DatePickerD
                     Toast.makeText(AddSamplesActivity.this, "You are missing a sample field.",
                             Toast.LENGTH_LONG).show();
                 }else{
-                    Sample tempSample = new Sample();
-                    tempSample.setName(sampleName);
-                    tempSample.setLocation(sampleLocation);
-                    tempSample.setNumberOfSamples(numberOfSamples);
-                    tempSample.setSampleCollectionDate(collectionDate.getTime());
+                    SampleTable tempSample = new SampleTable();
+                    tempSample.NameOfSample = sampleName;
+                    tempSample.LocationOfSample = sampleLocation;
+                    tempSample.NumberOfSample = numberOfSamples;
+                    tempSample.SampleCollectionDate = collectionDate.getTime();
                     samples.add(tempSample);
-                    Snackbar.make(v, "Sample added: " + tempSample.getNameOfSample(), Snackbar.LENGTH_LONG)
+                    Snackbar.make(v, "Sample added: " + tempSample.NameOfSample, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                     updateSamplesView();
                 }
@@ -142,7 +140,7 @@ public class AddSamplesActivity extends AppCompatActivity implements DatePickerD
     private void updateSamplesView(){
         myLayout.removeAllViews();
         int index = 0;
-        for(Sample tempSample: samples){
+        for(SampleTable tempSample: samples){
 
             TextView sampleTitleTV = new TextView(AddSamplesActivity.this);
             sampleTitleTV.setLayoutParams(new LinearLayout.LayoutParams(
@@ -163,10 +161,10 @@ public class AddSamplesActivity extends AppCompatActivity implements DatePickerD
             });
 
 
-            calendar.setTimeInMillis(tempSample.getSampleCollectionDate());
+            calendar.setTimeInMillis(tempSample.SampleCollectionDate);
             String tempSampleDate = simpleDateFormat.format(calendar.getTime());
-            myButton.setText(tempSample.getNameOfSample() + ": " + tempSample.getNumberOfSamples() +
-                    " sample(s) collected in " + tempSample.getLocation() + " on " + tempSampleDate);
+            myButton.setText(tempSample.NameOfSample + ": " + tempSample.NumberOfSample +
+                    " sample(s) collected in " + tempSample.LocationOfSample + " on " + tempSampleDate);
 
 
             myLayout.addView(sampleTitleTV);
