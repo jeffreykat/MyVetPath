@@ -44,13 +44,13 @@ public class ViewDraftsActivity extends BaseActivity {
         AlertDialog.Builder dialog = new AlertDialog.Builder(ViewDraftsActivity.this);
         dialog.setCancelable(true);
         String title = getString(R.string.action_delete_confirmation_prompt_first_part)
-                + drafts.get(selectedSubmissionPosition).title
+                + drafts.get(selectedSubmissionPosition).Title
                 + getString(R.string.action_delete_confirmation_second_part);
         dialog.setTitle(title);
         dialog.setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(ViewDraftsActivity.this,  getString(R.string.deleted_message) + drafts.get(selectedSubmissionPosition).title,
+                Toast.makeText(ViewDraftsActivity.this,  getString(R.string.deleted_message) + drafts.get(selectedSubmissionPosition).Title,
                         Toast.LENGTH_LONG).show();
                 viewModel.deleteSubmission(drafts.get(selectedSubmissionPosition));
                 mAdapter.notifyItemRemoved(selectedSubmissionPosition);
@@ -94,7 +94,7 @@ public class ViewDraftsActivity extends BaseActivity {
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    subClickListener.onSubClick(view, mDrafts.get(myViewHolder.getAdapterPosition()).internal_ID);
+                    subClickListener.onSubClick(view, mDrafts.get(myViewHolder.getAdapterPosition()).Master_ID);
                 }
             });
             v.setOnLongClickListener(new View.OnLongClickListener() { //Enable long click on a case entry
@@ -111,13 +111,13 @@ public class ViewDraftsActivity extends BaseActivity {
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-            if(drafts.get(position).caseID == NULL){
+            if(drafts.get(position).Case_ID == NULL){
                 holder.caseTextView.setText(R.string.pending);
             } else {
-                holder.caseTextView.setText(String.valueOf(drafts.get(position).caseID));
+                holder.caseTextView.setText(String.valueOf(drafts.get(position).Case_ID));
             }
-            holder.titleTextView.setText(drafts.get(position).title);
-            calendar.setTimeInMillis(drafts.get(position).dateOfCreation);
+            holder.titleTextView.setText(drafts.get(position).Title);
+            calendar.setTimeInMillis(drafts.get(position).DateOfCreation);
             holder.dateTextView.setText(simpleDateFormat.format(calendar.getTime()));
         }
 

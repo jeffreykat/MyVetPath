@@ -10,8 +10,10 @@ import java.io.Serializable;
 public class GroupTable implements Serializable {
 
     @PrimaryKey
-    @NonNull
-    public String groupName;
+    public int Group_ID;
 
-    public long dateOfCreation;
+    @NonNull
+    public String GroupName;
+
+    public long DateOfCreation;
 }

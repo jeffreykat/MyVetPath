@@ -43,13 +43,13 @@ public class ViewSubsActivity extends BaseActivity implements SubmissionAdapter.
         AlertDialog.Builder dialog = new AlertDialog.Builder(ViewSubsActivity.this);
         dialog.setCancelable(true);
         String title = getString(R.string.action_delete_confirmation_prompt_first_part)
-                + submission.title
+                + submission.Title
                 + getString(R.string.action_delete_confirmation_second_part);
         dialog.setTitle(title);
         dialog.setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(ViewSubsActivity.this, getString(R.string.deleted_message) + submission.title,
+                Toast.makeText(ViewSubsActivity.this, getString(R.string.deleted_message) + submission.Title,
                         Toast.LENGTH_LONG).show();
                 viewModel.deleteSubmission(submission);
             }
@@ -60,7 +60,7 @@ public class ViewSubsActivity extends BaseActivity implements SubmissionAdapter.
 
     @Override
     public void onSubmissionClick(SubmissionTable sub) {
-        sub_details_activity.putExtra("internalID", sub.internal_ID);
+        sub_details_activity.putExtra("internalID", sub.Master_ID);
         startActivity(sub_details_activity);
     }
 

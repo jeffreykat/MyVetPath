@@ -13,14 +13,14 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 public class PictureTable implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
-    public int image_ID;
+    public int Image_ID;
 
-    @ForeignKey(entity = SubmissionTable.class, parentColumns = "internal_ID", childColumns = "internal_ID", onUpdate = CASCADE, onDelete = CASCADE)
-    public int internal_ID;
+    @ForeignKey(entity = SubmissionTable.class, parentColumns = "Master_ID", childColumns = "Master_ID", onUpdate = CASCADE, onDelete = CASCADE)
+    public int Master_ID;
 
-    public String imageTitle;
-    public String latitude;
-    public String longitude;
-    public long dateTaken;
-    public String picturePath;
+    public String Title;
+    public String Latitude;
+    public String Longitude;
+    public long DateTaken;
+    public String ImagePath;
 }

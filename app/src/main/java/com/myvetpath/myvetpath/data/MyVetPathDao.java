@@ -24,6 +24,12 @@ public interface MyVetPathDao {
     @Query("SELECT * FROM group_table")
     LiveData<List<GroupTable>> getGroups();
 
+    @Query("SELECT * FROM group_table WHERE GroupName = :name LIMIT 1")
+    LiveData<GroupTable> getGroupByName(String name);
+
+    @Query("SELECT * FROM group_table WHERE Group_ID = :id LIMIT 1")
+    LiveData<GroupTable> getGroupByID(int id);
+
     @Insert
     void insertPatient(PatientTable patientTable);
 
@@ -33,7 +39,7 @@ public interface MyVetPathDao {
     @Update
     void updatePatient(PatientTable patientTable);
 
-    @Query("SELECT * FROM patient_table WHERE internal_ID = :id LIMIT 1")
+    @Query("SELECT * FROM patient_table WHERE Master_ID = :id LIMIT 1")
     LiveData<PatientTable> getPatientByID(int id);
 
     @Insert
@@ -45,19 +51,19 @@ public interface MyVetPathDao {
     @Update
     void updatePicture(PictureTable pictureTable);
 
-    @Query("SELECT * FROM picture_table WHERE internal_ID = :id")
+    @Query("SELECT * FROM picture_table WHERE Master_ID = :id")
     LiveData<List<PictureTable>> getPicturesByID(int id);
 
-    @Query("SELECT * FROM picture_table WHERE imageTitle = :title LIMIT 1")
+    @Query("SELECT * FROM picture_table WHERE Title = :title LIMIT 1")
     LiveData<PictureTable> getPictureByTitle(String title);
 
     @Insert
     void insertReply(ReplyTable replyTable);
 
-    @Query("SELECT * FROM reply_table WHERE internal_ID = :id ORDER BY dateOfMessage")
+    @Query("SELECT * FROM reply_table WHERE Master_ID = :id ORDER BY DateOfMessage")
     LiveData<List<ReplyTable>> getRepliesByID(int id);
 
-    @Query("SELECT * FROM reply_table WHERE senderID = :id ORDER BY dateOfMessage")
+    @Query("SELECT * FROM reply_table WHERE Sender_ID = :id ORDER BY DateOfMessage")
     LiveData<List<ReplyTable>> getRepliesBySender(int id);
 
     @Insert
@@ -69,7 +75,7 @@ public interface MyVetPathDao {
     @Update
     void updateReport(ReportTable reportTable);
 
-    @Query("SELECT * FROM report_table WHERE internal_ID = :id")
+    @Query("SELECT * FROM report_table WHERE Master_ID = :id")
     LiveData<ReportTable> getReportByID(int id);
 
     @Insert
@@ -81,14 +87,14 @@ public interface MyVetPathDao {
     @Update
     void updateSample(SampleTable sampleTable);
 
-    @Query("SELECT * FROM sample_table WHERE internal_ID = :id ORDER BY sampleCollectionDate")
+    @Query("SELECT * FROM sample_table WHERE Master_ID = :id ORDER BY SampleCollectionDate")
     LiveData<List<SampleTable>> getSamplesByID(int id);
 
-    @Query("SELECT * FROM sample_table WHERE nameOfSample = :name")
+    @Query("SELECT * FROM sample_table WHERE NameOfSample = :name")
     LiveData<SampleTable> getSampleByName(String name);
 
     @Insert
-    void insertSubmission(SubmissionTable submissionTable);
+    long insertSubmission(SubmissionTable submissionTable);
 
     @Delete
     void deleteSubmission(SubmissionTable submissionTable);
@@ -96,16 +102,16 @@ public interface MyVetPathDao {
     @Update
     void updateSubmission(SubmissionTable submissionTable);
 
-    @Query("SELECT * FROM submission_table WHERE statusFlag = 1 ORDER BY dateOfCreation")
+    @Query("SELECT * FROM submission_table WHERE StatusFlag = 1 ORDER BY DateOfCreation")
     LiveData<List<SubmissionTable>> getSubmissions();
 
-    @Query("SELECT * FROM submission_table WHERE statusFlag = 0 ORDER BY dateOfCreation")
+    @Query("SELECT * FROM submission_table WHERE StatusFlag = 0 ORDER BY DateOfCreation")
     LiveData<List<SubmissionTable>> getDrafts();
 
-    @Query("SELECT * FROM submission_table WHERE title = :title LIMIT 1")
+    @Query("SELECT * FROM submission_table WHERE Title = :title LIMIT 1")
     LiveData<SubmissionTable> getSubmissionByTitle(String title);
 
-    @Query("SELECT * FROM submission_table WHERE internal_ID = :id LIMIT 1")
+    @Query("SELECT * FROM submission_table WHERE Master_ID = :id LIMIT 1")
     LiveData<SubmissionTable> getSubmissionByID(int id);
 
     @Insert
@@ -120,6 +126,6 @@ public interface MyVetPathDao {
     @Query("SELECT * FROM user_table")
     LiveData<List<UserTable>> getUsers();
 
-    @Query("SELECT * FROM user_table WHERE username = :username")
+    @Query("SELECT * FROM user_table WHERE Username = :username")
     LiveData<UserTable> getUserByUsername(String username);
 }

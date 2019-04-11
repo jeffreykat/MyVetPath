@@ -9,15 +9,15 @@ import java.io.Serializable;
 public class UserTable implements Serializable {
 
     @PrimaryKey
-    public int user_ID;
+    public int User_ID;
 
-    public String username;
-    public String password;
-    public int authorized; //flag variable 0 means no 1 means yes.
-    public String firstName;
-    public String lastName;
-    public int phoneNumber;
-    public String email;
-    public String position;
-    public int securityLevel; //0 is basic client, 1 is pathologist
+    public String Username;
+    public String Password;
+    public int Authorized; //flag variable 0 means no 1 means yes.
+    public String FirstName;
+    public String LastName;
+    public int PhoneNumber;
+    public String Email;
+    public String Position;
+    public int SecurityLevel; //0 is basic client, 1 is pathologist
 }

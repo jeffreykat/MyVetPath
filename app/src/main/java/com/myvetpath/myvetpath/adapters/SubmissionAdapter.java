@@ -85,13 +85,13 @@ public class SubmissionAdapter extends RecyclerView.Adapter<SubmissionAdapter.Su
         }
 
         public void bind(SubmissionTable submissionTable){
-            titleTextView.setText(submissionTable.title);
-            calendar.setTimeInMillis(submissionTable.dateOfCreation);
+            titleTextView.setText(submissionTable.Title);
+            calendar.setTimeInMillis(submissionTable.DateOfCreation);
             dateTextView.setText(simpleDateFormat.format(calendar.getTime()));
-            if(submissionTable.caseID == NULL){
+            if(submissionTable.Case_ID == NULL){
                 caseTextView.setText(R.string.pending);
             } else {
-                caseTextView.setText(String.valueOf(submissionTable.caseID));
+                caseTextView.setText(String.valueOf(submissionTable.Case_ID));
             }
         }
     }

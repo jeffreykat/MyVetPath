@@ -12,15 +12,15 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 public class ReportTable implements Serializable {
 
     @PrimaryKey
-    @ForeignKey(entity = UserTable.class, parentColumns = "user_ID", childColumns = "user_ID", onDelete = CASCADE, onUpdate = CASCADE)
-    public int user_ID; //The pathologist responsible
+    @ForeignKey(entity = UserTable.class, parentColumns = "User_ID", childColumns = "User_ID", onDelete = CASCADE, onUpdate = CASCADE)
+    public int User_ID; //The pathologist responsible
 
-    @ForeignKey(entity = SubmissionTable.class, parentColumns = "internal_ID", childColumns = "internal_ID", onUpdate = CASCADE, onDelete = CASCADE)
-    public int internal_ID; //The submission
+    @ForeignKey(entity = SubmissionTable.class, parentColumns = "Master_ID", childColumns = "Master_ID", onUpdate = CASCADE, onDelete = CASCADE)
+    public int Master_ID; //The submission
 
-    public String submissionReview; //initial pathologist review
-    public String conclusion; //final pathologist review
-    public long dateClosed; //if filled, case closed
-    public long reportDate; //date report is made
-    public String attachments;
+    public String SubmissionReview; //initial pathologist review
+    public String Conclusion; //final pathologist review
+    public long DateClosed; //if filled, case closed
+    public long ReportDate; //date report is made
+    public String Attachments;
 }

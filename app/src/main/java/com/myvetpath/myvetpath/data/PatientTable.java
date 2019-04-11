@@ -12,15 +12,15 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 public class PatientTable implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
-    public int patient_ID;
+    public int Patient_ID;
 
-    @ForeignKey(entity = SubmissionTable.class, parentColumns = "internal_ID", childColumns = "internal_ID", onDelete = CASCADE, onUpdate = CASCADE)
-    public int internal_ID;
+    @ForeignKey(entity = SubmissionTable.class, parentColumns = "Master_ID", childColumns = "Master_ID", onDelete = CASCADE, onUpdate = CASCADE)
+    public int Master_ID;
 
-    public int euthanized; //0 means no 1 means yes
-    public String sex;
-    public String species;
-    public String patientName;
-    public long dateOfBirth;
-    public long dateOfDeath;
+    public int Euthanized; //0 means no 1 means yes
+    public String Sex;
+    public String Species;
+    public String PatientName;
+    public long DateOfBirth;
+    public long DateOfDeath;
 }

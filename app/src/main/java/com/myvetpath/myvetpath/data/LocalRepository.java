@@ -26,6 +26,10 @@ public class LocalRepository {
         return dao.getGroups();
     }
 
+    public LiveData<GroupTable> getGroupByName(String name){return dao.getGroupByName(name);}
+
+    public LiveData<GroupTable> getGroupByID(int id){return dao.getGroupByID(id);}
+
     public void insertPatient(PatientTable patientTable){new InsertPatientAsyncTask(dao).execute(patientTable);}
 
     public void deletePatient(PatientTable patientTable){new DeletePatientAsyncTask(dao).execute(patientTable);}
@@ -82,7 +86,10 @@ public class LocalRepository {
         return dao.getSampleByName(name);
     }
 
-    public void insertSubmission(SubmissionTable submissionTable){new InsertSubmissionAsyncTask(dao).execute(submissionTable);}
+    public long insertSubmission(SubmissionTable submissionTable){
+        new InsertSubmissionAsyncTask(dao).execute(submissionTable);
+        return submissionTable.Master_ID;
+    }
 
     public void deleteSubmission(SubmissionTable submissionTable){new DeleteSubmissionAsyncTask(dao).execute(submissionTable);}
 

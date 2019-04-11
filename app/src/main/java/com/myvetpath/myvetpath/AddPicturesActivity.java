@@ -1,6 +1,7 @@
 package com.myvetpath.myvetpath;
 
 import android.Manifest;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,6 +32,8 @@ import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.myvetpath.myvetpath.data.PictureTable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -40,6 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 //This is for the screen where users can add pictures. It is called when people click the camera icon on the CreateSubActivity screen
@@ -66,12 +70,14 @@ public class AddPicturesActivity extends AppCompatActivity {
     private LocationListener listener;
     Boolean shouldCheckPhoneCoordinates = false;
 
-    private ArrayList<Picture> picturesList;
+    private List<PictureTable> picturesList;
 
     private boolean didUploadImages[] = {false, false, false, false, false};
 
     static final int REQUEST_TAKE_PHOTO = 1;
     String currentPhotoPath;
+
+    MyVetPathViewModel viewModel;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +89,7 @@ public class AddPicturesActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        picturesList = (ArrayList<Picture>) intent.getSerializableExtra("pictureList");
+        picturesList = (List<PictureTable>) intent.getSerializableExtra("pictureList");
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -92,7 +98,7 @@ public class AddPicturesActivity extends AppCompatActivity {
             public void onClick(View view) {
                 storePicturesInDB();
                 Intent resultIntent = new Intent();
-                resultIntent.putExtra("pictureResults", picturesList);
+                resultIntent.putExtra("pictureResults", (ArrayList<PictureTable>)picturesList);
                 setResult(RESULT_OK, resultIntent);
                 finish();
             }
@@ -145,6 +151,8 @@ public class AddPicturesActivity extends AppCompatActivity {
             }
         };
 
+        viewModel = ViewModelProviders.of(this).get(MyVetPathViewModel.class);
+
          initializeImages();
     }
 
@@ -154,17 +162,17 @@ public class AddPicturesActivity extends AppCompatActivity {
 //Purpose: Set the images to whatever the user set earlier. Initializes all the data based on prior inputs
     private void initializeImages(){
         for(int i = 0; i < picturesList.size(); i++){
-            Picture tempPicture = picturesList.get(i);
+            PictureTable tempPicture = picturesList.get(i);
             if(tempPicture != null){
-                imageNames[i] = tempPicture.getImageTitle();
-                longitudes[i] = tempPicture.getLongitude();
-                latitudes[i] = tempPicture.getLatitude();
-                imageDates[i] = tempPicture.getDateTaken();
-                picturePaths[i] = tempPicture.getPicturePath();
+                imageNames[i] = tempPicture.Title;
+                longitudes[i] = tempPicture.Longitude;
+                latitudes[i] = tempPicture.Latitude;
+                imageDates[i] = tempPicture.DateTaken;
+                picturePaths[i] = tempPicture.ImagePath;
 
                 Bitmap bmp = null;
 
-                String filename = picturesList.get(i).getPicturePath();
+                String filename = picturesList.get(i).ImagePath;
                 try { //try to get the bitmap and set the image button to it
                     FileInputStream is = this.openFileInput(filename);
                     bmp = BitmapFactory.decodeStream(is);
@@ -183,19 +191,19 @@ public class AddPicturesActivity extends AppCompatActivity {
 //Purpose: Stores the data gathered from this screen into the db. This is called whenever the user selects the floating action button
     private void storePicturesInDB(){
 
-        ArrayList<Picture> tempList = new ArrayList<Picture>(); //create a temporary list so that it is easier to deal with cases where users skip picture slots to upload
+        ArrayList<PictureTable> tempList = new ArrayList<PictureTable>(); //create a temporary list so that it is easier to deal with cases where users skip picture slots to upload
 
         for(int i = 0; i < 5; i++){
 
             if(imageNames[i] != null){ //if user uploaded image in this slot, collect all image data and add it to array list
                //TODO: Store the following in the DB
-                Picture tempPicture = new Picture();
-                tempPicture.setImageTitle(imageNames[i]);
-                tempPicture.setLongitude(longitudes[i]);
-                tempPicture.setLatitude(latitudes[i]);
+                PictureTable tempPicture = new PictureTable();
+                tempPicture.Title = imageNames[i];
+                tempPicture.Longitude = longitudes[i];
+                tempPicture.Latitude = latitudes[i];
                 Log.d("pass", "storePicturesInDB: before set image link");
-                tempPicture.setPicturePath(picturePaths[i]);
-                tempPicture.setDateTaken(imageDates[i]);
+                tempPicture.ImagePath = picturePaths[i];
+                tempPicture.DateTaken = imageDates[i];
 //                Log.d("pass", "storePicturesInDB: index: " + i + ", Image name: " + imageNames[i] + ", longitude: " + longitudes[i] + "latitude " + latitudes[i] + ", dates: " + imageDates[i]);
                if(didUploadImages[i] == false){
                    try {
@@ -208,26 +216,25 @@ public class AddPicturesActivity extends AppCompatActivity {
                        //Cleanup
                        stream.close();
                        bmp.recycle();
-                       tempPicture.setPicturePath(filename);
+                       tempPicture.ImagePath = filename;
 
                    } catch (Exception e) {
                        e.printStackTrace();
                    }
                }else{
-                   tempPicture.setPicturePath(i + "bitmap.png");
+                   tempPicture.ImagePath = (i + "bitmap.png");
                }
 
                 tempList.add(tempPicture);
 
             }else{ //if image not uploaded, upload a "null" picture
                 Log.d("pass", "storePicturesInDB: about to set to null ");
-                Picture emptyPicture = new Picture();
-                emptyPicture.setImageTitle(null);
-                emptyPicture.setDateTaken(0);
-                emptyPicture.setPicturePath(null);
-                emptyPicture.setLatitude(null);
-                emptyPicture.setLongitude(null);
-                emptyPicture.setPicturePath(null);
+                PictureTable emptyPicture = new PictureTable();
+                emptyPicture.Title = null;
+                emptyPicture.DateTaken = 0;
+                emptyPicture.ImagePath = null;
+                emptyPicture.Latitude = null;
+                emptyPicture.Longitude = null;
                 tempList.add(emptyPicture);
 
             }

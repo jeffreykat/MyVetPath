@@ -12,13 +12,13 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 public class ReplyTable implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
-    public int reply_ID; //internal id
+    public int Reply_ID; //internal id
 
-    @ForeignKey(entity = SubmissionTable.class, parentColumns = "internal_ID", childColumns = "internal_ID", onDelete = CASCADE, onUpdate = CASCADE)
-    public int internal_ID;
+    @ForeignKey(entity = SubmissionTable.class, parentColumns = "Master_ID", childColumns = "Master_ID", onDelete = CASCADE, onUpdate = CASCADE)
+    public int Master_ID;
 
-    public int senderID;
-    public int receiverID;
-    public String message;
-    public long dateOfMessage;
+    public int Sender_ID;
+    public int Receiver_ID;
+    public String ContentsOfMessage;
+    public long DateOfMessage;
 }

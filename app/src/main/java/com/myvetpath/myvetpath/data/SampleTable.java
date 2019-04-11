@@ -12,13 +12,13 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 public class SampleTable implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
-    public int sample_ID;
+    public int Sample_ID;
 
-    @ForeignKey(entity = SubmissionTable.class, parentColumns = "internal_ID", childColumns = "internal_ID", onUpdate = CASCADE, onDelete = CASCADE)
-    public int internal_ID;
+    @ForeignKey(entity = SubmissionTable.class, parentColumns = "Master_ID", childColumns = "Master_ID", onUpdate = CASCADE, onDelete = CASCADE)
+    public int Master_ID;
 
-    public String locationOfSample;
-    public int numberOfSamples;
-    public long sampleCollectionDate;
-    public String nameOfSample;
+    public String LocationOfSample;
+    public int NumberOfSample;
+    public long SampleCollectionDate;
+    public String NameOfSample;
 }

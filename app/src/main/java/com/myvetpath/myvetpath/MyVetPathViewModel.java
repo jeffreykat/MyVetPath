@@ -33,6 +33,10 @@ public class MyVetPathViewModel extends AndroidViewModel {
 
     public LiveData<List<GroupTable>> getGroups(){return repo.getGroups();}
 
+    public LiveData<GroupTable> getGroupByName(String name){return repo.getGroupByName(name);}
+
+    public LiveData<GroupTable> getGroupByID(int id){return repo.getGroupByID(id);}
+
     public void insertPatient(PatientTable patientTable){repo.insertPatient(patientTable);}
 
     public void deletePatient(PatientTable patientTable){repo.deletePatient(patientTable);}
@@ -73,7 +77,7 @@ public class MyVetPathViewModel extends AndroidViewModel {
 
     public LiveData<SampleTable> getSampleByName(String name){return repo.getSampleByName(name);}
 
-    public void insertSubmission(SubmissionTable submissionTable){repo.insertSubmission(submissionTable);}
+    public long insertSubmission(SubmissionTable submissionTable){return repo.insertSubmission(submissionTable);}
 
     public void deleteSubmission(SubmissionTable submissionTable){repo.deleteSubmission(submissionTable);}
 
