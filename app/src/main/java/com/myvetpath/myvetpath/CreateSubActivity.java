@@ -70,7 +70,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
     ArrayList<PictureTable> picturesList = new ArrayList<PictureTable>(5);
 
     String userName;
-    long master_id;
+    long global_master_id;
 
     ImageButton add_pictures_button;
     Button save_draft_button;
@@ -100,6 +100,16 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
 
     private String draftName = "";
     boolean draftExists = false;
+    boolean subInserted = false;
+
+    OnSubmissionInserted inserted = new OnSubmissionInserted() {
+        @Override
+        public void onSubmissionInserted(long master_id) {
+            global_master_id = master_id;
+            Log.d(LOG_TAG, "global master id set: " + Long.toString(master_id));
+            subInserted = true;
+        }
+    };
 
     public void createDialog(final SubmissionTable submission, final PatientTable patient){
         AlertDialog.Builder dialog = new AlertDialog.Builder(CreateSubActivity.this);
@@ -112,7 +122,8 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                 String content = title_et.getText().toString() + " Submitted";
                 Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
                 testToast.show();
-                long internalID = viewModel.insertSubmission(submission);
+                long internalID = viewModel.insertSubmission(submission, inserted);
+                Log.d(LOG_TAG, "internal id from view model: " + Long.toString(internalID));
 
                 for(SampleTable tempSample: samplesList){
                     tempSample.Master_ID = internalID;
@@ -122,7 +133,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                 for(PictureTable tempPicture: picturesList){
                     if(tempPicture != null){
                         tempPicture.Master_ID = internalID;
-                        Log.d(LOG_TAG, "onClick: current internal id is: " + tempPicture.Master_ID);
+                        Log.d(LOG_TAG, "onClick: current internal id is: " + Long.toString(tempPicture.Master_ID));
                         viewModel.insertPicture(tempPicture);
                     }
                 }
@@ -173,7 +184,6 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
             if(extras.containsKey("draft")) {
                 long internalID = extras.getLong("draft", 0);
                 Log.d(LOG_TAG, "draft id: " + Long.toString(internalID));
-                //newSub = viewModel.getSubmissionByID(internalID).getValue();
                 //TODO: Why does it always return null?
                 viewModel.getSubmissionByID(internalID).observe(this, new Observer<SubmissionTable>() {
                     @Override
@@ -269,7 +279,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                             }
                         }
                     } else{
-                        long intID = viewModel.insertSubmission(newSub);
+                        long intID = viewModel.insertSubmission(newSub, inserted);
                         draftName = newSub.Title;
                         newPatient.Master_ID = intID;
                         viewModel.insertPatient(newPatient);
@@ -524,7 +534,5 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
 
         return true;
     }
-
-
 
 }

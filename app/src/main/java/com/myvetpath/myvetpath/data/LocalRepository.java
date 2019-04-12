@@ -5,12 +5,16 @@ import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.myvetpath.myvetpath.OnSubmissionInserted;
+
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class LocalRepository {
     private static String TAG = LocalRepository.class.getSimpleName();
 
     private MyVetPathDao dao;
+    private OnSubmissionInserted listener;
 
     public LocalRepository(Application application){
         AppDatabase db = AppDatabase.getDatabase(application);
@@ -41,7 +45,10 @@ public class LocalRepository {
         return dao.getPatientByID(id);
     }
 
-    public void insertPicture(PictureTable pictureTable){new InsertPictureAsyncTask(dao).execute(pictureTable);}
+    public void insertPicture(PictureTable pictureTable){
+        new InsertPictureAsyncTask(dao).execute(pictureTable);
+        Log.d("LocalRepo", "Insert " + pictureTable.Title + " Master_ID: " + Long.toString(pictureTable.Master_ID));
+    }
 
     public void deletePicture(PictureTable pictureTable){new DeletePictureAsyncTask(dao).execute(pictureTable);}
 
@@ -73,7 +80,10 @@ public class LocalRepository {
         return dao.getReportByID(id);
     }
 
-    public void insertSample(SampleTable sampleTable){new InsertSampleAsyncTask(dao).execute(sampleTable);}
+    public void insertSample(SampleTable sampleTable){
+        new InsertSampleAsyncTask(dao).execute(sampleTable);
+        Log.d("LocalRepo", "Insert " + sampleTable.NameOfSample + " Master_ID: " + Long.toString(sampleTable.Master_ID));
+    }
 
     public void deleteSample(SampleTable sampleTable){new DeleteSampleAsyncTask(dao).execute(sampleTable);}
 
@@ -87,10 +97,17 @@ public class LocalRepository {
         return dao.getSampleByName(name);
     }
 
-    public long insertSubmission(SubmissionTable submissionTable){
-        new InsertSubmissionAsyncTask(dao).execute(submissionTable);
-        Log.d("LocalRepo", "Insert " + submissionTable.Title + " Sub Master_ID: " + Long.toString(submissionTable.Master_ID));
-        return submissionTable.Master_ID;
+    public long insertSubmission(SubmissionTable submissionTable, OnSubmissionInserted inserted){
+        long id = 0;
+        try {
+            id = new InsertSubmissionAsyncTask(dao, inserted).execute(submissionTable).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        Log.d("LocalRepo", "Insert " + submissionTable.Title + " Sub Master_ID: " + Long.toString(id));
+        return id;
     }
 
     public void deleteSubmission(SubmissionTable submissionTable){new DeleteSubmissionAsyncTask(dao).execute(submissionTable);}
@@ -337,17 +354,24 @@ public class LocalRepository {
         }
     }
 
-    private static class InsertSubmissionAsyncTask extends AsyncTask<SubmissionTable, Void, Void>{
+    private static class InsertSubmissionAsyncTask extends AsyncTask<SubmissionTable, Void, Long>{
         MyVetPathDao dao;
+        OnSubmissionInserted submissionInserted;
 
-        InsertSubmissionAsyncTask(MyVetPathDao myVetPathDao){
+        InsertSubmissionAsyncTask(MyVetPathDao myVetPathDao, OnSubmissionInserted inserted){
             dao = myVetPathDao;
+            submissionInserted = inserted;
         }
 
         @Override
-        protected Void doInBackground(SubmissionTable... submissionTables) {
-            dao.insertSubmission(submissionTables[0]);
-            return null;
+        protected Long doInBackground(SubmissionTable... submissionTables) {
+            return dao.insertSubmission(submissionTables[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Long aLong) {
+            submissionInserted.onSubmissionInserted(aLong);
+            Log.d("Local Repo", "Insert Sub Async task id: " + Long.toString(aLong));
         }
     }
 

@@ -78,7 +78,7 @@ public class MyVetPathViewModel extends AndroidViewModel {
 
     public LiveData<SampleTable> getSampleByName(String name){return repo.getSampleByName(name);}
 
-    public long insertSubmission(SubmissionTable submissionTable){return repo.insertSubmission(submissionTable);}
+    public long insertSubmission(SubmissionTable submissionTable, OnSubmissionInserted listener){return repo.insertSubmission(submissionTable, listener);}
 
     public void deleteSubmission(SubmissionTable submissionTable){repo.deleteSubmission(submissionTable);}
 

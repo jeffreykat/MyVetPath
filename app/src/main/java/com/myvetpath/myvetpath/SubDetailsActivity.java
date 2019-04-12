@@ -21,6 +21,7 @@ import com.myvetpath.myvetpath.data.SampleTable;
 import com.myvetpath.myvetpath.data.SubmissionTable;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,57 +59,6 @@ public class SubDetailsActivity extends BaseActivity {
 
         currentSub = (SubmissionTable) getIntent().getSerializableExtra("submission");
 
-        long internalId = currentSub.Master_ID;
-        Log.d(LOG_TAG, "Master_ID in details: " + Long.toString(internalId));
-
-        //currentSub = viewModel.getSubmissionByID(internalId).getValue();
-        if(currentSub == null){
-            Log.d("SubDetailsActivity", "submission is null");
-        }
-
-        //TODO: Not finding data in database, always null
-        viewModel.getPatientByID(internalId).observe(this, new Observer<PatientTable>() {
-            @Override
-            public void onChanged(@Nullable PatientTable patientTable) {
-                currentPatient = patientTable;
-                if(patientTable == null){
-                    Log.d(LOG_TAG, "patient is null");
-                }
-            }
-        });
-
-        viewModel.getPicturesByID(internalId).observe(this, new Observer<List<PictureTable>>() {
-            @Override
-            public void onChanged(@Nullable List<PictureTable> pictureTables) {
-                if(pictureTables != null) {
-                    pictures.addAll(pictureTables);
-                }
-            }
-        });
-
-        viewModel.getSamplesByID(internalId).observe(this, new Observer<List<SampleTable>>() {
-            @Override
-            public void onChanged(@Nullable List<SampleTable> sampleTables) {
-                if(sampleTables != null){
-                    samples.addAll(sampleTables);
-                } else{
-                    Log.d(LOG_TAG, "no samples");
-                }
-            }
-        });
-
-        viewModel.getGroupByID(currentSub.Group_ID).observe(this, new Observer<GroupTable>() {
-            @Override
-            public void onChanged(@Nullable GroupTable groupTable) {
-                if(groupTable != null){
-                    currentGroup = groupTable;
-                    group = currentGroup.GroupName;
-                } else{
-                    group = "";
-                }
-            }
-        });
-
         String title = currentSub.Title;
 
         calendar.setTimeInMillis(currentSub.DateOfCreation);
@@ -117,24 +67,16 @@ public class SubDetailsActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        String sampleText = "";
-        int index = 0;
-        for(SampleTable tempSample: samples){
-            calendar.setTimeInMillis(tempSample.SampleCollectionDate);
-            String tempSampleDate = simpleDateFormat.format(calendar.getTime());
+        create_sub_activity = new Intent(this, CreateSubActivity.class);
 
-            sampleText += "Sample " + tempSample.NameOfSample + ": " + tempSample.NameOfSample + " samples collected "
-                    + " in " + tempSample.LocationOfSample + " on " + tempSampleDate + "\n";
-            index++;
-        }
+        long internalId = currentSub.Master_ID;
+        setObservers(internalId);
+        Log.d(LOG_TAG, "Master_ID in details: " + Long.toString(internalId));
 
-        mSamplesTV = findViewById(R.id.subSamplesTV);
-        mSamplesTV.setText(sampleText);
+        Log.d(LOG_TAG, "Patient name 3: " + currentPatient.PatientName);
 
         calendar.setTimeInMillis(currentSub.DateOfCreation);
         String comment = currentSub.UserComment;
-
-        create_sub_activity = new Intent(this, CreateSubActivity.class);
 
         TextView titleText = findViewById(R.id.subTitle);
         titleText.setText(title);
@@ -150,19 +92,6 @@ public class SubDetailsActivity extends BaseActivity {
             TextView groupText = findViewById(R.id.subGroupName);
             groupText.setText("Group: " + group);
         }
-        TextView sickElementName = findViewById(R.id.sickElementName);
-        sickElementName.setText(currentPatient.PatientName);
-        TextView sickElementSpecies = findViewById(R.id.sickElementSpecies);
-        sickElementSpecies.setText(currentPatient.Species);
-        TextView sickElementSex = findViewById(R.id.sickElementSex);
-        sickElementSex.setText(currentPatient.Sex);
-        TextView sickElementEuthanized = findViewById(R.id.sickElementEuthanized);
-        if(currentPatient.Euthanized == 0){
-            sickElementEuthanized.setText(R.string.euthanized_neg);
-        }
-        else {
-            sickElementEuthanized.setText(R.string.euthanized_pos);
-        }
         TextView commentText = findViewById(R.id.subComment);
         commentText.setText(comment);
 
@@ -171,29 +100,108 @@ public class SubDetailsActivity extends BaseActivity {
         images = new ImageButton[]{findViewById(R.id.first_ImageDetails_bttn), findViewById(R.id.second_ImageDetails_bttn),
                 findViewById(R.id.third_ImageDetails_bttn), findViewById(R.id.fourth_ImageDetails_bttn),
                 findViewById(R.id.fifth_ImageDetails_bttn)};
-
-        for(int i = 0; i < 5; i++){
-            if(pictures.size() > i && pictures.get(i).Title != null){
-                Bitmap bmp = null;
-                ImageButton bttn = (ImageButton) findViewById(R.id.first_ImageDetails_bttn);
-
-                String filename = pictures.get(i).ImagePath;
-                try { //try to get the bitmap and set the image button to it
-                    FileInputStream is = this.openFileInput(filename);
-                    bmp = BitmapFactory.decodeStream(is);
-                    is.close();
-                    images[i].setImageBitmap(bmp);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }else{
-                images[i].setVisibility(View.INVISIBLE);
-            }
-        }
-
-
     }
 
+    public void setObservers(long internalId){
+        viewModel.getPatientByID(internalId).observe(this, new Observer<PatientTable>() {
+            @Override
+            public void onChanged(@Nullable PatientTable patientTable) {
+                currentPatient = patientTable;
+                Log.d(LOG_TAG, "Patient name 1: " + currentPatient.PatientName);
+                TextView sickElementName = findViewById(R.id.sickElementName);
+                sickElementName.setText(currentPatient.PatientName);
+                Log.d(LOG_TAG, "Patient name 2: " + currentPatient.PatientName);
+                TextView sickElementSpecies = findViewById(R.id.sickElementSpecies);
+                sickElementSpecies.setText(currentPatient.Species);
+                TextView sickElementSex = findViewById(R.id.sickElementSex);
+                sickElementSex.setText(currentPatient.Sex);
+                TextView sickElementEuthanized = findViewById(R.id.sickElementEuthanized);
+                if(currentPatient.Euthanized == 0){
+                    sickElementEuthanized.setText(R.string.euthanized_neg);
+                }
+                else {
+                    sickElementEuthanized.setText(R.string.euthanized_pos);
+                }
+                if(patientTable == null){
+                    Log.d(LOG_TAG, "patient is null");
+                }
+            }
+        });
+        Log.d(LOG_TAG, "Patient name 2: " + currentPatient.PatientName);
+
+        viewModel.getPicturesByID(internalId).observe(this, new Observer<List<PictureTable>>() {
+            @Override
+            public void onChanged(@Nullable List<PictureTable> pictureTables) {
+                if(pictureTables != null) {
+                    pictures.addAll(pictureTables);
+                    for(int i = 0; i < 5; i++){
+                        if(pictures.size() > i && pictures.get(i).Title != null){
+                            Bitmap bmp = null;
+                            ImageButton bttn = (ImageButton) findViewById(R.id.first_ImageDetails_bttn);
+
+                            String filename = pictures.get(i).ImagePath;
+                            try { //try to get the bitmap and set the image button to it
+                                FileInputStream is = loadingPictures(filename);
+                                bmp = BitmapFactory.decodeStream(is);
+                                is.close();
+                                images[i].setImageBitmap(bmp);
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }else{
+                            images[i].setVisibility(View.INVISIBLE);
+                        }
+                    }
+                }
+            }
+        });
+
+        viewModel.getSamplesByID(internalId).observe(this, new Observer<List<SampleTable>>() {
+            @Override
+            public void onChanged(@Nullable List<SampleTable> sampleTables) {
+                if(sampleTables != null){
+                    samples.addAll(sampleTables);
+                } else{
+                    Log.d(LOG_TAG, "no samples");
+                }
+                String sampleText = "";
+                int index = 0;
+                for(SampleTable tempSample: samples){
+                    calendar.setTimeInMillis(tempSample.SampleCollectionDate);
+                    String tempSampleDate = simpleDateFormat.format(calendar.getTime());
+
+                    sampleText += "Sample " + tempSample.NameOfSample + ": " + tempSample.NameOfSample + " samples collected "
+                            + " in " + tempSample.LocationOfSample + " on " + tempSampleDate + "\n";
+                    index++;
+                }
+
+                mSamplesTV = findViewById(R.id.subSamplesTV);
+                mSamplesTV.setText(sampleText);
+            }
+        });
+
+        viewModel.getGroupByID(currentSub.Group_ID).observe(this, new Observer<GroupTable>() {
+            @Override
+            public void onChanged(@Nullable GroupTable groupTable) {
+                if(groupTable != null){
+                    currentGroup = groupTable;
+                    group = currentGroup.GroupName;
+                } else{
+                    group = "";
+                }
+            }
+        });
+    }
+
+    public FileInputStream loadingPictures(String filename){
+        FileInputStream is = null;
+        try {
+            is = this.openFileInput(filename);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return is;
+    }
 
 }
