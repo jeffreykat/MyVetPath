@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.myvetpath.myvetpath.data.GroupTable;
 import com.myvetpath.myvetpath.data.LocalRepository;
@@ -89,7 +90,15 @@ public class MyVetPathViewModel extends AndroidViewModel {
 
     public LiveData<SubmissionTable> getSubmissionByTitle(String title){return repo.getSubmissionByTitle(title);}
 
-    public LiveData<SubmissionTable> getSubmissionByID(long id){return repo.getSubmissionByID(id);}
+    public LiveData<SubmissionTable> getSubmissionByID(long id){
+        SubmissionTable testTable = repo.getSubmissionByID(id).getValue();
+        if(testTable != null) {
+            Log.d("ViewModel", "sub title: " + testTable.Title);
+        } else {
+            Log.d("ViewModel", "sub is null");
+        }
+        return repo.getSubmissionByID(id);
+    }
 
     public void insertUser(UserTable userTable){repo.insertUser(userTable);}
 

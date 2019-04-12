@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.myvetpath.myvetpath.data.GroupTable;
 import com.myvetpath.myvetpath.data.PatientTable;
 import com.myvetpath.myvetpath.data.PictureTable;
+import com.myvetpath.myvetpath.data.ReportTable;
 import com.myvetpath.myvetpath.data.SampleTable;
 import com.myvetpath.myvetpath.data.SubmissionTable;
 
@@ -32,16 +33,21 @@ public class SubDetailsActivity extends BaseActivity {
 
     MyVetPathViewModel viewModel;
 
+    final String LOG_TAG = "SubDetailsActivity";
+
     Intent create_sub_activity;
-    SubmissionTable currentSub;
-    PatientTable currentPatient;
-    GroupTable currentGroup;
-    ArrayList<PictureTable> pictures;
-    ArrayList<SampleTable> samples;
+    SubmissionTable currentSub = new SubmissionTable();
+    PatientTable currentPatient = new PatientTable();
+    GroupTable currentGroup = new GroupTable();
+    ReportTable currentReport = new ReportTable();
+    ArrayList<PictureTable> pictures = new ArrayList<>(5);
+    ArrayList<SampleTable> samples = new ArrayList<>(1);
     Calendar calendar = Calendar.getInstance();
     final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
     private TextView mSamplesTV;
     private ImageButton[] images;
+
+    String group = new String();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,17 +56,58 @@ public class SubDetailsActivity extends BaseActivity {
 
         viewModel = ViewModelProviders.of(this).get(MyVetPathViewModel.class);
 
-        long internalId = getIntent().getLongExtra("internalID", 1);
+        currentSub = (SubmissionTable) getIntent().getSerializableExtra("submission");
 
-        currentSub = viewModel.getSubmissionByID(internalId).getValue();
+        long internalId = currentSub.Master_ID;
+        Log.d(LOG_TAG, "Master_ID in details: " + Long.toString(internalId));
 
-        currentPatient = viewModel.getPatientByID(internalId).getValue();
+        //currentSub = viewModel.getSubmissionByID(internalId).getValue();
+        if(currentSub == null){
+            Log.d("SubDetailsActivity", "submission is null");
+        }
 
-        pictures.addAll(viewModel.getPicturesByID(internalId).getValue());
+        //TODO: Not finding data in database, always null
+        viewModel.getPatientByID(internalId).observe(this, new Observer<PatientTable>() {
+            @Override
+            public void onChanged(@Nullable PatientTable patientTable) {
+                currentPatient = patientTable;
+                if(patientTable == null){
+                    Log.d(LOG_TAG, "patient is null");
+                }
+            }
+        });
 
-        samples.addAll(viewModel.getSamplesByID(internalId).getValue());
+        viewModel.getPicturesByID(internalId).observe(this, new Observer<List<PictureTable>>() {
+            @Override
+            public void onChanged(@Nullable List<PictureTable> pictureTables) {
+                if(pictureTables != null) {
+                    pictures.addAll(pictureTables);
+                }
+            }
+        });
 
-        currentGroup = viewModel.getGroupByID(currentSub.Group_ID).getValue();
+        viewModel.getSamplesByID(internalId).observe(this, new Observer<List<SampleTable>>() {
+            @Override
+            public void onChanged(@Nullable List<SampleTable> sampleTables) {
+                if(sampleTables != null){
+                    samples.addAll(sampleTables);
+                } else{
+                    Log.d(LOG_TAG, "no samples");
+                }
+            }
+        });
+
+        viewModel.getGroupByID(currentSub.Group_ID).observe(this, new Observer<GroupTable>() {
+            @Override
+            public void onChanged(@Nullable GroupTable groupTable) {
+                if(groupTable != null){
+                    currentGroup = groupTable;
+                    group = currentGroup.GroupName;
+                } else{
+                    group = "";
+                }
+            }
+        });
 
         String title = currentSub.Title;
 
@@ -84,7 +131,6 @@ public class SubDetailsActivity extends BaseActivity {
         mSamplesTV = findViewById(R.id.subSamplesTV);
         mSamplesTV.setText(sampleText);
 
-        String group = currentGroup.GroupName;
         calendar.setTimeInMillis(currentSub.DateOfCreation);
         String comment = currentSub.UserComment;
 

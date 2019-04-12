@@ -3,6 +3,7 @@ package com.myvetpath.myvetpath.data;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.List;
 
@@ -88,6 +89,7 @@ public class LocalRepository {
 
     public long insertSubmission(SubmissionTable submissionTable){
         new InsertSubmissionAsyncTask(dao).execute(submissionTable);
+        Log.d("LocalRepo", "Insert " + submissionTable.Title + " Sub Master_ID: " + Long.toString(submissionTable.Master_ID));
         return submissionTable.Master_ID;
     }
 

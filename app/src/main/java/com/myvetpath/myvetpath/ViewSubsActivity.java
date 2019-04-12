@@ -11,6 +11,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +61,8 @@ public class ViewSubsActivity extends BaseActivity implements SubmissionAdapter.
 
     @Override
     public void onSubmissionClick(SubmissionTable sub) {
-        sub_details_activity.putExtra("internalID", sub.Master_ID);
+        sub_details_activity.putExtra("submission", sub);
+        Log.d("ViewSubsActivity", "Master_ID in list: "+ Long.toString(sub.Master_ID));
         startActivity(sub_details_activity);
     }
 

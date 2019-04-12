@@ -173,7 +173,19 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
             if(extras.containsKey("draft")) {
                 long internalID = extras.getLong("draft", 0);
                 Log.d(LOG_TAG, "draft id: " + Long.toString(internalID));
-                newSub = viewModel.getSubmissionByID(internalID).getValue();
+                //newSub = viewModel.getSubmissionByID(internalID).getValue();
+                //TODO: Why does it always return null?
+                viewModel.getSubmissionByID(internalID).observe(this, new Observer<SubmissionTable>() {
+                    @Override
+                    public void onChanged(@Nullable SubmissionTable submissionTable) {
+                        if(submissionTable != null) {
+                            newSub = submissionTable;
+                            draftName = newSub.Title;
+                        } else {
+                            Log.d(LOG_TAG, "newSub is null");
+                        }
+                    }
+                });
                 newPatient = viewModel.getPatientByID(internalID).getValue();
                 if(viewModel.getSamplesByID(internalID).getValue() != null) {
                     samplesList.addAll(viewModel.getSamplesByID(internalID).getValue());
@@ -182,7 +194,6 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                     picturesList.addAll(viewModel.getPicturesByID(internalID).getValue());
                 }
                 updatingDraft = true;
-                draftName = newSub.Title;
             }
             else{
                 setupNew();
