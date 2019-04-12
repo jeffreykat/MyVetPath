@@ -1,12 +1,21 @@
 package com.myvetpath.myvetpath;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+
+import com.myvetpath.myvetpath.data.SubmissionTable;
+
+import java.util.List;
+
+import static java.sql.Types.NULL;
 
 public class MainActivity extends BaseActivity {
 
@@ -22,9 +31,8 @@ public class MainActivity extends BaseActivity {
     Intent view_drafts_activity;
     Button view_drafts_button;
 
-
-    //The database would be in this variable
-    MyDBHandler dbHelper;
+    //access to the database
+    MyVetPathViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,32 +53,8 @@ public class MainActivity extends BaseActivity {
                 startActivity(create_sub_activity);
             }
         });
-        /*
-        * this will create a database by the name of db.
-        * in the future we would probably do something along the lines of
-        * If db.openExistingDatabse() = error
-        * then create new database
-        * else open the existing one.
-         */
-        dbHelper = new MyDBHandler(this);
-        //dbHelper.dropTable(dbHelper.getWritableDatabase());
-        //dbHelper.createTables(dbHelper.getWritableDatabase());
 
-        /*
-        * When you want to add a submission to the table it should look something like this:
-        * db.addSubmission(yourNewSubmission);
-        * where a submission has the value title filled, internal id could also be filled but
-        *   the submission table auto increments the id so there is no need to maintain our own.
-        *
-        * When you want to view all of the submissions you would call the procedure as follows,
-        * String results = db.selectAll("Submission");
-        *
-        * when you want to grab a specific submission
-        * Submission sub = db.findSubmissionTitle("title of submission");
-        * or if you want to find a submission based on the id
-        * Submission sub = db.findSubmissionID(an int number);
-        */
-
+        viewModel = ViewModelProviders.of(this).get(MyVetPathViewModel.class);
 
         create_account_activity = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.web_URL))); //TODO Just use placeholder web page for now, update later when we set up account creation page
         create_account_button = findViewById(R.id.createAccountButton);
@@ -100,9 +84,18 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        if(dbHelper.getNumberOfDrafts() == 0){
-            view_drafts_button.setVisibility(View.INVISIBLE);
-        }
+        //checks if contents of drafts has changed and sets the button visibility accordingly
+        viewModel.getDrafts().observe(this, new Observer<List<SubmissionTable>>() {
+            @Override
+            public void onChanged(@Nullable List<SubmissionTable> submissionTables) {
+                if(submissionTables == null || submissionTables.size() < 1){
+                    view_drafts_button.setVisibility(View.INVISIBLE);
+                }
+                else{
+                    view_drafts_button.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
     }
 
