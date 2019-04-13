@@ -41,6 +41,7 @@ import java.util.GregorianCalendar;
 import android.widget.Toast;
 
 import com.myvetpath.myvetpath.data.GroupTable;
+import com.myvetpath.myvetpath.data.LocalRepository;
 import com.myvetpath.myvetpath.data.PatientTable;
 import com.myvetpath.myvetpath.data.PictureTable;
 import com.myvetpath.myvetpath.data.SampleTable;
@@ -178,32 +179,17 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
 
         viewModel = ViewModelProviders.of(this).get(MyVetPathViewModel.class);
 
-        boolean updatingDraft = false;
-
         if(extras != null){
             if(extras.containsKey("draft")) {
                 long internalID = extras.getLong("draft", 0);
                 Log.d(LOG_TAG, "draft id: " + Long.toString(internalID));
-                //TODO: Why does it always return null?
-                viewModel.getSubmissionByID(internalID).observe(this, new Observer<SubmissionTable>() {
-                    @Override
-                    public void onChanged(@Nullable SubmissionTable submissionTable) {
-                        if(submissionTable != null) {
-                            newSub = submissionTable;
-                            draftName = newSub.Title;
-                        } else {
-                            Log.d(LOG_TAG, "newSub is null");
-                        }
-                    }
-                });
-                newPatient = viewModel.getPatientByID(internalID).getValue();
-                if(viewModel.getSamplesByID(internalID).getValue() != null) {
-                    samplesList.addAll(viewModel.getSamplesByID(internalID).getValue());
+                setDraftObservers(internalID);
+                if(newSub != null) {
+                    draftExists = true;
+                    Log.d(LOG_TAG, newSub.Title);
+                } else {
+                    Log.d(LOG_TAG, "sub is still null");
                 }
-                if(viewModel.getPicturesByID(internalID).getValue() != null) {
-                    picturesList.addAll(viewModel.getPicturesByID(internalID).getValue());
-                }
-                updatingDraft = true;
             }
             else{
                 setupNew();
@@ -241,17 +227,6 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
         sickElementName = findViewById(R.id.sick_element_name_ET);
         species = findViewById(R.id.species_ET);
         euthanizedCB = findViewById(R.id.EuthanizedCB);
-
-        viewModel.getSubmissionByTitle(draftName).observe(this, new Observer<SubmissionTable>() {
-            @Override
-            public void onChanged(@Nullable SubmissionTable submissionTable) {
-                if(submissionTable != null){
-                    draftExists = true;
-                } else {
-                    draftExists = false;
-                }
-            }
-        });
 
         //initialize submission elements
         title_et = findViewById(R.id.sub_title);
@@ -334,7 +309,6 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                     newSub.User_ID = newUser.User_ID;
                 }
 
-
                 if(loadSubmissionData(1, newSub, newPatient)) {
                     createDialog(newSub, newPatient);
                 }
@@ -368,7 +342,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
             }
         });
 
-        if(updatingDraft){
+        if(draftExists){
             title_et.setText(newSub.Title, TextView.BufferType.EDITABLE);
             group_et.setText(newSub.Group_ID, TextView.BufferType.EDITABLE);
             sickElementName.setText(newPatient.PatientName, TextView.BufferType.EDITABLE);
@@ -533,6 +507,55 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
         }
 
         return true;
+    }
+
+    void setDraftObservers(long internalID){
+        Log.d(LOG_TAG, "Setting observers");
+        viewModel.getSubmissionByID(internalID).observe(this, new Observer<SubmissionTable>() {
+            @Override
+            public void onChanged(@Nullable SubmissionTable submissionTable) {
+                if(submissionTable != null) {
+                    newSub = submissionTable;
+                    Log.d(LOG_TAG, "submission observed: " + newSub.Title);
+                    draftName = newSub.Title;
+                } else {
+                    Log.d(LOG_TAG, "newSub is null");
+                }
+            }
+        });
+        viewModel.getPatientByID(internalID).observe(this, new Observer<PatientTable>() {
+            @Override
+            public void onChanged(@Nullable PatientTable patientTable) {
+                if(patientTable != null){
+                    newPatient = patientTable;
+                    Log.d(LOG_TAG, "patient observed: " + newPatient.PatientName);
+                } else {
+                    Log.d(LOG_TAG, "newPatient is null");
+                }
+            }
+        });
+        viewModel.getSamplesByID(internalID).observe(this, new Observer<List<SampleTable>>() {
+            @Override
+            public void onChanged(@Nullable List<SampleTable> sampleTables) {
+                if(sampleTables != null){
+                    samplesList.addAll(sampleTables);
+                    Log.d(LOG_TAG, "samples added");
+                } else {
+                    Log.d(LOG_TAG, "samples null");
+                }
+            }
+        });
+        viewModel.getPicturesByID(internalID).observe(this, new Observer<List<PictureTable>>() {
+            @Override
+            public void onChanged(@Nullable List<PictureTable> pictureTables) {
+                if(pictureTables != null){
+                    picturesList.addAll(pictureTables);
+                    Log.d(LOG_TAG, "pictures added");
+                } else {
+                    Log.d(LOG_TAG, "pictures null");
+                }
+            }
+        });
     }
 
 }

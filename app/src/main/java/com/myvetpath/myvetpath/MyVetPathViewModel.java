@@ -1,8 +1,11 @@
 package com.myvetpath.myvetpath;
 
 import android.app.Application;
+import android.arch.core.util.Function;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -20,6 +23,14 @@ import java.util.List;
 
 public class MyVetPathViewModel extends AndroidViewModel {
     private LocalRepository repo;
+    MutableLiveData<GroupTable> groupInput = new MutableLiveData<>();
+    MutableLiveData<Long> patientInputID = new MutableLiveData<>();
+    MutableLiveData<Long> pictureInputID = new MutableLiveData<>();
+    MutableLiveData<Long> replyInputID = new MutableLiveData<>();
+    MutableLiveData<Long> reportInputID = new MutableLiveData<>();
+    MutableLiveData<Long> sampleInputID = new MutableLiveData<>();
+    MutableLiveData<Long> submissionInputID = new MutableLiveData<>();
+    MutableLiveData<Integer> userInputID = new MutableLiveData<>();
 
     public MyVetPathViewModel(@NonNull Application application) {
         super(application);
@@ -44,7 +55,17 @@ public class MyVetPathViewModel extends AndroidViewModel {
 
     public void updatePatient(PatientTable patientTable){repo.updatePatient(patientTable);}
 
-    public LiveData<PatientTable> getPatientByID(long id){return repo.getPatientByID(id);}
+    public LiveData<PatientTable> patient = Transformations.switchMap(patientInputID, new Function<Long, LiveData<PatientTable>>() {
+        @Override
+        public LiveData<PatientTable> apply(Long input) {
+            return repo.getPatientByID(input);
+        }
+    });
+
+    public LiveData<PatientTable> getPatientByID(long id){
+        patientInputID.setValue(id);
+        return patient;
+    }
 
     public void insertPicture(PictureTable pictureTable){repo.insertPicture(pictureTable);}
 
@@ -52,7 +73,17 @@ public class MyVetPathViewModel extends AndroidViewModel {
 
     public void updatePicture(PictureTable pictureTable){repo.updatePicture(pictureTable);}
 
-    public LiveData<List<PictureTable>> getPicturesByID(long id){return repo.getPicturesByID(id);}
+    LiveData<List<PictureTable>> pictureList = Transformations.switchMap(pictureInputID, new Function<Long, LiveData<List<PictureTable>>>() {
+        @Override
+        public LiveData<List<PictureTable>> apply(Long input) {
+            return repo.getPicturesByID(input);
+        }
+    });
+
+    public LiveData<List<PictureTable>> getPicturesByID(long id){
+        pictureInputID.setValue(id);
+        return pictureList;
+    }
 
     public LiveData<PictureTable> getPictureByTitle(String title){return repo.getPictureByTitle(title);}
 
@@ -74,7 +105,17 @@ public class MyVetPathViewModel extends AndroidViewModel {
 
     public void updateSample(SampleTable sampleTable){repo.updateSample(sampleTable);}
 
-    public LiveData<List<SampleTable>> getSamplesByID(long id){return repo.getSamplesByID(id);}
+    public LiveData<List<SampleTable>> sampleList = Transformations.switchMap(sampleInputID, new Function<Long, LiveData<List<SampleTable>>>() {
+        @Override
+        public LiveData<List<SampleTable>> apply(Long input) {
+            return repo.getSamplesByID(input);
+        }
+    });
+
+    public LiveData<List<SampleTable>> getSamplesByID(long id){
+        sampleInputID.setValue(id);
+        return sampleList;
+    }
 
     public LiveData<SampleTable> getSampleByName(String name){return repo.getSampleByName(name);}
 
@@ -88,16 +129,19 @@ public class MyVetPathViewModel extends AndroidViewModel {
 
     public LiveData<List<SubmissionTable>> getDrafts(){return repo.getDrafts();}
 
+    public LiveData<SubmissionTable> submission = Transformations.switchMap(submissionInputID, new Function<Long, LiveData<SubmissionTable>>() {
+        @Override
+        public LiveData<SubmissionTable> apply(Long l) {
+            return repo.getSubmissionByID(l);
+        }
+    });
+
     public LiveData<SubmissionTable> getSubmissionByTitle(String title){return repo.getSubmissionByTitle(title);}
 
     public LiveData<SubmissionTable> getSubmissionByID(long id){
-        SubmissionTable testTable = repo.getSubmissionByID(id).getValue();
-        if(testTable != null) {
-            Log.d("ViewModel", "sub title: " + testTable.Title);
-        } else {
-            Log.d("ViewModel", "sub is null");
-        }
-        return repo.getSubmissionByID(id);
+        submissionInputID.setValue(id);
+        Log.d("ViewModel", "getSubmission:");
+        return submission;
     }
 
     public void insertUser(UserTable userTable){repo.insertUser(userTable);}
