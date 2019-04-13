@@ -549,7 +549,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
     }
 
 
-    //This will use the API (which we don't have at the moment) to send the submission to the server. Call this function after sending to server
+    //This will use the API (which we don't have at the moment) to send the submission to the server. Call this function after clicking on "submit"
     private void sendToServer(){
         String MyVetPath_Base_Url = getString(R.string.MVP_Base_API_URL);
         //build the retrofit that will make the query
