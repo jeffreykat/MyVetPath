@@ -279,8 +279,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
             }
         });
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(CreateSubActivity.this);
-        userName = preferences.getString(getString(R.string.username_preference_key), "");
+
 
         viewModel.getUserByUsername(userName).observe(this, new Observer<UserTable>() {
             @Override
@@ -296,6 +295,9 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard();
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(CreateSubActivity.this);
+                userName = preferences.getString(getString(R.string.username_preference_key), "");
 
                 if(userName.equals("")){//if user isn't logged in, then make them login first
                     Toast.makeText(CreateSubActivity.this, "Please save draft and login first " + userName,

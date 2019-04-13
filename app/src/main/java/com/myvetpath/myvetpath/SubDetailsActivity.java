@@ -4,23 +4,28 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.myvetpath.myvetpath.data.GroupTable;
 import com.myvetpath.myvetpath.data.PatientTable;
 import com.myvetpath.myvetpath.data.PictureTable;
+import com.myvetpath.myvetpath.data.ReplyTable;
 import com.myvetpath.myvetpath.data.ReportTable;
 import com.myvetpath.myvetpath.data.SampleTable;
 import com.myvetpath.myvetpath.data.SubmissionTable;
@@ -35,7 +40,37 @@ import java.util.List;
 
 import static java.sql.Types.NULL;
 
-public class SubDetailsActivity extends BaseActivity {
+public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDialog.OnInputListener {
+
+    @Override
+    public void sendInput(String input) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(SubDetailsActivity.this);
+        String userName = preferences.getString(getString(R.string.username_preference_key), "");
+
+        if(userName.equals("")){//if user isn't logged in, then make them login first
+            Toast.makeText(SubDetailsActivity.this, "Please login first " + userName,
+                    Toast.LENGTH_LONG).show();
+            Intent login_activity;
+            login_activity = new Intent(SubDetailsActivity.this, LoginActivity.class);
+            startActivity(login_activity);
+            return;
+        }
+
+
+
+        //Get current date, might want to change date to when it gets to server
+        long curDate = Calendar.getInstance().getTime().getTime();
+        calendar.setTimeInMillis(curDate);
+        String currentDate = simpleDateFormat.format(calendar.getTime());
+
+        //Create temporary reply and insert it into database
+        ReplyTable tempReply = new ReplyTable();
+        tempReply.ContentsOfMessage = input;
+        tempReply.DateOfMessage = curDate;
+        tempReply.Master_ID = internalId;
+        viewModel.insertReply(tempReply);
+
+    }
 
     MyVetPathViewModel viewModel;
 
@@ -54,6 +89,11 @@ public class SubDetailsActivity extends BaseActivity {
     private ImageButton[] images;
     private TextView mReportReview;
     private CheckBox mReportCheck;
+    private Button add_replies_BTTN;
+    private TextView mRepliesTV;
+    private String mReplyInput;
+    private String mReplies;
+    private ArrayList<ReplyTable> mRepliesList = new ArrayList<>(1);
 
     String group = new String();
     boolean reportExists = false;
@@ -86,6 +126,7 @@ public class SubDetailsActivity extends BaseActivity {
         AlertDialog ad = dialog.create();
         ad.show();
     }
+    private long internalId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +159,7 @@ public class SubDetailsActivity extends BaseActivity {
 
         create_sub_activity = new Intent(this, CreateSubActivity.class);
 
-        long internalId = currentSub.Master_ID;
+        internalId = currentSub.Master_ID;
         setObservers(internalId);
         Log.d(LOG_TAG, "Master_ID in details: " + Long.toString(internalId));
 
@@ -149,6 +190,25 @@ public class SubDetailsActivity extends BaseActivity {
         images = new ImageButton[]{findViewById(R.id.first_ImageDetails_bttn), findViewById(R.id.second_ImageDetails_bttn),
                 findViewById(R.id.third_ImageDetails_bttn), findViewById(R.id.fourth_ImageDetails_bttn),
                 findViewById(R.id.fifth_ImageDetails_bttn)};
+
+        //Set up Replies
+        mRepliesTV = findViewById(R.id.subRepliesTV);
+        add_replies_BTTN = findViewById(R.id.add_reply_BTTN);
+        mReplies = "";
+
+
+        mRepliesTV.setText(mReplies);
+
+        add_replies_BTTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddReplyCustomDialog dialog = new AddReplyCustomDialog();
+                dialog.show(getFragmentManager(), "AddReplyCustomDialog");
+
+
+            }
+        });
+
     }
 
     public void setObservers(final long internalId){
@@ -253,6 +313,31 @@ public class SubDetailsActivity extends BaseActivity {
                 }
             }
         });
+
+        viewModel.getRepliesByID(internalId).observe(this, new Observer<List<ReplyTable>>() {
+            @Override
+            public void onChanged(@Nullable List<ReplyTable> replyTables) {
+                mReplies = "";
+                String replies = "";
+                if(replyTables.size() > 0){
+                    mRepliesList = (ArrayList<ReplyTable>) replyTables;
+                    mRepliesTV.setText("");
+                    for(ReplyTable tempReply: mRepliesList){
+                        calendar.setTimeInMillis(tempReply.DateOfMessage);
+                        String date = simpleDateFormat.format(calendar.getTime());
+                        replies += "(" + date + "): " + tempReply.ContentsOfMessage + "\n\n";
+                    }
+
+                }else{
+                    Log.d(LOG_TAG, "no replies");
+                    replies = "No replies";
+                }
+                mRepliesTV.setText("");
+                mRepliesTV.setText(replies);
+                String text = mRepliesTV.getText().toString();
+            }
+        });
+
     }
 
     public FileInputStream loadingPictures(String filename){
@@ -264,5 +349,6 @@ public class SubDetailsActivity extends BaseActivity {
         }
         return is;
     }
+
 
 }

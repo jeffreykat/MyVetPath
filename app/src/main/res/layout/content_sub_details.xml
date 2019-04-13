@@ -62,12 +62,12 @@
                 app:layout_constraintRight_toRightOf="parent" />
 
 
-    <View
-        android:id="@+id/subHeaderView"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/cardview_dark_background"
-        app:layout_constraintTop_toBottomOf="@id/subCaseID" />
+            <View
+                android:id="@+id/subHeaderView"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/cardview_dark_background"
+                app:layout_constraintTop_toBottomOf="@id/subCaseID" />
 
             <TextView
                 android:id="@+id/sickElementName"
@@ -120,36 +120,74 @@
                 app:layout_constraintTop_toBottomOf="@id/sickElementSpecies"
                 app:layout_constraintLeft_toRightOf="@id/sickElementSex" />
 
-    <TextView
-        android:id="@+id/subComment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:textSize="20dp"
-        android:textColor="@color/colorHeader"
-        app:layout_constraintTop_toBottomOf="@id/sickElementSex"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+            <TextView
+                android:id="@+id/subComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="20dp"
+                android:textColor="@color/colorHeader"
+                app:layout_constraintTop_toBottomOf="@id/sickElementSex"
+                app:layout_constraintLeft_toLeftOf="parent"/>
 
-    <TextView
-        android:id="@+id/subSamplesTitleTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:textSize="20sp"
-        android:text="Samples"
-        android:textColor="@color/colorHeader"
-        app:layout_constraintTop_toBottomOf="@id/subComment"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+            <TextView
+                android:id="@+id/subSamplesTitleTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="20sp"
+                android:text="Samples"
+                android:textColor="@color/colorHeader"
+                app:layout_constraintTop_toBottomOf="@id/subComment"
+                app:layout_constraintLeft_toLeftOf="parent"/>
 
-    <TextView
-        android:id="@+id/subSamplesTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:textSize="12sp"
-        android:textColor="@color/colorHeader"
-        app:layout_constraintTop_toBottomOf="@id/subSamplesTitleTV"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+            <TextView
+                android:id="@+id/subSamplesTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="12sp"
+                android:textColor="@color/colorHeader"
+                app:layout_constraintTop_toBottomOf="@id/subSamplesTitleTV"
+                app:layout_constraintLeft_toLeftOf="parent"/>
+
+            <TextView
+                android:id="@+id/repliesTitleTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="20sp"
+                android:text="Replies"
+                android:textColor="@color/colorHeader"
+                app:layout_constraintTop_toBottomOf="@id/subSamplesTV"
+                app:layout_constraintLeft_toLeftOf="parent"/>
+
+            <TextView
+                android:id="@+id/subRepliesTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="16sp"
+                android:textColor="@color/colorHeader"
+                android:text="There are currently no replies."
+                app:layout_constraintTop_toBottomOf="@id/repliesTitleTV"
+                app:layout_constraintLeft_toLeftOf="parent"/>
+
+
+            <Button
+                android:id="@+id/add_reply_BTTN"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+
+                android:background="@color/colorAccount"
+                android:drawableTop="@drawable/ic_add_circle_outline_24dp"
+                android:padding="@dimen/button_padding"
+                android:text="Add a reply"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/subRepliesTV" />
 
 
             <TextView
@@ -159,12 +197,13 @@
                 android:padding="10dp"
                 android:textSize="20sp"
                 android:textColor="@color/colorHeader"
-                app:layout_constraintTop_toBottomOf="@id/subSamplesTV"
+                app:layout_constraintTop_toBottomOf="@id/add_reply_BTTN"
                 app:layout_constraintLeft_toLeftOf="parent"
 
                 android:gravity = "center"
                 android:text = "Pictures"
                 />
+
 
             <ImageButton
                 android:id="@+id/first_ImageDetails_bttn"
