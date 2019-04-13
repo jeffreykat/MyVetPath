@@ -60,10 +60,10 @@ public interface MyVetPathDao {
     @Insert
     void insertReply(ReplyTable replyTable);
 
-    @Query("SELECT * FROM reply_table WHERE Master_ID = :id ORDER BY DateOfMessage")
+    @Query("SELECT * FROM reply_table WHERE Master_ID = :id ORDER BY DateOfMessage DESC")
     LiveData<List<ReplyTable>> getRepliesByID(long id);
 
-    @Query("SELECT * FROM reply_table WHERE Sender_ID = :id ORDER BY DateOfMessage")
+    @Query("SELECT * FROM reply_table WHERE Sender_ID = :id ORDER BY DateOfMessage DESC")
     LiveData<List<ReplyTable>> getRepliesBySender(int id);
 
     @Insert

@@ -56,7 +56,7 @@ public class AddSamplesActivity extends AppCompatActivity implements DatePickerD
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Add Samples");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
         samples =  (ArrayList<SampleTable>) intent.getSerializableExtra("samplesList");
