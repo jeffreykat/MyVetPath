@@ -106,7 +106,7 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
         dialog.setView(inflater.inflate(R.layout.report_dialog, null)).setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                /*String review = mReportReview.getText().toString();
+                String review = mReportReview.getText().toString();
                 boolean closed = mReportCheck.isChecked();
                 currentReport.SubmissionReview = review;
                 currentReport.ReportDate = calendar.getTimeInMillis();
@@ -114,7 +114,7 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
                     viewModel.updateReport(currentReport);
                 } else {
                     viewModel.insertReport(currentReport);
-                }*/
+                }
             }
         }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override

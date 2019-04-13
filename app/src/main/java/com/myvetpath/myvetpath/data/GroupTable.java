@@ -9,8 +9,8 @@ import java.io.Serializable;
 @Entity(tableName = "group_table")
 public class GroupTable implements Serializable {
 
-    @PrimaryKey
-    public int Group_ID;
+    @PrimaryKey(autoGenerate = true)
+    public long Group_ID;
 
     @NonNull
     public String GroupName;

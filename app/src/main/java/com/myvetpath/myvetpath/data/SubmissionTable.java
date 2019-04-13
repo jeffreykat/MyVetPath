@@ -15,7 +15,7 @@ public class SubmissionTable implements Serializable {
     public long Master_ID; //Primary key for the internal database.
 
     @ForeignKey(entity = GroupTable.class, parentColumns = "Group_ID", childColumns = "Group_ID", onUpdate = CASCADE, onDelete = CASCADE)
-    public int Group_ID; //name of group
+    public long Group_ID; //name of group
 
     @ForeignKey(entity = UserTable.class, parentColumns = "User_ID", childColumns = "User_ID", onDelete = CASCADE, onUpdate = CASCADE)
     public int User_ID; //username of who created submission
