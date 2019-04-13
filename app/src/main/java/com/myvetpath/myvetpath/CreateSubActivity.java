@@ -65,7 +65,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
 
     SubmissionTable newSub;
     PatientTable newPatient;
-    GroupTable newGroup;
+    GroupTable newGroup = new GroupTable();
     UserTable newUser;
     ArrayList<SampleTable> samplesList = new ArrayList<SampleTable>(5);
     ArrayList<PictureTable> picturesList = new ArrayList<PictureTable>(5);
@@ -112,7 +112,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
         }
     };
 
-    public void createDialog(final SubmissionTable submission, final PatientTable patient){
+    public void createDialog(final SubmissionTable submission, final PatientTable patient, final GroupTable group){
         AlertDialog.Builder dialog = new AlertDialog.Builder(CreateSubActivity.this);
         dialog.setCancelable(true);
         dialog.setTitle(R.string.action_submit_conformation);
@@ -123,6 +123,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                 String content = title_et.getText().toString() + " Submitted";
                 Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
                 testToast.show();
+                newSub.Group_ID = viewModel.insertGroup(group);
                 long internalID = viewModel.insertSubmission(submission, inserted);
                 Log.d(LOG_TAG, "internal id from view model: " + Long.toString(internalID));
 
@@ -305,7 +306,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                 }
 
                 if(loadSubmissionData(1, newSub, newPatient)) {
-                    createDialog(newSub, newPatient);
+                    createDialog(newSub, newPatient, newGroup);
                 }
                 else{
                     Toast testToast = Toast.makeText(getApplicationContext(), R.string.create_error, Toast.LENGTH_LONG);
@@ -341,7 +342,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
     public void draftExists(){
         title_et.setText(newSub.Title, TextView.BufferType.EDITABLE);
         if(newSub.Group_ID != NULL) {
-            group_et.setText(newSub.Group_ID, TextView.BufferType.EDITABLE);
+            group_et.setText(newGroup.GroupName, TextView.BufferType.EDITABLE);
         }
         sickElementName.setText(newPatient.PatientName, TextView.BufferType.EDITABLE);
         species.setText(newPatient.Species, TextView.BufferType.EDITABLE);
@@ -467,25 +468,14 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
             return false;
         }
 
-        viewModel.getGroupByName(group_et.getText().toString()).observe(this, new Observer<GroupTable>() {
-            @Override
-            public void onChanged(@Nullable GroupTable groupTable) {
-                if(groupTable != null){
-                    newGroup = groupTable;
-                } else {
-                    newGroup.GroupName = group_et.getText().toString();
-                    newGroup.DateOfCreation = curDate;
-                    viewModel.insertGroup(newGroup);
-                }
-            }
-        });
-
         newSub.Case_ID = NULL;
         newSub.Title = title_et.getText().toString();
-        newSub.Group_ID = newGroup.Group_ID;
         newSub.StatusFlag = status;
         newSub.DateOfCreation = curDate;
         newSub.UserComment = comment_et.getText().toString();
+
+        newGroup.GroupName = group_et.getText().toString();
+        newGroup.DateOfCreation = curDate;
 
         newPatient.PatientName = sickElementName.getText().toString();
         newPatient.Sex = selectedSex;
@@ -516,8 +506,22 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                     newSub = submissionTable;
                     Log.d(LOG_TAG, "submission observed: " + newSub.Title);
                     draftName = newSub.Title;
+                    if(newGroup.Group_ID == NULL){
+                        newGroup = new GroupTable();
+                    }
                 } else {
                     Log.d(LOG_TAG, "newSub is null");
+                }
+            }
+        });
+        viewModel.getGroupByName(newGroup.GroupName).observe(this, new Observer<GroupTable>() {
+            @Override
+            public void onChanged(@Nullable GroupTable groupTable) {
+                if(groupTable != null){
+                    newGroup = groupTable;
+                    Log.d(LOG_TAG, "group observed: " + newGroup.GroupName);
+                } else {
+                    Log.d(LOG_TAG, "group not saved");
                 }
             }
         });

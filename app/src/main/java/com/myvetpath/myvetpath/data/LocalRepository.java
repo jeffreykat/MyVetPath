@@ -21,7 +21,17 @@ public class LocalRepository {
         dao = db.myVetPathDao();
     }
 
-    public void insertGroup(GroupTable groupTable){new InsertGroupAsyncTask(dao).execute(groupTable);}
+    public long insertGroup(GroupTable groupTable){
+        long id = 0;
+        try {
+            id = new InsertGroupAsyncTask(dao).execute(groupTable).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
 
     public void deleteGroup(GroupTable groupTable){new DeleteGroupAsyncTask(dao).execute(groupTable);}
 
@@ -33,7 +43,7 @@ public class LocalRepository {
 
     public LiveData<GroupTable> getGroupByName(String name){return dao.getGroupByName(name);}
 
-    public LiveData<GroupTable> getGroupByID(int id){return dao.getGroupByID(id);}
+    public LiveData<GroupTable> getGroupByID(long id){return dao.getGroupByID(id);}
 
     public void insertPatient(PatientTable patientTable){new InsertPatientAsyncTask(dao).execute(patientTable);}
 
@@ -144,7 +154,7 @@ public class LocalRepository {
         return dao.getUserByUsername(username);
     }
 
-    private static class InsertGroupAsyncTask extends AsyncTask<GroupTable, Void, Void>{
+    private static class InsertGroupAsyncTask extends AsyncTask<GroupTable, Void, Long>{
         MyVetPathDao dao;
 
         InsertGroupAsyncTask(MyVetPathDao myVetPathDao){
@@ -152,9 +162,8 @@ public class LocalRepository {
         }
 
         @Override
-        protected Void doInBackground(GroupTable... groupTables) {
-            dao.insertGroup(groupTables[0]);
-            return null;
+        protected Long doInBackground(GroupTable... groupTables) {
+            return dao.insertGroup(groupTables[0]);
         }
     }
 

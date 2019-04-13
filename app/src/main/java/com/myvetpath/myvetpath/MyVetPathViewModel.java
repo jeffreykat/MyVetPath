@@ -23,7 +23,7 @@ import java.util.List;
 
 public class MyVetPathViewModel extends AndroidViewModel {
     private LocalRepository repo;
-    MutableLiveData<GroupTable> groupInput = new MutableLiveData<>();
+    MutableLiveData<String> groupInput = new MutableLiveData<>();
     MutableLiveData<Long> patientInputID = new MutableLiveData<>();
     MutableLiveData<Long> pictureInputID = new MutableLiveData<>();
     MutableLiveData<Long> replyInputID = new MutableLiveData<>();
@@ -37,7 +37,7 @@ public class MyVetPathViewModel extends AndroidViewModel {
         repo = new LocalRepository(application);
     }
 
-    public void insertGroup(GroupTable groupTable){repo.insertGroup(groupTable);}
+    public long insertGroup(GroupTable groupTable){return repo.insertGroup(groupTable);}
 
     public void deleteGroup(GroupTable groupTable){repo.deleteGroup(groupTable);}
 
@@ -45,9 +45,19 @@ public class MyVetPathViewModel extends AndroidViewModel {
 
     public LiveData<List<GroupTable>> getGroups(){return repo.getGroups();}
 
-    public LiveData<GroupTable> getGroupByName(String name){return repo.getGroupByName(name);}
+    public LiveData<GroupTable> group = Transformations.switchMap(groupInput, new Function<String, LiveData<GroupTable>>() {
+        @Override
+        public LiveData<GroupTable> apply(String input) {
+            return repo.getGroupByName(input);
+        }
+    });
 
-    public LiveData<GroupTable> getGroupByID(int id){return repo.getGroupByID(id);}
+    public LiveData<GroupTable> getGroupByName(String name){
+        groupInput.setValue(name);
+        return group;
+    }
+
+    public LiveData<GroupTable> getGroupByID(long id){return repo.getGroupByID(id);}
 
     public void insertPatient(PatientTable patientTable){repo.insertPatient(patientTable);}
 

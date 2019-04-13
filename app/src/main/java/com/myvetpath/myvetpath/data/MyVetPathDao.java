@@ -13,7 +13,7 @@ import java.util.List;
 public interface MyVetPathDao {
 
     @Insert
-    void insertGroup(GroupTable groupTable);
+    long insertGroup(GroupTable groupTable);
 
     @Delete
     void deleteGroup(GroupTable groupTable);
@@ -28,7 +28,7 @@ public interface MyVetPathDao {
     LiveData<GroupTable> getGroupByName(String name);
 
     @Query("SELECT * FROM group_table WHERE Group_ID = :id LIMIT 1")
-    LiveData<GroupTable> getGroupByID(int id);
+    LiveData<GroupTable> getGroupByID(long id);
 
     @Insert
     void insertPatient(PatientTable patientTable);
