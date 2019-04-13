@@ -27,6 +27,7 @@ public class AddReplyCustomDialog extends DialogFragment {
         mActionCancel = view.findViewById(R.id.action_cancel);
         mActionOK = view.findViewById(R.id.action_ok);
         mInput = view.findViewById(R.id.input);
+        mOnInputListener = (OnInputListener) getActivity();
 
         mActionCancel.setOnClickListener(new View.OnClickListener() {
             @Override
