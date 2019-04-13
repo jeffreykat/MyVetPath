@@ -13,6 +13,7 @@ import retrofit2.http.Query;
 
 
 //This class will be used for POST functionality regarding the API, but we don't currently have the API.
+//Followed this guide: https://www.youtube.com/watch?v=Bv-KAxPOCzY
 public interface MyVetPathAPI {
 
     String BASE_URL = "https://www.reddit.com/"; //this is a different API. It is completely unrelated to our project, it is mostly here to prove that the app can use an api to post
