@@ -60,36 +60,38 @@ public class LoaderAsyncTask extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPostExecute(String s) {
         if (s != null) {
-            if (mCurrentCategory.equals("planets")) {
-                Log.d(TAG, "Planets Loading: " + s);
-                List<PlanetItem> planets = MyVetPathUtils.parsePlanetsJSON(s);
-                mCallback.onPlanetLoadFinished(planets);
-                return;
-            }else if(mCurrentCategory.equals("groups")){
-                List<GroupTable> planets = MyVetPathUtils.parseGroupsJSON(s);
-                mCallback.onGroupLoadFinished(planets);
+            //This is using a different API, but it's here to show that the app is able to use an API to get data
+//            if (mCurrentCategory.equals("planets")) {
+//                Log.d(TAG, "Planets Loading: " + s);
+//                List<PlanetItem> planets = MyVetPathUtils.parsePlanetsJSON(s);
+//                mCallback.onPlanetLoadFinished(planets);
+//                return;
+//            }
+            if(mCurrentCategory.equals("groups")){
+                List<GroupTable> groups = MyVetPathUtils.parseGroupsJSON(s);
+                mCallback.onGroupLoadFinished(groups);
                 return;
             }else if(mCurrentCategory.equals("patient")){
-                List<PatientTable> planets = MyVetPathUtils.parsePatientsJSON(s);
-                mCallback.onPatientLoadFinished(planets);
+                List<PatientTable> patients = MyVetPathUtils.parsePatientsJSON(s);
+                mCallback.onPatientLoadFinished(patients);
             }else if(mCurrentCategory.equals("picture")){
-                List<PictureTable> planets = MyVetPathUtils.parsePicturesJSON(s);
-                mCallback.onPictureLoadFinished(planets);
+                List<PictureTable> pictures = MyVetPathUtils.parsePicturesJSON(s);
+                mCallback.onPictureLoadFinished(pictures);
             }else if(mCurrentCategory.equals("reply")){
-                List<ReplyTable> planets = MyVetPathUtils.parseRepliesJSON(s);
-                mCallback.onReplyLoadFinished(planets);
+                List<ReplyTable> replies = MyVetPathUtils.parseRepliesJSON(s);
+                mCallback.onReplyLoadFinished(replies);
             }else if(mCurrentCategory.equals("report")){
-                List<ReportTable> planets = MyVetPathUtils.parseReportsJSON(s);
-                mCallback.onReportLoadFinished(planets);
+                List<ReportTable> reports = MyVetPathUtils.parseReportsJSON(s);
+                mCallback.onReportLoadFinished(reports);
             }else if(mCurrentCategory.equals("sample")){
-                List<SampleTable> planets = MyVetPathUtils.parseSamplesJSON(s);
-                mCallback.onSampleLoadFinished(planets);
+                List<SampleTable> samples = MyVetPathUtils.parseSamplesJSON(s);
+                mCallback.onSampleLoadFinished(samples);
             }else if(mCurrentCategory.equals("submissions")){
-                List<SubmissionTable> planets = MyVetPathUtils.parseSubmissionsJSON(s);
-                mCallback.onSubmissionsLoadFinished(planets);
+                List<SubmissionTable> submissions = MyVetPathUtils.parseSubmissionsJSON(s);
+                mCallback.onSubmissionsLoadFinished(submissions);
             }else if(mCurrentCategory.equals("users")){
-                List<UserTable> planets = MyVetPathUtils.parseUsersJSON(s);
-                mCallback.onUserLoadFinished(planets);
+                List<UserTable> users = MyVetPathUtils.parseUsersJSON(s);
+                mCallback.onUserLoadFinished(users);
             }
         }
     }

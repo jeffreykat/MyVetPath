@@ -61,5 +61,6 @@
     <string name="username">Username</string>
     <string name="username_key">logged_in_username</string>
     <string name="username_preference_key">Username_key</string>
+    <string name="MVP_Base_API_URL">208.113.134.137:8000/v1</string>
 
 </resources>
