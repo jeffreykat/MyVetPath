@@ -22,4 +22,13 @@
 
     <include layout="@layout/content_sub_details" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/details_report_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_rate_review_white_24dp"
+        tools:ignore="VectorDrawableCompat" />
+
 </android.support.design.widget.CoordinatorLayout>
