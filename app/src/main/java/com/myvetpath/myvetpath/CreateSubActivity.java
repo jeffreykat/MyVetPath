@@ -1,6 +1,8 @@
 package com.myvetpath.myvetpath;
 
 import android.app.DatePickerDialog;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -37,23 +40,37 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import android.widget.Toast;
 
+import com.myvetpath.myvetpath.data.GroupTable;
+import com.myvetpath.myvetpath.data.PatientTable;
+import com.myvetpath.myvetpath.data.PictureTable;
+import com.myvetpath.myvetpath.data.SampleTable;
+import com.myvetpath.myvetpath.data.SubmissionTable;
+import com.myvetpath.myvetpath.data.UserTable;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 import static java.sql.Types.NULL;
 
-//This is for the "Create Submission screen"
+//This is for the "Create submission screen"
 public class CreateSubActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener{
-/*
-Submission sub = new Submission();
-MyDBHandler db = getwritabledatabase();
-sub.setTitle(stuff from app)
-db.addSubmission(sub)
- */
+
+    MyVetPathViewModel viewModel;
 
     Intent add_pictures_activity;
     Intent view_subs_activity;
     Intent add_samples_activity;
+
+    SubmissionTable newSub;
+    PatientTable newPatient;
+    GroupTable newGroup;
+    UserTable newUser;
+    ArrayList<SampleTable> samplesList = new ArrayList<SampleTable>(5);
+    ArrayList<PictureTable> picturesList = new ArrayList<PictureTable>(5);
+
+    String userName;
+    long global_master_id;
 
     ImageButton add_pictures_button;
     Button save_draft_button;
@@ -77,44 +94,52 @@ db.addSubmission(sub)
     static final int DEATH_DATE = 2;
     private int selectedCalendar;
 
-    MyDBHandler dbHandler;
     static final String LOG_TAG = "CreateSubActivity";
 
     private final int ADD_SAMPLES_REQUEST_CODE = 2;
-    private ArrayList<Sample> samplesList;
-    private ArrayList<Picture> picturesList;
 
     private String draftName = "";
+    boolean draftExists = false;
+    boolean subInserted = false;
 
-    public void createDialog(final Submission submission, final SickElement sickElement){
+    OnSubmissionInserted inserted = new OnSubmissionInserted() {
+        @Override
+        public void onSubmissionInserted(long master_id) {
+            global_master_id = master_id;
+            Log.d(LOG_TAG, "global master id set: " + Long.toString(master_id));
+            subInserted = true;
+        }
+    };
+
+    public void createDialog(final SubmissionTable submission, final PatientTable patient){
         AlertDialog.Builder dialog = new AlertDialog.Builder(CreateSubActivity.this);
         dialog.setCancelable(true);
         dialog.setTitle(R.string.action_submit_conformation);
         dialog.setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                //TODO: Move all Submit tasks to function with AsyncTask
                 //Display confirmation Toast
                 String content = title_et.getText().toString() + " Submitted";
                 Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
                 testToast.show();
-                long internalID = dbHandler.addSubmission(submission);
+                long internalID = viewModel.insertSubmission(submission, inserted);
+                Log.d(LOG_TAG, "internal id from view model: " + Long.toString(internalID));
 
-                for(Sample tempSample: samplesList){
-                    tempSample.setSamplelID(Math.toIntExact(internalID));
-                    dbHandler.addSample(tempSample);
+                for(SampleTable tempSample: samplesList){
+                    tempSample.Master_ID = internalID;
+                    viewModel.insertSample(tempSample);
                 }
 
-                for(Picture tempPicture: picturesList){
+                for(PictureTable tempPicture: picturesList){
                     if(tempPicture != null){
-                        tempPicture.setInternalID(Math.toIntExact(internalID));
-                        Log.d(LOG_TAG, "onClick: current internal id is: " + tempPicture.getInternalID());
+                        tempPicture.Master_ID = internalID;
+                        Log.d(LOG_TAG, "onClick: current internal id is: " + Long.toString(tempPicture.Master_ID));
+                        viewModel.insertPicture(tempPicture);
                     }
-                        dbHandler.addPicture(tempPicture);
                 }
 
-                sickElement.setInternalID(Math.toIntExact(internalID));
-                dbHandler.addSickElement(sickElement);
+                patient.Master_ID = internalID;
+                viewModel.insertPatient(patient);
                 startActivity(view_subs_activity);
             }
         })
@@ -128,6 +153,13 @@ db.addSubmission(sub)
         alertDialog.show();
     }
 
+    public void setupNew(){
+        newSub = new SubmissionTable();
+        newPatient = new PatientTable();
+        newGroup = new GroupTable();
+        newUser = new UserTable();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,8 +168,7 @@ db.addSubmission(sub)
         setMenuOptionItemToRemove(this);
         toolbar.setTitle(R.string.action_submission);
         setSupportActionBar(toolbar);
-        //TODO: Fix Activity Lifecycle so up button restarts main activity
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         view_subs_activity = new Intent(this, ViewSubsActivity.class);
         add_pictures_activity = new Intent(this, AddPicturesActivity.class);
@@ -145,34 +176,40 @@ db.addSubmission(sub)
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
-        dbHandler = new MyDBHandler(this);
-        final Submission newSub;
-        final SickElement newSickElement;
+        viewModel = ViewModelProviders.of(this).get(MyVetPathViewModel.class);
 
         boolean updatingDraft = false;
 
-        Submission draftSub;
         if(extras != null){
             if(extras.containsKey("draft")) {
-                int internalID = extras.getInt("draft", 0);
-                newSub = dbHandler.findSubmissionID(internalID);
-                newSickElement = dbHandler.findSickElementID(internalID);
-                samplesList = dbHandler.findSamples(internalID);
-                picturesList = dbHandler.findPictures(internalID);
+                long internalID = extras.getLong("draft", 0);
+                Log.d(LOG_TAG, "draft id: " + Long.toString(internalID));
+                //TODO: Why does it always return null?
+                viewModel.getSubmissionByID(internalID).observe(this, new Observer<SubmissionTable>() {
+                    @Override
+                    public void onChanged(@Nullable SubmissionTable submissionTable) {
+                        if(submissionTable != null) {
+                            newSub = submissionTable;
+                            draftName = newSub.Title;
+                        } else {
+                            Log.d(LOG_TAG, "newSub is null");
+                        }
+                    }
+                });
+                newPatient = viewModel.getPatientByID(internalID).getValue();
+                if(viewModel.getSamplesByID(internalID).getValue() != null) {
+                    samplesList.addAll(viewModel.getSamplesByID(internalID).getValue());
+                }
+                if(viewModel.getPicturesByID(internalID).getValue() != null) {
+                    picturesList.addAll(viewModel.getPicturesByID(internalID).getValue());
+                }
                 updatingDraft = true;
-                draftName = newSub.getTitle();
             }
             else{
-                newSub = new Submission();
-                newSickElement = new SickElement();
-                samplesList = new ArrayList<Sample>();
-                picturesList = new ArrayList<Picture>(5);
+                setupNew();
             }
         } else {
-            newSub = new Submission();
-            newSickElement = new SickElement();
-            samplesList = new ArrayList<Sample>();
-            picturesList = new ArrayList<Picture>(5);
+            setupNew();
         }
 
         date_of_birth_button = (ImageButton) findViewById(R.id.BirthDateBTTN);
@@ -205,6 +242,17 @@ db.addSubmission(sub)
         species = findViewById(R.id.species_ET);
         euthanizedCB = findViewById(R.id.EuthanizedCB);
 
+        viewModel.getSubmissionByTitle(draftName).observe(this, new Observer<SubmissionTable>() {
+            @Override
+            public void onChanged(@Nullable SubmissionTable submissionTable) {
+                if(submissionTable != null){
+                    draftExists = true;
+                } else {
+                    draftExists = false;
+                }
+            }
+        });
+
         //initialize submission elements
         title_et = findViewById(R.id.sub_title);
         group_et = findViewById(R.id.group_name_ET);
@@ -214,36 +262,38 @@ db.addSubmission(sub)
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard();
-                if(loadSubmissionData(0, newSub, newSickElement)) {
+                if(loadSubmissionData(0, newSub, newPatient)) {
                     //Display confirmation Toast
                     String content = title_et.getText().toString() + " Saved";
                     Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
                     testToast.show();
-                    if (dbHandler.findSubmissionTitle(draftName) != null) {
-                        dbHandler.updateSubmission(newSub);
-                        dbHandler.updateSickElement(newSickElement);
-                        for(Sample tempSample: samplesList){
-                            dbHandler.updateSample(tempSample);
+                    if(draftExists){
+                        viewModel.updateSubmission(newSub);
+                        viewModel.updatePatient(newPatient);
+                        for(SampleTable tempSample: samplesList){
+                            viewModel.updateSample(tempSample);
                         }
-                        for(Picture tempPicture: picturesList){
-                            dbHandler.updatePicture(tempPicture);
+                        for(PictureTable tempPicture: picturesList){
+                            if(tempPicture != null) {
+                                viewModel.updatePicture(tempPicture);
+                            }
                         }
-                    } else {
-                        long intID = dbHandler.addSubmission(newSub);
-                        draftName = newSub.getTitle();
-                        newSickElement.setInternalID(Math.toIntExact(intID));
-                        dbHandler.addSickElement(newSickElement);
-                        for(Sample tempSample: samplesList){
-                            tempSample.setSamplelID(Math.toIntExact(intID));
-                            dbHandler.addSample(tempSample);
+                    } else{
+                        long intID = viewModel.insertSubmission(newSub, inserted);
+                        draftName = newSub.Title;
+                        newPatient.Master_ID = intID;
+                        viewModel.insertPatient(newPatient);
+                        for(SampleTable tempSample: samplesList){
+                            tempSample.Master_ID = intID;
+                            viewModel.insertSample(tempSample);
                         }
 
-                        for(Picture tempPicture: picturesList){
+                        for(PictureTable tempPicture: picturesList){
                             if(tempPicture != null){
-                                tempPicture.setInternalID(Math.toIntExact(intID));
-                                Log.d(LOG_TAG, "onClick: current internal id is: " + tempPicture.getInternalID());
+                                tempPicture.Master_ID = intID;
+                                Log.d(LOG_TAG, "onClick: current internal id is: " + Long.toString(tempPicture.Master_ID));
+                                viewModel.insertPicture(tempPicture);
                             }
-                            dbHandler.addPicture(tempPicture);
                         }
                     }
                 }
@@ -253,29 +303,40 @@ db.addSubmission(sub)
                 }
             }
         });
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(CreateSubActivity.this);
+        userName = preferences.getString(getString(R.string.username_preference_key), "");
+
+        viewModel.getUserByUsername(userName).observe(this, new Observer<UserTable>() {
+            @Override
+            public void onChanged(@Nullable UserTable userTable) {
+                if(userTable != null) {
+                    newUser = userTable;
+                }
+            }
+        });
+
         submit_button = findViewById(R.id.submit_btn);
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard();
 
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(CreateSubActivity.this);
-                String userName = preferences.getString(getString(R.string.username_preference_key), "");
-
                 if(userName.equals("")){//if user isn't logged in, then make them login first
-                    Toast.makeText(CreateSubActivity.this, "Please login first " + userName,
+                    Toast.makeText(CreateSubActivity.this, "Please save draft and login first " + userName,
                             Toast.LENGTH_LONG).show();
                     Intent login_activity;
                     login_activity = new Intent(CreateSubActivity.this, LoginActivity.class);
-                    startActivity(login_activity);
+
+                    //startActivity(login_activity);
                     return;
                 }else{ // set clientID if user is logged in
-                    newSub.setClientID(userName);
+                    newSub.User_ID = newUser.User_ID;
                 }
 
 
-                if(loadSubmissionData(1, newSub, newSickElement)) {
-                    createDialog(newSub, newSickElement);
+                if(loadSubmissionData(1, newSub, newPatient)) {
+                    createDialog(newSub, newPatient);
                 }
                 else{
                     Toast testToast = Toast.makeText(getApplicationContext(), R.string.create_error, Toast.LENGTH_LONG);
@@ -285,8 +346,8 @@ db.addSubmission(sub)
         });
 
         //initialize the camera button where users can add pictures
-        Picture p = new Picture();
-        Log.d("pass", "onCreate: Title of P: " + p.getImageTitle());
+        PictureTable p = new PictureTable();
+        Log.d("pass", "onCreate: Title of P: " + p.Title);
 
         add_pictures_button = findViewById(R.id.addPicturesButton);
         add_pictures_button.setOnClickListener(new View.OnClickListener(){
@@ -308,21 +369,21 @@ db.addSubmission(sub)
         });
 
         if(updatingDraft){
-            title_et.setText(newSub.getTitle(), TextView.BufferType.EDITABLE);
-            group_et.setText(newSub.getGroup(), TextView.BufferType.EDITABLE);
-            sickElementName.setText(newSickElement.getNameOfSickElement(), TextView.BufferType.EDITABLE);
-            species.setText(newSickElement.getSpecies(), TextView.BufferType.EDITABLE);
-            if(newSickElement.getSex().matches("Female")) {
+            title_et.setText(newSub.Title, TextView.BufferType.EDITABLE);
+            group_et.setText(newSub.Group_ID, TextView.BufferType.EDITABLE);
+            sickElementName.setText(newPatient.PatientName, TextView.BufferType.EDITABLE);
+            species.setText(newPatient.Species, TextView.BufferType.EDITABLE);
+            if(newPatient.Sex.matches("Female")) {
                 sexSpinner.setSelection(2);
             }
-            if(newSickElement.getSex().matches("Male")){
+            if(newPatient.Sex.matches("Male")){
                 sexSpinner.setSelection(1);
             }
-            if(newSickElement.getEuthanized() == 1) {
+            if(newPatient.Euthanized == 1) {
                 euthanizedCB.setChecked(true);
             }
-            Long bDateMS = newSickElement.getDateOfBirth();
-            Long dDateMS = newSickElement.getDateOfDeath();
+            Long bDateMS = newPatient.DateOfBirth;
+            Long dDateMS = newPatient.DateOfDeath;
             Calendar c = Calendar.getInstance();
             if(bDateMS != 0) {
                 c.setTimeInMillis(bDateMS);
@@ -336,7 +397,7 @@ db.addSubmission(sub)
                 selectedCalendar = DEATH_DATE;
                 showDateText(c);
             }
-            comment_et.setText(newSub.getComment(), TextView.BufferType.EDITABLE);
+            comment_et.setText(newSub.UserComment, TextView.BufferType.EDITABLE);
         }
     }
 
@@ -346,12 +407,12 @@ db.addSubmission(sub)
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1){
             if(resultCode == RESULT_OK){
-                picturesList = (ArrayList<Picture>) data.getSerializableExtra("pictureResults");
-                Log.d("pass", "onActivityResult: result after returning to createsub is " + picturesList.get(0).getImageTitle() + " longitude: " + picturesList.get(0).getLongitude());
+                picturesList = (ArrayList<PictureTable>) data.getSerializableExtra("pictureResults");
+                Log.d("pass", "onActivityResult: result after returning to createsub is " + picturesList.get(0).Title + " longitude: " + picturesList.get(0).Longitude);
             }
         }else if(requestCode == ADD_SAMPLES_REQUEST_CODE){
             if(resultCode == RESULT_OK ){
-                samplesList = (ArrayList<Sample>) data.getSerializableExtra("sampleResults");
+                samplesList = (ArrayList<SampleTable>) data.getSerializableExtra("sampleResults");
             }
         }
     }
@@ -415,26 +476,9 @@ db.addSubmission(sub)
         isEuthanized = checked;
     }
 
-    // Purpose: check if string is an integer. This will be used to validate that the user entered an integer into a numeric field
-    private boolean isInteger(String str) {
-        try
-        {
-            Integer.parseInt(str);
-            return true;
-        }
-        catch (NumberFormatException e)
-        {
-            return false;
-        }
-    }
-
-    //This method stores all the data in a Submission. Called whenever the user wants to save or submit a submission
-    private boolean loadSubmissionData(int status, Submission newSub, SickElement newSickElement){
-        long curDate = Calendar.getInstance().getTime().getTime();
-
-
-        Log.d("s", "storeDataInDB: before logging " );
-//        Log.d("s", "storeDataInDB: Number of samples: " + numberOfSamples);
+    //This method stores all the data in a submission. Called whenever the user wants to save or submit a submission
+    private boolean loadSubmissionData(int status, SubmissionTable newSub, PatientTable newPatient){
+        final long curDate = Calendar.getInstance().getTime().getTime();
 
         //The following data should have been collected elsewhere in the app:
         //deathDate
@@ -442,11 +486,9 @@ db.addSubmission(sub)
         //collectionDate
 
         //Here are the rest of the data we need for the submissions:
-        //Client ID - probably going to get this from login
-        //Submission Date
-        //Report Complete Date
-        //Sample ID - primary key in form of integer value. Generated with running total on the SQLite database
-        //Internal ID - foreign key from Submission table
+        //SubmissionDate
+        //ReportComplete Date
+        //Sample_ID - primary key in form of integer value. Generated with running total on the SQLite database
         //Sick element ID - running total
         //Internal ID for sick element table - foreign key from submission table
 
@@ -454,32 +496,43 @@ db.addSubmission(sub)
             return false;
         }
 
-        newSub.setCaseID(NULL);
-        newSub.setMasterID(NULL);
-        newSub.setTitle(title_et.getText().toString());
-        newSub.setGroup(group_et.getText().toString());
-        newSub.setStatusFlag(status);
-        newSub.setDateOfCreation(curDate);
-        newSub.setComment(comment_et.getText().toString());
+        viewModel.getGroupByName(group_et.getText().toString()).observe(this, new Observer<GroupTable>() {
+            @Override
+            public void onChanged(@Nullable GroupTable groupTable) {
+                if(groupTable != null){
+                    newGroup = groupTable;
+                } else {
+                    newGroup.GroupName = group_et.getText().toString();
+                    newGroup.DateOfCreation = curDate;
+                    viewModel.insertGroup(newGroup);
+                }
+            }
+        });
 
-        newSickElement.setName(sickElementName.getText().toString());
-        newSickElement.setSex(selectedSex);
-        newSickElement.setEuthanized(isEuthanized);
-        newSickElement.setSpecies(species.getText().toString());
+        newSub.Case_ID = NULL;
+        newSub.Title = title_et.getText().toString();
+        newSub.Group_ID = newGroup.Group_ID;
+        newSub.StatusFlag = status;
+        newSub.DateOfCreation = curDate;
+        newSub.UserComment = comment_et.getText().toString();
+
+        newPatient.PatientName = sickElementName.getText().toString();
+        newPatient.Sex = selectedSex;
+        newPatient.Euthanized = isEuthanized;
+        newPatient.Species = species.getText().toString();
+
         if(birthDate != null) {
-            newSickElement.setDateOfBirth(birthDate.getTime());
+            newPatient.DateOfBirth = birthDate.getTime();
         } else {
-            newSickElement.setDateOfBirth(0);
+            newPatient.DateOfBirth = 0;
         }
         if(deathDate != null) {
-            newSickElement.setDateOfDeath(deathDate.getTime());
+            newPatient.DateOfDeath = deathDate.getTime();
         } else {
-            newSickElement.setDateOfDeath(0);
+            newPatient.DateOfDeath = 0;
         }
 
         return true;
     }
-
-
 
 }

@@ -4,7 +4,7 @@ package com.myvetpath.myvetpath.data;
 
 import java.io.Serializable;
 
-
+//This is a class that was used for an API for an entirely different project. This is only here to test the app's ability to use an API and this won't be used in the final project
 public class PlanetItem implements Serializable {
 
     public String name;
