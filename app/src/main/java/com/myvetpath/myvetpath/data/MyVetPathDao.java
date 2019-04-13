@@ -102,10 +102,10 @@ public interface MyVetPathDao {
     @Update
     void updateSubmission(SubmissionTable submissionTable);
 
-    @Query("SELECT * FROM submission_table WHERE StatusFlag = 1 ORDER BY DateOfCreation")
+    @Query("SELECT * FROM submission_table WHERE StatusFlag = 1 ORDER BY DateOfCreation DESC")
     LiveData<List<SubmissionTable>> getSubmissions();
 
-    @Query("SELECT * FROM submission_table WHERE StatusFlag = 0 ORDER BY DateOfCreation")
+    @Query("SELECT * FROM submission_table WHERE StatusFlag = 0 ORDER BY DateOfCreation DESC")
     LiveData<List<SubmissionTable>> getDrafts();
 
     @Query("SELECT * FROM submission_table WHERE Title = :title LIMIT 1")
