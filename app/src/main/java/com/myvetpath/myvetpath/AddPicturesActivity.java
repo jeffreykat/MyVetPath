@@ -93,6 +93,7 @@ public class AddPicturesActivity extends AppCompatActivity {
         picturesList = (ArrayList<PictureTable>) intent.getSerializableExtra("pictureList");
 
 
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
