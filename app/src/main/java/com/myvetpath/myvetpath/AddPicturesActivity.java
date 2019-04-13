@@ -86,11 +86,12 @@ public class AddPicturesActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.action_addpictures);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
 
         picturesList = (ArrayList<PictureTable>) intent.getSerializableExtra("pictureList");
+
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

@@ -13,7 +13,7 @@ import java.util.List;
 public interface MyVetPathDao {
 
     @Insert
-    void insertGroup(GroupTable groupTable);
+    long insertGroup(GroupTable groupTable);
 
     @Delete
     void deleteGroup(GroupTable groupTable);
@@ -28,7 +28,7 @@ public interface MyVetPathDao {
     LiveData<GroupTable> getGroupByName(String name);
 
     @Query("SELECT * FROM group_table WHERE Group_ID = :id LIMIT 1")
-    LiveData<GroupTable> getGroupByID(int id);
+    LiveData<GroupTable> getGroupByID(long id);
 
     @Insert
     void insertPatient(PatientTable patientTable);
@@ -60,10 +60,10 @@ public interface MyVetPathDao {
     @Insert
     void insertReply(ReplyTable replyTable);
 
-    @Query("SELECT * FROM reply_table WHERE Master_ID = :id ORDER BY DateOfMessage")
+    @Query("SELECT * FROM reply_table WHERE Master_ID = :id ORDER BY DateOfMessage DESC")
     LiveData<List<ReplyTable>> getRepliesByID(long id);
 
-    @Query("SELECT * FROM reply_table WHERE Sender_ID = :id ORDER BY DateOfMessage")
+    @Query("SELECT * FROM reply_table WHERE Sender_ID = :id ORDER BY DateOfMessage DESC")
     LiveData<List<ReplyTable>> getRepliesBySender(int id);
 
     @Insert
@@ -102,10 +102,10 @@ public interface MyVetPathDao {
     @Update
     void updateSubmission(SubmissionTable submissionTable);
 
-    @Query("SELECT * FROM submission_table WHERE StatusFlag = 1 ORDER BY DateOfCreation")
+    @Query("SELECT * FROM submission_table WHERE StatusFlag = 1 ORDER BY DateOfCreation DESC")
     LiveData<List<SubmissionTable>> getSubmissions();
 
-    @Query("SELECT * FROM submission_table WHERE StatusFlag = 0 ORDER BY DateOfCreation")
+    @Query("SELECT * FROM submission_table WHERE StatusFlag = 0 ORDER BY DateOfCreation DESC")
     LiveData<List<SubmissionTable>> getDrafts();
 
     @Query("SELECT * FROM submission_table WHERE Title = :title LIMIT 1")

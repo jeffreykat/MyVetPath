@@ -38,7 +38,7 @@ public interface MyVetPathAPI {
     Call<ResponseBody> submission(
             @HeaderMap Map<String, String> headers,
             @Path("submissions") String submissions,
-            @Query("Group_ID") Integer Group_ID,
+            @Query("Group_ID") Long Group_ID,
             @Query("User_ID") Integer User_ID,
             @Query("Title") String title,
             @Query("DateOfCreation") Long DateOfCreation,

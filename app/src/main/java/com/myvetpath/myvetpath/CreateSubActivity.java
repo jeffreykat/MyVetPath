@@ -43,6 +43,7 @@ import android.widget.Toast;
 
 import com.myvetpath.myvetpath.data.GroupTable;
 import com.myvetpath.myvetpath.data.MyVetPathAPI;
+import com.myvetpath.myvetpath.data.LocalRepository;
 import com.myvetpath.myvetpath.data.PatientTable;
 import com.myvetpath.myvetpath.data.PictureTable;
 import com.myvetpath.myvetpath.data.SampleTable;
@@ -77,10 +78,12 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
 
     SubmissionTable newSub;
     PatientTable newPatient;
-    GroupTable newGroup;
+    GroupTable newGroup = new GroupTable();
     UserTable newUser;
     ArrayList<SampleTable> samplesList = new ArrayList<SampleTable>(5);
+    ArrayList<SampleTable> originalSamples = new ArrayList<>();
     ArrayList<PictureTable> picturesList = new ArrayList<PictureTable>(5);
+    ArrayList<PictureTable> originalPictures = new ArrayList<>(5);
 
     String userName;
     long global_master_id;
@@ -124,7 +127,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
         }
     };
 
-    public void createDialog(final SubmissionTable submission, final PatientTable patient){
+    public void createDialog(final SubmissionTable submission, final PatientTable patient, final GroupTable group){
         AlertDialog.Builder dialog = new AlertDialog.Builder(CreateSubActivity.this);
         dialog.setCancelable(true);
         dialog.setTitle(R.string.action_submit_conformation);
@@ -135,6 +138,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                 String content = title_et.getText().toString() + " Submitted";
                 Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
                 testToast.show();
+                newSub.Group_ID = viewModel.insertGroup(group);
                 long internalID = viewModel.insertSubmission(submission, inserted);
                 Log.d(LOG_TAG, "internal id from view model: " + Long.toString(internalID));
 
@@ -191,32 +195,12 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
 
         viewModel = ViewModelProviders.of(this).get(MyVetPathViewModel.class);
 
-        boolean updatingDraft = false;
-
         if(extras != null){
             if(extras.containsKey("draft")) {
                 long internalID = extras.getLong("draft", 0);
                 Log.d(LOG_TAG, "draft id: " + Long.toString(internalID));
-                //TODO: Why does it always return null?
-                viewModel.getSubmissionByID(internalID).observe(this, new Observer<SubmissionTable>() {
-                    @Override
-                    public void onChanged(@Nullable SubmissionTable submissionTable) {
-                        if(submissionTable != null) {
-                            newSub = submissionTable;
-                            draftName = newSub.Title;
-                        } else {
-                            Log.d(LOG_TAG, "newSub is null");
-                        }
-                    }
-                });
-                newPatient = viewModel.getPatientByID(internalID).getValue();
-                if(viewModel.getSamplesByID(internalID).getValue() != null) {
-                    samplesList.addAll(viewModel.getSamplesByID(internalID).getValue());
-                }
-                if(viewModel.getPicturesByID(internalID).getValue() != null) {
-                    picturesList.addAll(viewModel.getPicturesByID(internalID).getValue());
-                }
-                updatingDraft = true;
+                setDraftObservers(internalID);
+                draftExists = true;
             }
             else{
                 setupNew();
@@ -255,17 +239,6 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
         species = findViewById(R.id.species_ET);
         euthanizedCB = findViewById(R.id.EuthanizedCB);
 
-        viewModel.getSubmissionByTitle(draftName).observe(this, new Observer<SubmissionTable>() {
-            @Override
-            public void onChanged(@Nullable SubmissionTable submissionTable) {
-                if(submissionTable != null){
-                    draftExists = true;
-                } else {
-                    draftExists = false;
-                }
-            }
-        });
-
         //initialize submission elements
         title_et = findViewById(R.id.sub_title);
         group_et = findViewById(R.id.group_name_ET);
@@ -280,33 +253,35 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                     String content = title_et.getText().toString() + " Saved";
                     Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
                     testToast.show();
+                    long intID;
                     if(draftExists){
+                        intID = newSub.Master_ID;
                         viewModel.updateSubmission(newSub);
                         viewModel.updatePatient(newPatient);
-                        for(SampleTable tempSample: samplesList){
-                            viewModel.updateSample(tempSample);
+                        for(SampleTable tempSample: originalSamples){
+                            viewModel.deleteSample(tempSample);
                         }
-                        for(PictureTable tempPicture: picturesList){
+                        for(PictureTable tempPicture: originalPictures){
                             if(tempPicture != null) {
-                                viewModel.updatePicture(tempPicture);
+                                viewModel.deletePicture(tempPicture);
                             }
                         }
                     } else{
-                        long intID = viewModel.insertSubmission(newSub, inserted);
+                        intID = viewModel.insertSubmission(newSub, inserted);
                         draftName = newSub.Title;
                         newPatient.Master_ID = intID;
                         viewModel.insertPatient(newPatient);
-                        for(SampleTable tempSample: samplesList){
-                            tempSample.Master_ID = intID;
-                            viewModel.insertSample(tempSample);
-                        }
+                    }
+                    for(SampleTable tempSample: samplesList){
+                        tempSample.Master_ID = intID;
+                        viewModel.insertSample(tempSample);
+                    }
 
-                        for(PictureTable tempPicture: picturesList){
-                            if(tempPicture != null){
-                                tempPicture.Master_ID = intID;
-                                Log.d(LOG_TAG, "onClick: current internal id is: " + Long.toString(tempPicture.Master_ID));
-                                viewModel.insertPicture(tempPicture);
-                            }
+                    for(PictureTable tempPicture: picturesList){
+                        if(tempPicture != null){
+                            tempPicture.Master_ID = intID;
+                            Log.d(LOG_TAG, "onClick: current internal id is: " + Long.toString(tempPicture.Master_ID));
+                            viewModel.insertPicture(tempPicture);
                         }
                     }
                 }
@@ -317,8 +292,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
             }
         });
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(CreateSubActivity.this);
-        userName = preferences.getString(getString(R.string.username_preference_key), "");
+
 
         viewModel.getUserByUsername(userName).observe(this, new Observer<UserTable>() {
             @Override
@@ -335,21 +309,24 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
             public void onClick(View view) {
                 hideSoftKeyboard();
 
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(CreateSubActivity.this);
+                userName = preferences.getString(getString(R.string.username_preference_key), "");
+
                 if(userName.equals("")){//if user isn't logged in, then make them login first
                     Toast.makeText(CreateSubActivity.this, "Please save draft and login first " + userName,
                             Toast.LENGTH_LONG).show();
                     Intent login_activity;
                     login_activity = new Intent(CreateSubActivity.this, LoginActivity.class);
 
-                    //startActivity(login_activity);
+                    startActivity(login_activity);
                     return;
                 }else{ // set clientID if user is logged in
+                    //TODO: FIX creating user to associate with submission
                     newSub.User_ID = newUser.User_ID;
                 }
 
-
                 if(loadSubmissionData(1, newSub, newPatient)) {
-                    createDialog(newSub, newPatient);
+                    createDialog(newSub, newPatient, newGroup);
                 }
                 else{
                     Toast testToast = Toast.makeText(getApplicationContext(), R.string.create_error, Toast.LENGTH_LONG);
@@ -380,38 +357,40 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                 startActivityForResult(add_samples_activity, ADD_SAMPLES_REQUEST_CODE);
             }
         });
+    }
 
-        if(updatingDraft){
-            title_et.setText(newSub.Title, TextView.BufferType.EDITABLE);
-            group_et.setText(newSub.Group_ID, TextView.BufferType.EDITABLE);
-            sickElementName.setText(newPatient.PatientName, TextView.BufferType.EDITABLE);
-            species.setText(newPatient.Species, TextView.BufferType.EDITABLE);
-            if(newPatient.Sex.matches("Female")) {
-                sexSpinner.setSelection(2);
-            }
-            if(newPatient.Sex.matches("Male")){
-                sexSpinner.setSelection(1);
-            }
-            if(newPatient.Euthanized == 1) {
-                euthanizedCB.setChecked(true);
-            }
-            Long bDateMS = newPatient.DateOfBirth;
-            Long dDateMS = newPatient.DateOfDeath;
-            Calendar c = Calendar.getInstance();
-            if(bDateMS != 0) {
-                c.setTimeInMillis(bDateMS);
-                birthDate = c.getTime();
-                selectedCalendar = BIRTH_DATE;
-                showDateText(c);
-            }
-            if(dDateMS != 0) {
-                c.setTimeInMillis(dDateMS);
-                deathDate = c.getTime();
-                selectedCalendar = DEATH_DATE;
-                showDateText(c);
-            }
-            comment_et.setText(newSub.UserComment, TextView.BufferType.EDITABLE);
+    public void draftExists(){
+        title_et.setText(newSub.Title, TextView.BufferType.EDITABLE);
+        if(newSub.Group_ID != NULL) {
+            group_et.setText(newGroup.GroupName, TextView.BufferType.EDITABLE);
         }
+        sickElementName.setText(newPatient.PatientName, TextView.BufferType.EDITABLE);
+        species.setText(newPatient.Species, TextView.BufferType.EDITABLE);
+        if(newPatient.Sex.matches("Female")) {
+            sexSpinner.setSelection(2);
+        }
+        if(newPatient.Sex.matches("Male")){
+            sexSpinner.setSelection(1);
+        }
+        if(newPatient.Euthanized == 1) {
+            euthanizedCB.setChecked(true);
+        }
+        Long bDateMS = newPatient.DateOfBirth;
+        Long dDateMS = newPatient.DateOfDeath;
+        Calendar c = Calendar.getInstance();
+        if(bDateMS != 0) {
+            c.setTimeInMillis(bDateMS);
+            birthDate = c.getTime();
+            selectedCalendar = BIRTH_DATE;
+            showDateText(c);
+        }
+        if(dDateMS != 0) {
+            c.setTimeInMillis(dDateMS);
+            deathDate = c.getTime();
+            selectedCalendar = DEATH_DATE;
+            showDateText(c);
+        }
+        comment_et.setText(newSub.UserComment, TextView.BufferType.EDITABLE);
     }
 
     @Override
@@ -509,25 +488,14 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
             return false;
         }
 
-        viewModel.getGroupByName(group_et.getText().toString()).observe(this, new Observer<GroupTable>() {
-            @Override
-            public void onChanged(@Nullable GroupTable groupTable) {
-                if(groupTable != null){
-                    newGroup = groupTable;
-                } else {
-                    newGroup.GroupName = group_et.getText().toString();
-                    newGroup.DateOfCreation = curDate;
-                    viewModel.insertGroup(newGroup);
-                }
-            }
-        });
-
         newSub.Case_ID = NULL;
         newSub.Title = title_et.getText().toString();
-        newSub.Group_ID = newGroup.Group_ID;
         newSub.StatusFlag = status;
         newSub.DateOfCreation = curDate;
         newSub.UserComment = comment_et.getText().toString();
+
+        newGroup.GroupName = group_et.getText().toString();
+        newGroup.DateOfCreation = curDate;
 
         newPatient.PatientName = sickElementName.getText().toString();
         newPatient.Sex = selectedSex;
@@ -548,6 +516,69 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
         return true;
     }
 
+    void setDraftObservers(long internalID){
+        Log.d(LOG_TAG, "Setting observers");
+        viewModel.setSubmissionInputID(internalID);
+        viewModel.getSubmissionByID().observe(this, new Observer<SubmissionTable>() {
+            @Override
+            public void onChanged(@Nullable SubmissionTable submissionTable) {
+                if(submissionTable != null) {
+                    newSub = submissionTable;
+                    Log.d(LOG_TAG, "submission observed: " + newSub.Title);
+                    draftName = newSub.Title;
+                } else {
+                    Log.d(LOG_TAG, "newSub is null");
+                }
+            }
+        });
+        viewModel.getGroupByName(newGroup.GroupName).observe(this, new Observer<GroupTable>() {
+            @Override
+            public void onChanged(@Nullable GroupTable groupTable) {
+                if(groupTable != null){
+                    newGroup = groupTable;
+                    Log.d(LOG_TAG, "group observed: " + newGroup.GroupName);
+                } else {
+                    Log.d(LOG_TAG, "group not saved");
+                }
+            }
+        });
+        viewModel.getPatientByID(internalID).observe(this, new Observer<PatientTable>() {
+            @Override
+            public void onChanged(@Nullable PatientTable patientTable) {
+                if(patientTable != null){
+                    newPatient = patientTable;
+                    Log.d(LOG_TAG, "patient observed: " + newPatient.PatientName);
+                } else {
+                    Log.d(LOG_TAG, "newPatient is null");
+                }
+            }
+        });
+        viewModel.getSamplesByID(internalID).observe(this, new Observer<List<SampleTable>>() {
+            @Override
+            public void onChanged(@Nullable List<SampleTable> sampleTables) {
+                if(sampleTables != null){
+                    originalSamples.addAll(sampleTables);
+                    samplesList.addAll(sampleTables);
+                    Log.d(LOG_TAG, "samples added");
+                } else {
+                    Log.d(LOG_TAG, "samples null");
+                }
+            }
+        });
+        viewModel.getPicturesByID(internalID).observe(this, new Observer<List<PictureTable>>() {
+            @Override
+            public void onChanged(@Nullable List<PictureTable> pictureTables) {
+                if(pictureTables != null){
+                    originalPictures.addAll(pictureTables);
+                    picturesList.addAll(pictureTables);
+                    Log.d(LOG_TAG, "pictures added");
+                } else {
+                    Log.d(LOG_TAG, "pictures null");
+                }
+                draftExists();
+            }
+        });
+    }
 
     //This will use the API (which we don't have at the moment) to send the submission to the server. Call this function after clicking on "submit"
     private void sendToServer(){
@@ -597,7 +628,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
 
         //Send the Pictures:
         for(PictureTable picture : picturesList){
-             call = myVetPathAPI.picture(headerMap, "picture", picture.Image_ID, picture.Master_ID, picture.ImagePath, picture.Title, picture.Latitude, picture.Longitude, picture.DateTaken, "json");
+            call = myVetPathAPI.picture(headerMap, "picture", picture.Image_ID, picture.Master_ID, picture.ImagePath, picture.Title, picture.Latitude, picture.Longitude, picture.DateTaken, "json");
 
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
