@@ -2,14 +2,19 @@ package com.myvetpath.myvetpath;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -47,8 +52,40 @@ public class SubDetailsActivity extends BaseActivity {
     final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
     private TextView mSamplesTV;
     private ImageButton[] images;
+    private TextView mReportReview;
+    private CheckBox mReportCheck;
 
     String group = new String();
+    boolean reportExists = false;
+
+    public void createReportDialog(){
+        LayoutInflater inflater = getLayoutInflater();
+        AlertDialog.Builder dialog = new AlertDialog.Builder(SubDetailsActivity.this);
+        dialog.setCancelable(true);
+        dialog.setTitle(R.string.report_check);
+        dialog.setView(inflater.inflate(R.layout.report_dialog, null)).setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                /*String review = mReportReview.getText().toString();
+                boolean closed = mReportCheck.isChecked();
+                currentReport.SubmissionReview = review;
+                currentReport.ReportDate = calendar.getTimeInMillis();
+                if(reportExists){
+                    viewModel.updateReport(currentReport);
+                } else {
+                    viewModel.insertReport(currentReport);
+                }*/
+            }
+        }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //close
+            }
+        });
+
+        AlertDialog ad = dialog.create();
+        ad.show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +103,18 @@ public class SubDetailsActivity extends BaseActivity {
         toolbar.setTitle(title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mReportReview = findViewById(R.id.report_dialog_tv);
+        mReportCheck = findViewById(R.id.report_dialog_check);
+
+        FloatingActionButton fab = findViewById(R.id.details_report_button);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(LOG_TAG, "clicked report button");
+                createReportDialog();
+            }
+        });
 
         create_sub_activity = new Intent(this, CreateSubActivity.class);
 
@@ -102,7 +151,7 @@ public class SubDetailsActivity extends BaseActivity {
                 findViewById(R.id.fifth_ImageDetails_bttn)};
     }
 
-    public void setObservers(long internalId){
+    public void setObservers(final long internalId){
         viewModel.getPatientByID(internalId).observe(this, new Observer<PatientTable>() {
             @Override
             public void onChanged(@Nullable PatientTable patientTable) {
@@ -171,7 +220,7 @@ public class SubDetailsActivity extends BaseActivity {
                     calendar.setTimeInMillis(tempSample.SampleCollectionDate);
                     String tempSampleDate = simpleDateFormat.format(calendar.getTime());
 
-                    sampleText += "Sample " + tempSample.NameOfSample + ": " + tempSample.NameOfSample + " samples collected "
+                    sampleText += "Sample " + tempSample.NameOfSample + ": " + Integer.toString(tempSample.NumberOfSample) + " samples collected "
                             + " in " + tempSample.LocationOfSample + " on " + tempSampleDate + "\n";
                     index++;
                 }
@@ -189,6 +238,18 @@ public class SubDetailsActivity extends BaseActivity {
                     group = currentGroup.GroupName;
                 } else{
                     group = "";
+                }
+            }
+        });
+
+        viewModel.getReportByID(internalId).observe(this, new Observer<ReportTable>() {
+            @Override
+            public void onChanged(@Nullable ReportTable reportTable) {
+                if(reportTable != null){
+                    currentReport = reportTable;
+                    reportExists = true;
+                } else {
+                    currentReport.Master_ID = internalId;
                 }
             }
         });

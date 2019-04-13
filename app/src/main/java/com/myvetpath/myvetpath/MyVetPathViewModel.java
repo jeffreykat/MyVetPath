@@ -97,7 +97,17 @@ public class MyVetPathViewModel extends AndroidViewModel {
 
     public void updateReport(ReportTable reportTable){repo.updateReport(reportTable);}
 
-    public LiveData<ReportTable> getReportByID(long id){return repo.getReportByID(id);}
+    public LiveData<ReportTable> report = Transformations.switchMap(reportInputID, new Function<Long, LiveData<ReportTable>>() {
+        @Override
+        public LiveData<ReportTable> apply(Long input) {
+            return repo.getReportByID(input);
+        }
+    });
+
+    public LiveData<ReportTable> getReportByID(long id){
+        reportInputID.setValue(id);
+        return report;
+    }
 
     public void insertSample(SampleTable sampleTable){repo.insertSample(sampleTable);}
 
