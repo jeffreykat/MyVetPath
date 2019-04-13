@@ -308,6 +308,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                     startActivity(login_activity);
                     return;
                 }else{ // set clientID if user is logged in
+                    //TODO: FIX creating user to associate with submission
                     newSub.User_ID = newUser.User_ID;
                 }
 
