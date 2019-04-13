@@ -138,8 +138,13 @@ public class MyVetPathViewModel extends AndroidViewModel {
 
     public LiveData<SubmissionTable> getSubmissionByTitle(String title){return repo.getSubmissionByTitle(title);}
 
-    public LiveData<SubmissionTable> getSubmissionByID(long id){
+    public void setSubmissionInputID(long id){
+        Log.d("ViewModel", "setSubmission:");
         submissionInputID.setValue(id);
+    }
+
+    public LiveData<SubmissionTable> getSubmissionByID(){
+        //submissionInputID.setValue(id);
         Log.d("ViewModel", "getSubmission:");
         return submission;
     }

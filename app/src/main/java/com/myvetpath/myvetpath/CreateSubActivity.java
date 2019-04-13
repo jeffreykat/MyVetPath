@@ -184,12 +184,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                 long internalID = extras.getLong("draft", 0);
                 Log.d(LOG_TAG, "draft id: " + Long.toString(internalID));
                 setDraftObservers(internalID);
-                if(newSub != null) {
-                    draftExists = true;
-                    Log.d(LOG_TAG, newSub.Title);
-                } else {
-                    Log.d(LOG_TAG, "sub is still null");
-                }
+                draftExists = true;
             }
             else{
                 setupNew();
@@ -341,38 +336,40 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                 startActivityForResult(add_samples_activity, ADD_SAMPLES_REQUEST_CODE);
             }
         });
+    }
 
-        if(draftExists){
-            title_et.setText(newSub.Title, TextView.BufferType.EDITABLE);
+    public void draftExists(){
+        title_et.setText(newSub.Title, TextView.BufferType.EDITABLE);
+        if(newSub.Group_ID != NULL) {
             group_et.setText(newSub.Group_ID, TextView.BufferType.EDITABLE);
-            sickElementName.setText(newPatient.PatientName, TextView.BufferType.EDITABLE);
-            species.setText(newPatient.Species, TextView.BufferType.EDITABLE);
-            if(newPatient.Sex.matches("Female")) {
-                sexSpinner.setSelection(2);
-            }
-            if(newPatient.Sex.matches("Male")){
-                sexSpinner.setSelection(1);
-            }
-            if(newPatient.Euthanized == 1) {
-                euthanizedCB.setChecked(true);
-            }
-            Long bDateMS = newPatient.DateOfBirth;
-            Long dDateMS = newPatient.DateOfDeath;
-            Calendar c = Calendar.getInstance();
-            if(bDateMS != 0) {
-                c.setTimeInMillis(bDateMS);
-                birthDate = c.getTime();
-                selectedCalendar = BIRTH_DATE;
-                showDateText(c);
-            }
-            if(dDateMS != 0) {
-                c.setTimeInMillis(dDateMS);
-                deathDate = c.getTime();
-                selectedCalendar = DEATH_DATE;
-                showDateText(c);
-            }
-            comment_et.setText(newSub.UserComment, TextView.BufferType.EDITABLE);
         }
+        sickElementName.setText(newPatient.PatientName, TextView.BufferType.EDITABLE);
+        species.setText(newPatient.Species, TextView.BufferType.EDITABLE);
+        if(newPatient.Sex.matches("Female")) {
+            sexSpinner.setSelection(2);
+        }
+        if(newPatient.Sex.matches("Male")){
+            sexSpinner.setSelection(1);
+        }
+        if(newPatient.Euthanized == 1) {
+            euthanizedCB.setChecked(true);
+        }
+        Long bDateMS = newPatient.DateOfBirth;
+        Long dDateMS = newPatient.DateOfDeath;
+        Calendar c = Calendar.getInstance();
+        if(bDateMS != 0) {
+            c.setTimeInMillis(bDateMS);
+            birthDate = c.getTime();
+            selectedCalendar = BIRTH_DATE;
+            showDateText(c);
+        }
+        if(dDateMS != 0) {
+            c.setTimeInMillis(dDateMS);
+            deathDate = c.getTime();
+            selectedCalendar = DEATH_DATE;
+            showDateText(c);
+        }
+        comment_et.setText(newSub.UserComment, TextView.BufferType.EDITABLE);
     }
 
     @Override
@@ -511,7 +508,8 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
 
     void setDraftObservers(long internalID){
         Log.d(LOG_TAG, "Setting observers");
-        viewModel.getSubmissionByID(internalID).observe(this, new Observer<SubmissionTable>() {
+        viewModel.setSubmissionInputID(internalID);
+        viewModel.getSubmissionByID().observe(this, new Observer<SubmissionTable>() {
             @Override
             public void onChanged(@Nullable SubmissionTable submissionTable) {
                 if(submissionTable != null) {
@@ -554,6 +552,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                 } else {
                     Log.d(LOG_TAG, "pictures null");
                 }
+                draftExists();
             }
         });
     }
