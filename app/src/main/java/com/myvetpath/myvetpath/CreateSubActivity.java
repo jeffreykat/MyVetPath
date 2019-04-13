@@ -68,7 +68,9 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
     GroupTable newGroup = new GroupTable();
     UserTable newUser;
     ArrayList<SampleTable> samplesList = new ArrayList<SampleTable>(5);
+    ArrayList<SampleTable> originalSamples = new ArrayList<>();
     ArrayList<PictureTable> picturesList = new ArrayList<PictureTable>(5);
+    ArrayList<PictureTable> originalPictures = new ArrayList<>(5);
 
     String userName;
     long global_master_id;
@@ -238,33 +240,35 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                     String content = title_et.getText().toString() + " Saved";
                     Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
                     testToast.show();
+                    long intID;
                     if(draftExists){
+                        intID = newSub.Master_ID;
                         viewModel.updateSubmission(newSub);
                         viewModel.updatePatient(newPatient);
-                        for(SampleTable tempSample: samplesList){
-                            viewModel.updateSample(tempSample);
+                        for(SampleTable tempSample: originalSamples){
+                            viewModel.deleteSample(tempSample);
                         }
-                        for(PictureTable tempPicture: picturesList){
+                        for(PictureTable tempPicture: originalPictures){
                             if(tempPicture != null) {
-                                viewModel.updatePicture(tempPicture);
+                                viewModel.deletePicture(tempPicture);
                             }
                         }
                     } else{
-                        long intID = viewModel.insertSubmission(newSub, inserted);
+                        intID = viewModel.insertSubmission(newSub, inserted);
                         draftName = newSub.Title;
                         newPatient.Master_ID = intID;
                         viewModel.insertPatient(newPatient);
-                        for(SampleTable tempSample: samplesList){
-                            tempSample.Master_ID = intID;
-                            viewModel.insertSample(tempSample);
-                        }
+                    }
+                    for(SampleTable tempSample: samplesList){
+                        tempSample.Master_ID = intID;
+                        viewModel.insertSample(tempSample);
+                    }
 
-                        for(PictureTable tempPicture: picturesList){
-                            if(tempPicture != null){
-                                tempPicture.Master_ID = intID;
-                                Log.d(LOG_TAG, "onClick: current internal id is: " + Long.toString(tempPicture.Master_ID));
-                                viewModel.insertPicture(tempPicture);
-                            }
+                    for(PictureTable tempPicture: picturesList){
+                        if(tempPicture != null){
+                            tempPicture.Master_ID = intID;
+                            Log.d(LOG_TAG, "onClick: current internal id is: " + Long.toString(tempPicture.Master_ID));
+                            viewModel.insertPicture(tempPicture);
                         }
                     }
                 }
@@ -508,9 +512,6 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                     newSub = submissionTable;
                     Log.d(LOG_TAG, "submission observed: " + newSub.Title);
                     draftName = newSub.Title;
-                    if(newGroup.Group_ID == NULL){
-                        newGroup = new GroupTable();
-                    }
                 } else {
                     Log.d(LOG_TAG, "newSub is null");
                 }
@@ -542,6 +543,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
             @Override
             public void onChanged(@Nullable List<SampleTable> sampleTables) {
                 if(sampleTables != null){
+                    originalSamples.addAll(sampleTables);
                     samplesList.addAll(sampleTables);
                     Log.d(LOG_TAG, "samples added");
                 } else {
@@ -553,6 +555,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
             @Override
             public void onChanged(@Nullable List<PictureTable> pictureTables) {
                 if(pictureTables != null){
+                    originalPictures.addAll(pictureTables);
                     picturesList.addAll(pictureTables);
                     Log.d(LOG_TAG, "pictures added");
                 } else {
