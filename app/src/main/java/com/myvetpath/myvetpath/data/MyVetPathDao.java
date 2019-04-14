@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
@@ -18,7 +19,7 @@ public interface MyVetPathDao {
     @Delete
     void deleteGroup(GroupTable groupTable);
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateGroup(GroupTable groupTable);
 
     @Query("SELECT * FROM group_table")
@@ -36,7 +37,7 @@ public interface MyVetPathDao {
     @Delete
     void deletePatient(PatientTable patientTable);
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     void updatePatient(PatientTable patientTable);
 
     @Query("SELECT * FROM patient_table WHERE Master_ID = :id LIMIT 1")
@@ -48,7 +49,7 @@ public interface MyVetPathDao {
     @Delete
     void deletePicture(PictureTable pictureTable);
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     void updatePicture(PictureTable pictureTable);
 
     @Query("SELECT * FROM picture_table WHERE Master_ID = :id")
@@ -72,7 +73,7 @@ public interface MyVetPathDao {
     @Delete
     void deleteReport(ReportTable reportTable);
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateReport(ReportTable reportTable);
 
     @Query("SELECT * FROM report_table WHERE Master_ID = :id")
@@ -84,7 +85,7 @@ public interface MyVetPathDao {
     @Delete
     void deleteSample(SampleTable sampleTable);
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateSample(SampleTable sampleTable);
 
     @Query("SELECT * FROM sample_table WHERE Master_ID = :id ORDER BY SampleCollectionDate")
@@ -99,7 +100,7 @@ public interface MyVetPathDao {
     @Delete
     void deleteSubmission(SubmissionTable submissionTable);
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateSubmission(SubmissionTable submissionTable);
 
     @Query("SELECT * FROM submission_table WHERE StatusFlag = 1 ORDER BY DateOfCreation DESC")
@@ -120,7 +121,7 @@ public interface MyVetPathDao {
     @Delete
     void deleteUser(UserTable userTable);
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateUser(UserTable userTable);
 
     @Query("SELECT * FROM user_table")

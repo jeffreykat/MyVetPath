@@ -105,6 +105,8 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
     boolean draftExists = false;
     boolean subInserted = false;
 
+    SharedPreferences preferences;
+
     OnSubmissionInserted inserted = new OnSubmissionInserted() {
         @Override
         public void onSubmissionInserted(long master_id) {
@@ -182,6 +184,8 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
 
         viewModel = ViewModelProviders.of(this).get(MyVetPathViewModel.class);
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(CreateSubActivity.this);
+
         if(extras != null){
             if(extras.containsKey("draft")) {
                 long internalID = extras.getLong("draft", 0);
@@ -258,6 +262,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                         draftName = newSub.Title;
                         newPatient.Master_ID = intID;
                         viewModel.insertPatient(newPatient);
+                        draftExists = true;
                     }
                     for(SampleTable tempSample: samplesList){
                         tempSample.Master_ID = intID;
@@ -279,24 +284,12 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
             }
         });
 
-
-
-        viewModel.getUserByUsername(userName).observe(this, new Observer<UserTable>() {
-            @Override
-            public void onChanged(@Nullable UserTable userTable) {
-                if(userTable != null) {
-                    newUser = userTable;
-                }
-            }
-        });
-
         submit_button = findViewById(R.id.submit_btn);
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard();
 
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(CreateSubActivity.this);
                 userName = preferences.getString(getString(R.string.username_preference_key), "");
 
                 if(userName.equals("")){//if user isn't logged in, then make them login first
@@ -306,10 +299,10 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                     login_activity = new Intent(CreateSubActivity.this, LoginActivity.class);
 
                     startActivity(login_activity);
+                    setUser();
                     return;
                 }else{ // set clientID if user is logged in
-                    //TODO: FIX creating user to associate with submission
-                    newSub.User_ID = newUser.User_ID;
+                    setUser();
                 }
 
                 if(loadSubmissionData(1, newSub, newPatient)) {
@@ -501,6 +494,21 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
         }
 
         return true;
+    }
+
+    void setUser(){
+        viewModel.getUserByUsername(preferences.getString(getString(R.string.username_preference_key), "")).observe(this, new Observer<UserTable>() {
+            @Override
+            public void onChanged(@Nullable UserTable userTable) {
+                if(userTable != null) {
+                    newUser = userTable;
+                    Log.d(LOG_TAG, "User: " + newUser.Username);
+                    newSub.User_ID = newUser.User_ID;
+                } else{
+                    Log.d(LOG_TAG, "User error");
+                }
+            }
+        });
     }
 
     void setDraftObservers(long internalID){
