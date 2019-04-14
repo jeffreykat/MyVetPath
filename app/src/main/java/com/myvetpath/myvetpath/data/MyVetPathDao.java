@@ -115,7 +115,7 @@ public interface MyVetPathDao {
     @Query("SELECT * FROM submission_table WHERE Master_ID = :id LIMIT 1")
     LiveData<SubmissionTable> getSubmissionByID(long id);
 
-    @Insert
+    @Insert()
     void insertUser(UserTable userTable);
 
     @Delete
