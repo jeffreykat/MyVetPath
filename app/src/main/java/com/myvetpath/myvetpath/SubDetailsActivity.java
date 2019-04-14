@@ -316,6 +316,8 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
                 if(reportTable != null){
                     currentReport = reportTable;
                     reportExists = true;
+                    reportText = currentReport.SubmissionReview;
+                    mReportTV.setText(reportText);
                 } else {
                     currentReport.Master_ID = internalId;
                 }
