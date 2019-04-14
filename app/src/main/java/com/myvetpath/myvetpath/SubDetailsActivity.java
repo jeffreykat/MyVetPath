@@ -84,6 +84,9 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
         tempReply.ContentsOfMessage = input;
         tempReply.DateOfMessage = curDate;
         tempReply.Master_ID = internalId;
+        tempReply.Receiver_ID = 0; //probably won't need this
+        //todo: set Sender ID
+
         viewModel.insertReply(tempReply);
 
         //The block of code below that is commented out will be used to send the reply to the server.
