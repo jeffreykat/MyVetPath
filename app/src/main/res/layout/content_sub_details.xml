@@ -152,6 +152,27 @@
                 app:layout_constraintLeft_toLeftOf="parent"/>
 
             <TextView
+                android:id="@+id/subReportTitleTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="20sp"
+                android:text="Report"
+                android:textColor="@color/colorHeader"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/subSamplesTV"/>
+
+            <TextView
+                android:id="@+id/subReportTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="12sp"
+                android:textColor="@color/colorHeader"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/subReportTitleTV"/>
+
+            <TextView
                 android:id="@+id/repliesTitleTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -159,7 +180,7 @@
                 android:textSize="20sp"
                 android:text="Replies"
                 android:textColor="@color/colorHeader"
-                app:layout_constraintTop_toBottomOf="@id/subSamplesTV"
+                app:layout_constraintTop_toBottomOf="@id/subReportTV"
                 app:layout_constraintLeft_toLeftOf="parent"/>
 
             <TextView

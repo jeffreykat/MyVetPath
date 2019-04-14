@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,8 +57,6 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
             return;
         }
 
-
-
         //Get current date, might want to change date to when it gets to server
         long curDate = Calendar.getInstance().getTime().getTime();
         calendar.setTimeInMillis(curDate);
@@ -69,7 +68,6 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
         tempReply.DateOfMessage = curDate;
         tempReply.Master_ID = internalId;
         viewModel.insertReply(tempReply);
-
     }
 
     MyVetPathViewModel viewModel;
@@ -87,34 +85,46 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
     final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
     private TextView mSamplesTV;
     private ImageButton[] images;
-    private TextView mReportReview;
+    private EditText mReportReview;
     private CheckBox mReportCheck;
     private Button add_replies_BTTN;
     private TextView mRepliesTV;
+    private TextView mReportTV;
     private String mReplyInput;
     private String mReplies;
     private ArrayList<ReplyTable> mRepliesList = new ArrayList<>(1);
 
     String group = new String();
     boolean reportExists = false;
+    String reportText;
+    private long internalId;
 
     public void createReportDialog(){
-        LayoutInflater inflater = getLayoutInflater();
+        LayoutInflater inflater = LayoutInflater.from(this);
+        final View view = inflater.inflate(R.layout.report_dialog, null);
         AlertDialog.Builder dialog = new AlertDialog.Builder(SubDetailsActivity.this);
         dialog.setCancelable(true);
         dialog.setTitle(R.string.report_check);
-        dialog.setView(inflater.inflate(R.layout.report_dialog, null)).setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
+        mReportReview = view.findViewById(R.id.report_dialog_et);
+        mReportCheck = view.findViewById(R.id.report_dialog_check);
+        dialog.setView(view);
+        dialog.setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                String review = mReportReview.getText().toString();
+                reportText = mReportReview.getText().toString();
                 boolean closed = mReportCheck.isChecked();
-                currentReport.SubmissionReview = review;
+                currentReport.SubmissionReview = reportText;
                 currentReport.ReportDate = calendar.getTimeInMillis();
+                if(closed){
+                    currentReport.DateClosed = calendar.getTimeInMillis();
+                }
                 if(reportExists){
                     viewModel.updateReport(currentReport);
                 } else {
+                    currentReport.Master_ID = internalId;
                     viewModel.insertReport(currentReport);
                 }
+                mReportTV.setText(reportText);
             }
         }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
@@ -126,7 +136,6 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
         AlertDialog ad = dialog.create();
         ad.show();
     }
-    private long internalId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,8 +154,7 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mReportReview = findViewById(R.id.report_dialog_tv);
-        mReportCheck = findViewById(R.id.report_dialog_check);
+        mReportTV = findViewById(R.id.subReportTV);
 
         FloatingActionButton fab = findViewById(R.id.details_report_button);
         fab.setOnClickListener(new View.OnClickListener() {
