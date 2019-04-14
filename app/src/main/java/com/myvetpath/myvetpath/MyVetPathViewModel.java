@@ -31,6 +31,7 @@ public class MyVetPathViewModel extends AndroidViewModel {
     MutableLiveData<Long> sampleInputID = new MutableLiveData<>();
     MutableLiveData<Long> submissionInputID = new MutableLiveData<>();
     MutableLiveData<Integer> userInputID = new MutableLiveData<>();
+    MutableLiveData<String> userInputString = new MutableLiveData<>();
 
     public MyVetPathViewModel(@NonNull Application application) {
         super(application);
@@ -177,5 +178,15 @@ public class MyVetPathViewModel extends AndroidViewModel {
 
     public LiveData<List<UserTable>> getUsers(){return repo.getUsers();}
 
-    public LiveData<UserTable> getUserByUsername(String username){return repo.getUserByUsername(username);}
+    public LiveData<UserTable> user = Transformations.switchMap(userInputString, new Function<String, LiveData<UserTable>>() {
+        @Override
+        public LiveData<UserTable> apply(String input) {
+            return repo.getUserByUsername(input);
+        }
+    });
+
+    public LiveData<UserTable> getUserByUsername(String username){
+        userInputString.setValue(username);
+        return user;
+    }
 }
