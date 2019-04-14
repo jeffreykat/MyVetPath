@@ -31,6 +31,7 @@ import com.myvetpath.myvetpath.data.ReplyTable;
 import com.myvetpath.myvetpath.data.ReportTable;
 import com.myvetpath.myvetpath.data.SampleTable;
 import com.myvetpath.myvetpath.data.SubmissionTable;
+import com.myvetpath.myvetpath.data.UserTable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,23 +72,32 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
         }
 
 
-
-
-
         //Get current date, might want to change date to when it gets to server
         long curDate = Calendar.getInstance().getTime().getTime();
         calendar.setTimeInMillis(curDate);
         String currentDate = simpleDateFormat.format(calendar.getTime());
 
         //Create temporary reply and insert it into database
-        ReplyTable tempReply = new ReplyTable();
+        final ReplyTable tempReply = new ReplyTable();
         tempReply.ContentsOfMessage = input;
         tempReply.DateOfMessage = curDate;
         tempReply.Master_ID = internalId;
         tempReply.Receiver_ID = 0; //probably won't need this
-        //todo: set Sender ID
 
+        viewModel.getUserByUsername(preferences.getString(getString(R.string.username_preference_key), "")).observe(this, new Observer<UserTable>() {
+            @Override
+            public void onChanged(@Nullable UserTable userTable) {
+                if(userTable != null) {
+                    tempReply.Sender_ID = userTable.User_ID;
+
+                } else{
+                    Log.d(LOG_TAG, "User error");
+                }
+            }
+        });
         viewModel.insertReply(tempReply);
+
+
 
         //The block of code below that is commented out will be used to send the reply to the server.
         //The code is commented out because the API isn't ready

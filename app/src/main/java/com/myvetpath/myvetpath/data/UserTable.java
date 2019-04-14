@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Entity(tableName = "user_table")
 public class UserTable implements Serializable {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     public int User_ID;
 
     public String Username;

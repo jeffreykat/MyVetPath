@@ -77,6 +77,8 @@ public class BaseActivity extends AppCompatActivity {
         }else if (mCurrentActivity == R.id.action_info){
             menu.findItem(R.id.action_info).setVisible(false);
             menu.findItem(R.id.action_sync).setVisible(false);
+        }else{
+            menu.findItem(R.id.action_sync).setVisible(false);
         }
 
         return true;

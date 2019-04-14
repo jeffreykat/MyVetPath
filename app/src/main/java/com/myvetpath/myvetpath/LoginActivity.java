@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.myvetpath.myvetpath.data.GroupTable;
 import com.myvetpath.myvetpath.data.UserTable;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class LoginActivity extends BaseActivity {
     List<UserTable> savedUsers;
 
     MyVetPathViewModel viewModel;
+    boolean userSaved = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +60,6 @@ public class LoginActivity extends BaseActivity {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Once we get the API, authenticate and verify the login info was correct. Right now we just assume that the login info is right
-
                 //Store username as sharedpreference... may be a better way to do this
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                 SharedPreferences.Editor editor = preferences.edit();
@@ -68,12 +68,28 @@ public class LoginActivity extends BaseActivity {
 
 
                 String name = preferences.getString(getString(R.string.username_preference_key), ""); //retrieve username from sharedpreferences
+                checkSavedUser(name);
                 Toast.makeText(LoginActivity.this, "Logged in as: " + name,
                         Toast.LENGTH_LONG).show();
                 finish();
             }
         });
 
+    }
+
+    UserTable checkSavedUser(String username){
+        for(UserTable tempUser: savedUsers){
+            if(tempUser.Username == username){
+                userSaved = true;
+                return tempUser;
+            }
+        }
+        //TODO: Once we get the API, authenticate and verify the login info was correct. Right now we just assume that the login info is right
+        UserTable newUser = new UserTable();
+        newUser.Username = username;
+        newUser.Password = mPasswordET.getText().toString();
+        viewModel.insertUser(newUser);
+        return newUser;
     }
 
 }
