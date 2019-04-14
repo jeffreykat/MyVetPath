@@ -127,25 +127,42 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                 String content = title_et.getText().toString() + " Submitted";
                 Toast testToast = Toast.makeText(getApplicationContext(), content, Toast.LENGTH_LONG);
                 testToast.show();
-                newSub.Group_ID = viewModel.insertGroup(group);
-                long internalID = viewModel.insertSubmission(submission, inserted);
-                Log.d(LOG_TAG, "internal id from view model: " + Long.toString(internalID));
+                long internalID;
+                if(draftExists){
+                    internalID = submission.Master_ID;
+                    viewModel.updateSubmission(submission);
+                    viewModel.updatePatient(patient);
+                    for (SampleTable tempSample : samplesList) {
+                        viewModel.updateSample(tempSample);
+                    }
 
-                for(SampleTable tempSample: samplesList){
-                    tempSample.Master_ID = internalID;
-                    viewModel.insertSample(tempSample);
-                }
+                    for (PictureTable tempPicture : picturesList) {
+                        if (tempPicture != null) {
+                            Log.d(LOG_TAG, "onClick: current internal id is: " + Long.toString(tempPicture.Master_ID));
+                            viewModel.updatePicture(tempPicture);
+                        }
+                    }
+                } else {
+                    submission.Group_ID = viewModel.insertGroup(group);
+                    internalID = viewModel.insertSubmission(submission, inserted);
+                    Log.d(LOG_TAG, "internal id from view model: " + Long.toString(internalID));
 
-                for(PictureTable tempPicture: picturesList){
-                    if(tempPicture != null){
-                        tempPicture.Master_ID = internalID;
-                        Log.d(LOG_TAG, "onClick: current internal id is: " + Long.toString(tempPicture.Master_ID));
-                        viewModel.insertPicture(tempPicture);
+                    patient.Master_ID = internalID;
+                    viewModel.insertPatient(patient);
+
+                    for (SampleTable tempSample : samplesList) {
+                        tempSample.Master_ID = internalID;
+                        viewModel.insertSample(tempSample);
+                    }
+
+                    for (PictureTable tempPicture : picturesList) {
+                        if (tempPicture != null) {
+                            tempPicture.Master_ID = internalID;
+                            Log.d(LOG_TAG, "onClick: current internal id is: " + Long.toString(tempPicture.Master_ID));
+                            viewModel.insertPicture(tempPicture);
+                        }
                     }
                 }
-
-                patient.Master_ID = internalID;
-                viewModel.insertPatient(patient);
                 startActivity(view_subs_activity);
             }
         })
