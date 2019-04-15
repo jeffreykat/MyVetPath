@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ import java.util.GregorianCalendar;
 import android.widget.Toast;
 
 import com.myvetpath.myvetpath.data.GroupTable;
+import com.myvetpath.myvetpath.data.MyVetPathAPI;
 import com.myvetpath.myvetpath.data.LocalRepository;
 import com.myvetpath.myvetpath.data.PatientTable;
 import com.myvetpath.myvetpath.data.PictureTable;
@@ -48,9 +50,20 @@ import com.myvetpath.myvetpath.data.SampleTable;
 import com.myvetpath.myvetpath.data.SubmissionTable;
 import com.myvetpath.myvetpath.data.UserTable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static java.sql.Types.NULL;
 
@@ -565,6 +578,146 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                 draftExists();
             }
         });
+    }
+
+    //This will use the API (which we don't have at the moment) to send the submission to the server. Call this function after clicking on "submit"
+    private void sendToServer(){
+        String MyVetPath_Base_Url = getString(R.string.MVP_Base_API_URL);
+        //build the retrofit that will make the query
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.MVP_Base_API_URL))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        MyVetPathAPI myVetPathAPI = retrofit.create(MyVetPathAPI.class);
+
+        HashMap<String, String> headerMap = new HashMap<String, String>();
+        headerMap.put("Content-Type", "application/json");
+
+
+        //Send the Submission
+        Call<ResponseBody> call = myVetPathAPI.submission(headerMap, "submission", newSub.Group_ID, newSub.User_ID,
+                newSub.Title, newSub.DateOfCreation, newSub.StatusFlag, newSub.Submitted, newSub.ReportComplete,
+                newSub.UserComment, "json");
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                        Log.d(TAG, "onResponse: Server Response: " + response.toString());
+
+                try{
+                    String json = response.body().string();
+//                            Log.d(TAG, "onResponse: json: " + json);
+                    JSONObject data = null;
+                    data = new JSONObject(json); //this is the response data that comes back.
+                    Log.d("k", "onResponse: data: " + data.optString("json"));
+
+                }catch (JSONException e){
+//                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+                }catch (IOException e){
+//                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                        Log.e(TAG, "onFailure: Something went wrong: " + t.getMessage() );
+                Toast.makeText(CreateSubActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //Send the Pictures:
+        for(PictureTable picture : picturesList){
+            call = myVetPathAPI.picture(headerMap, "picture", picture.Image_ID, picture.Master_ID, picture.ImagePath, picture.Title, picture.Latitude, picture.Longitude, picture.DateTaken, "json");
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                        Log.d(TAG, "onResponse: Server Response: " + response.toString());
+
+                    try{
+                        String json = response.body().string();
+//                            Log.d(TAG, "onResponse: json: " + json);
+                        JSONObject data = null;
+                        data = new JSONObject(json); //this is the response data that comes back.
+                        Log.d("k", "onResponse: data: " + data.optString("json"));
+
+                    }catch (JSONException e){
+//                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+                    }catch (IOException e){
+//                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                        Log.e(TAG, "onFailure: Something went wrong: " + t.getMessage() );
+                    Toast.makeText(CreateSubActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        //Send the Samples:
+        for(SampleTable sample : samplesList){
+            call = myVetPathAPI.sample(headerMap, "sample", sample.Sample_ID, sample.Master_ID, sample.LocationOfSample, sample.NumberOfSample, sample.NameOfSample, "json");
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                        Log.d(TAG, "onResponse: Server Response: " + response.toString());
+
+                    try{
+                        String json = response.body().string();
+//                            Log.d(TAG, "onResponse: json: " + json);
+                        JSONObject data = null;
+                        data = new JSONObject(json); //this is the response data that comes back.
+                        Log.d("k", "onResponse: data: " + data.optString("json"));
+
+                    }catch (JSONException e){
+//                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+                    }catch (IOException e){
+//                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                        Log.e(TAG, "onFailure: Something went wrong: " + t.getMessage() );
+                    Toast.makeText(CreateSubActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        //Send the patient
+        call = myVetPathAPI.patient(headerMap, "patient", newPatient.Patient_ID, newPatient.Master_ID, newPatient.PatientName, newPatient.Species, newPatient.Sex, newPatient.Euthanized, newPatient.DateOfBirth, newPatient.DateOfDeath, "json");
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                        Log.d(TAG, "onResponse: Server Response: " + response.toString());
+
+                try{
+                    String json = response.body().string();
+//                            Log.d(TAG, "onResponse: json: " + json);
+                    JSONObject data = null;
+                    data = new JSONObject(json); //this is the response data that comes back.
+                    Log.d("k", "onResponse: data: " + data.optString("json"));
+
+                }catch (JSONException e){
+//                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+                }catch (IOException e){
+//                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                        Log.e(TAG, "onFailure: Something went wrong: " + t.getMessage() );
+                Toast.makeText(CreateSubActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
 
 }

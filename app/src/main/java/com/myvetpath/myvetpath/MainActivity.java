@@ -11,8 +11,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
+import com.myvetpath.myvetpath.data.CategoryItem;
+import com.myvetpath.myvetpath.data.PlanetItem;
 import com.myvetpath.myvetpath.data.SubmissionTable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.sql.Types.NULL;
@@ -33,6 +36,9 @@ public class MainActivity extends BaseActivity {
 
     //access to the database
     MyVetPathViewModel viewModel;
+    private EntryViewModel mEntryViewModel;
+    private List<CategoryItem> mCategoryItems;
+    ArrayList<PlanetItem> planetsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +103,58 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        //Example of how to use API query
+//        mEntryViewModel = ViewModelProviders.of(this).get(EntryViewModel.class);
+//        mCategoryItems = new ArrayList<>();
+//        setObserverCategory();
+//        mEntryViewModel.loadCategoryItems("planets", null); //query
+
     }
+
+    //This is the function that makes an API call, but it is commented out because it is just an example that won't be used with
+    //the app
+    /*
+    public void setObserverCategory() {
+
+        planetsList = new ArrayList<PlanetItem>();
+
+        //planets
+        mEntryViewModel.getPlanet().observe(this, new Observer<List<PlanetItem>>() {
+            @Override
+            public void onChanged(@Nullable List<PlanetItem> planetItems) {
+                if(planetItems != null) {
+                    for (PlanetItem item : planetItems) {
+                        CategoryItem categoryItem = new CategoryItem();
+                        categoryItem.name = item.name;
+                        categoryItem.title = null;
+                        categoryItem.url = item.url;
+                        categoryItem.nextURL = item.nextUrl;
+                        mCategoryItems.add(categoryItem);
+                    }
+                    //do another query
+                    if(mCategoryItems.get(mCategoryItems.size()-1).nextURL != null){
+                        mEntryViewModel.loadCategoryItems("planets", mCategoryItems.get(mCategoryItems.size()-1).nextURL);
+                    }else{
+                        List<CategoryItem> tempCategoryItemsList;
+                        tempCategoryItemsList = new ArrayList<>();
+                        for(PlanetItem item : planetItems){
+                            CategoryItem temp = new CategoryItem();
+                            temp.nextURL = item.nextUrl;
+                            temp.name = item.name;
+                            temp.title = null;
+                            temp.url = item.url;
+                            tempCategoryItemsList.add(temp);
+                        }
+                        int j= 3;
+//                        mEntryAdapter.updateEntryItems(tempCategoryItemsList);
+                    }
+
+
+                }
+            }
+        });
+    }
+*/
 
 
 }
