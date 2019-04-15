@@ -65,14 +65,20 @@ public class BaseActivity extends AppCompatActivity {
         super.onPrepareOptionsMenu(menu);
         if(mCurrentActivity == R.id.action_home){
             menu.findItem(R.id.action_home).setVisible(false);
+            menu.findItem(R.id.action_sync).setVisible(false);
         }else if (mCurrentActivity == R.id.action_submission){
             menu.findItem(R.id.action_submission).setVisible(false);
+            menu.findItem(R.id.action_sync).setVisible(false);
         }else if (mCurrentActivity == R.id.action_viewsubs){
             menu.findItem(R.id.action_viewsubs).setVisible(false);
         }else if (mCurrentActivity == R.id.action_settings){
             menu.findItem(R.id.action_settings).setVisible(false);
+            menu.findItem(R.id.action_sync).setVisible(false);
         }else if (mCurrentActivity == R.id.action_info){
             menu.findItem(R.id.action_info).setVisible(false);
+            menu.findItem(R.id.action_sync).setVisible(false);
+        }else{
+            menu.findItem(R.id.action_sync).setVisible(false);
         }
 
         return true;

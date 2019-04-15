@@ -1,5 +1,6 @@
 package com.myvetpath.myvetpath;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
@@ -24,20 +25,34 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.myvetpath.myvetpath.data.GroupTable;
+import com.myvetpath.myvetpath.data.MyVetPathAPI;
 import com.myvetpath.myvetpath.data.PatientTable;
 import com.myvetpath.myvetpath.data.PictureTable;
 import com.myvetpath.myvetpath.data.ReplyTable;
 import com.myvetpath.myvetpath.data.ReportTable;
 import com.myvetpath.myvetpath.data.SampleTable;
 import com.myvetpath.myvetpath.data.SubmissionTable;
+import com.myvetpath.myvetpath.data.UserTable;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static java.sql.Types.NULL;
 
@@ -57,17 +72,78 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
             return;
         }
 
+
         //Get current date, might want to change date to when it gets to server
         long curDate = Calendar.getInstance().getTime().getTime();
         calendar.setTimeInMillis(curDate);
         String currentDate = simpleDateFormat.format(calendar.getTime());
 
         //Create temporary reply and insert it into database
-        ReplyTable tempReply = new ReplyTable();
+        final ReplyTable tempReply = new ReplyTable();
         tempReply.ContentsOfMessage = input;
         tempReply.DateOfMessage = curDate;
         tempReply.Master_ID = internalId;
+        tempReply.Receiver_ID = 0; //probably won't need this
+
+        viewModel.getUserByUsername(preferences.getString(getString(R.string.username_preference_key), "")).observe(this, new Observer<UserTable>() {
+            @Override
+            public void onChanged(@Nullable UserTable userTable) {
+                if(userTable != null) {
+                    tempReply.Sender_ID = userTable.User_ID;
+
+                } else{
+                    Log.d(LOG_TAG, "User error");
+                }
+            }
+        });
         viewModel.insertReply(tempReply);
+
+
+
+        //The block of code below that is commented out will be used to send the reply to the server.
+        //The code is commented out because the API isn't ready
+
+//        //Send the reply to the server
+//        final Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(getString(R.string.MVP_Base_API_URL))
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//
+//        final MyVetPathAPI myVetPathAPI = retrofit.create(MyVetPathAPI.class);
+//
+//        final HashMap<String, String> headerMap = new HashMap<String, String>();
+//        headerMap.put("Content-Type", "application/json");
+//
+//
+//        LiveData<PatientTable> newPatient = viewModel.getPatientByID(internalId);
+//        Call<ResponseBody> call = myVetPathAPI.reply(headerMap, "reply", tempReply.Reply_ID, tempReply.Master_ID,
+//                tempReply.Sender_ID, tempReply.Receiver_ID, tempReply.ContentsOfMessage, tempReply.DateOfMessage, "json");
+//        call.enqueue(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+////                        Log.d(TAG, "onResponse: Server Response: " + response.toString());
+//
+//                try{
+//                    String json = response.body().string();
+////                            Log.d(TAG, "onResponse: json: " + json);
+//                    JSONObject data = null;
+//                    data = new JSONObject(json); //this is the response data that comes back.
+//                    Log.d("k", "onResponse: data: " + data.optString("json"));
+//
+//                }catch (JSONException e){
+////                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+//                }catch (IOException e){
+////                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+////                        Log.e(TAG, "onFailure: Something went wrong: " + t.getMessage() );
+//                Toast.makeText(SubDetailsActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+
     }
 
     MyVetPathViewModel viewModel;

@@ -54,12 +54,12 @@ public interface MyVetPathAPI {
     Call<ResponseBody> reply(
             @HeaderMap Map<String, String> headers,
             @Path("reply") String reply,
-            @Query("Reply_ID") Long Reply_ID,
+            @Query("Reply_ID") Integer Reply_ID,
             @Query("Master_ID") Long Master_ID,
-            @Query("Sender_ID") Long sender_ID,
-            @Query("Receiver_ID") Float Receiver_ID,
+            @Query("Sender_ID") Integer sender_ID,
+            @Query("Receiver_ID") Integer Receiver_ID,
             @Query("ContentsOfMessage") String contents,
-            @Query("DateOfMessage") Float DateOfMessage,
+            @Query("DateOfMessage") Long DateOfMessage,
             @Query("api-type") String type
     );
 
