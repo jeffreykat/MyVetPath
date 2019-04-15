@@ -6,9 +6,11 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -33,6 +35,7 @@ import com.myvetpath.myvetpath.data.PictureTable;
 import com.myvetpath.myvetpath.data.ReplyTable;
 import com.myvetpath.myvetpath.data.SampleTable;
 import com.myvetpath.myvetpath.data.SubmissionTable;
+import com.myvetpath.myvetpath.data.UserTable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -316,9 +319,32 @@ public class ViewSubsActivity extends BaseActivity implements SubmissionAdapter.
 
     //This function syncs the data by inserting the results from the query into the database
     public void sync(){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ViewSubsActivity.this);
+        String userName = preferences.getString(getString(R.string.username_preference_key), "");
+        if(userName.equals("")){//if user isn't logged in, then make them login first
+            Toast.makeText(ViewSubsActivity.this, "Please login first " + userName,
+                    Toast.LENGTH_LONG).show();
+            Intent login_activity;
+            login_activity = new Intent(ViewSubsActivity.this, LoginActivity.class);
+            startActivity(login_activity);
+            return;
+        }
         mEntryViewModel = ViewModelProviders.of(this).get(EntryViewModel.class);
         mCategoryItems = new ArrayList<>();
-        setObserverCategory();
+        viewModel.getUserByUsername(preferences.getString(getString(R.string.username_preference_key), "")).observe(this, new Observer<UserTable>() {
+            @Override
+            public void onChanged(@Nullable UserTable userTable) {
+                if(userTable != null) {
+                    setObserverCategory(userTable);
+
+                } else{
+                    Log.d("Error", "User error");
+                }
+            }
+        });
+
+
+
         mEntryViewModel.loadCategoryItems("submissions", null); //query
         mEntryViewModel.loadCategoryItems("picture", null); //query
         mEntryViewModel.loadCategoryItems("patient", null); //query
@@ -328,15 +354,17 @@ public class ViewSubsActivity extends BaseActivity implements SubmissionAdapter.
     }
 
     //This is a helper function that does the actual insertions
-    private void setObserverCategory() {
-        //Todo: check user's permissions before sync
+    private void setObserverCategory(final UserTable user) {
+
         //insert submissions
         mEntryViewModel.getSubmission().observe(this, new Observer<List<SubmissionTable>>() {
             @Override
             public void onChanged(@Nullable List<SubmissionTable> submissionItems) {
                 if(submissionItems != null) {
                     for (SubmissionTable item : submissionItems) {
-                        viewModel.insertSubmission(item, inserted);
+                        if(user.User_ID == item.User_ID){ //check user to see if they are allowed to have the submission before inserting
+                            viewModel.insertSubmission(item, inserted);
+                        }
                     }
                 }
             }
