@@ -65,5 +65,6 @@
     <string name="report_check">Review this submission</string>
     <string name="report_review_hint">Review</string>
     <string name="report_close">Close submission: </string>
+    <string name="MVP_Base_API_URL">208.113.134.137:8000/v1</string>
 
 </resources>

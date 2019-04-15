@@ -19,11 +19,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.myvetpath.myvetpath.adapters.SubmissionAdapter;
+import com.myvetpath.myvetpath.data.MyVetPathAPI;
 import com.myvetpath.myvetpath.data.SubmissionTable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static java.sql.Types.NULL;
 
@@ -101,6 +114,7 @@ public class ViewSubsActivity extends BaseActivity implements SubmissionAdapter.
             }
         });
     }
+
 
 
 }
