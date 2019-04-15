@@ -362,7 +362,7 @@ public class ViewSubsActivity extends BaseActivity implements SubmissionAdapter.
             public void onChanged(@Nullable List<SubmissionTable> submissionItems) {
                 if(submissionItems != null) {
                     for (SubmissionTable item : submissionItems) {
-                        if(user.User_ID == item.User_ID){ //check user to see if they are allowed to have the submission before inserting
+                        if(user.User_ID == item.User_ID){ //check the logged in user to see if they are allowed to have the submission before inserting
                             viewModel.insertSubmission(item, inserted);
                         }
                     }
