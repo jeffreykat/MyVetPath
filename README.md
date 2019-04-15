@@ -1,8 +1,19 @@
 # MyVetPath
-This repository is for just the Android component of our group project. The repository with all our documents can be found here: https://github.com/Bradford-Wong/CS461-Group72-Capstone.
+This repository is for just the Android component of our group project. The repository with all our documents and build files can be found here: https://github.com/Bradford-Wong/CS461-Group72-Capstone.
+
 
 # Build Instructions
-## Set Up Android Studio
+To build the application, go to https://github.com/Bradford-Wong/CS461-Group72-Capstone and get the necessary files from there.
+
+## Install Android App with APK
+1. Copy app-release.apk to Android phone storage. 
+2. On phone select apk file in storage and run install. 
+3. Check box to allow installations from unknown sources in Settings if not already checked. 
+4. Wait for installation to complete and open app. 
+
+We have done most of our testing using an Android emulator with an API level of 27. If you use an older phone, it is possible that the phone won't be able to use some of the features. If that happens to you, then try using Android Studio (instructions below).
+
+## Alternative: Set Up Android Studio
 1. Download and run the Android Studio installation setup wizard here: https://developer.android.com/studio
 2. The wizard will ask you if you want to install “Android Studio” and “Android Virtual Device”. Make sure both boxes are checked and click    “Next”
 3. The wizard will then ask you where you want to install Android studio. Choose where you want to put it and click on “Next”
@@ -32,3 +43,17 @@ This repository is for just the Android component of our group project. The repo
   G. Click on the “Finish” button on the “Verify Configuration” page
 17. Click on an available virtual device and then click on the “OK” button
 18. The emulator will now launch and our application should automatically install and open up
+
+It is possible that you might get problems when you first build the app (but everything should work fine the first time). Common fixes are to first clean the project (go to "build" -> "clean project") and then do a gradle resync (go to "file" -> "Sync Project With Gradle Files").
+
+## Setup MySql Server
+1. Run the Script MySQLInstall on a Ubuntu machine using Bash. Command: "bash MySQLInstall" (Found in this repo on the front page above Readme)
+2. When prompted, "This operation will take X Space. Do you want to continue?" type, "y"
+3. Once the install script is completed, start the mysql shell by typing, "sudo mysql -u root"
+4. Once the mysql shell has started, copy the text from the file "Create Database SQL" (Found in this repo on the front page above ReadMe)
+5. Paste and enter the text in the command line. (It should start running the sql)
+6. Once the command is finished run, "SHOW DATABASES;"
+7. After the database My_Vet_Path is displayed, then run the sql command, "USE My_Vet_Path;"
+8. To see a list of the tables run the sql, "SHOW tables;"
+9. To see the create statements for a table, run the sql, "SHOW CREATE TABLE \`tableName\`;" 
+
