@@ -4,7 +4,9 @@ import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -34,20 +36,27 @@ public interface MyVetPathAPI {
     );
 
     //Query to post submission
-    @POST("{submission}")
-    Call<ResponseBody> submission(
-            @HeaderMap Map<String, String> headers,
-            @Path("submissions") String submissions,
-            @Query("Group_ID") Long Group_ID,
-            @Query("User_ID") Integer User_ID,
-            @Query("Title") String title,
-            @Query("DateOfCreation") Long DateOfCreation,
-            @Query("StatusFlag") Integer StatusFlag,
-            @Query("Submitted") Long Submitted,
-            @Query("ReportComplete") Long ReportComplete,
-            @Query("UserComment") String UserComment,
-            @Query("api-type") String type
-    );
+//    @POST("{submission}")
+//    Call<ResponseBody> submission(
+//            @HeaderMap Map<String, String> headers,
+//            @Query("Group_ID") Long Group_ID,
+//            @Query("User_ID") Integer User_ID,
+//            @Query("Title") String title,
+//            @Query("DateOfCreation") Long DateOfCreation,
+//            @Query("StatusFlag") Integer StatusFlag,
+//            @Query("Submitted") Long Submitted,
+//            @Query("ReportComplete") Long ReportComplete,
+//            @Query("UserComment") String UserComment,
+//            @Query("api-type") String type
+//    );
+
+    @Headers({"Content-Type: application/json", "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo4LCJpYXQiOjE1NTY0OTA2MzksImV4cCI6MTU1NjU3NzAzOX0.E8z1rPMxzK2HpIBU2NMSE28awUexLxn8VSE-s91KhG0"})
+    @POST("submissions")
+    Call<SubmissionTable> submission(@Body SubmissionTable submission);
+
+    @GET("secretinfo")
+    Call<ResponseBody> getSecret(@Header("Authorization") String authToken);
+
 
     //Query to post reply
     @POST("{reply}")
