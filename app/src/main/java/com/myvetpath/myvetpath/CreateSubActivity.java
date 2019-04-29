@@ -176,6 +176,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                         }
                     }
                 }
+                sendToServer();
                 startActivity(view_subs_activity);
             }
         })
@@ -337,6 +338,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
 
                 if(loadSubmissionData(1, newSub, newPatient)) {
                     createDialog(newSub, newPatient, newGroup);
+
                 }
                 else{
                     Toast testToast = Toast.makeText(getApplicationContext(), R.string.create_error, Toast.LENGTH_LONG);
@@ -609,51 +611,38 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
     private void sendToServer(){
         String MyVetPath_Base_Url = getString(R.string.MVP_Base_API_URL);
         //build the retrofit that will make the query
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.MVP_Base_API_URL))
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl("http://208.113.134.137:8000/v1/")
+                .addConverterFactory(GsonConverterFactory.create());
 
-        MyVetPathAPI myVetPathAPI = retrofit.create(MyVetPathAPI.class);
+        Retrofit retrofit = builder.build();
+        MyVetPathAPI userClient = retrofit.create(MyVetPathAPI.class);
 
-        HashMap<String, String> headerMap = new HashMap<String, String>();
-        headerMap.put("Content-Type", "application/json");
+        //Send the Submission
 
 
-//        //Send the Submission
-//        Call<ResponseBody> call = myVetPathAPI.submission(headerMap, "submission", newSub.Group_ID, newSub.User_ID,
-//                newSub.Title, newSub.DateOfCreation, newSub.StatusFlag, newSub.Submitted, newSub.ReportComplete,
-//                newSub.UserComment, "json");
-//
-//        call.enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-////                        Log.d(TAG, "onResponse: Server Response: " + response.toString());
-//
-//                try{
-//                    String json = response.body().string();
-////                            Log.d(TAG, "onResponse: json: " + json);
-//                    JSONObject data = null;
-//                    data = new JSONObject(json); //this is the response data that comes back.
-//                    Log.d("k", "onResponse: data: " + data.optString("json"));
-//
-//                }catch (JSONException e){
-////                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
-//                }catch (IOException e){
-////                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-////                        Log.e(TAG, "onFailure: Something went wrong: " + t.getMessage() );
-//                Toast.makeText(CreateSubActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//
+        Call<SubmissionTable> call =userClient.submission(newSub);
+        call.enqueue(new Callback<SubmissionTable>() {
+            @Override
+            public void onResponse(Call<SubmissionTable> call, Response<SubmissionTable> response) {
+                if(response.isSuccessful()){
+                    Toast.makeText(CreateSubActivity.this, "Submission was sent to server", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(CreateSubActivity.this, "Error: Submission wasn't sent.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SubmissionTable> call, Throwable t) {
+                Toast.makeText(CreateSubActivity.this, "Failure", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //todo: The below post requests will need to be refactored so they're like submissions (ex: removing headerMap, using the table class, etc.)
+
 //        //Send the Pictures:
 //        for(PictureTable picture : picturesList){
-//            call = myVetPathAPI.picture(headerMap, "picture", picture.Image_ID, picture.Master_ID, picture.ImagePath, picture.Title, picture.Latitude, picture.Longitude, picture.DateTaken, "json");
+//            call = userClient.picture(headerMap, "picture", picture.Image_ID, picture.Master_ID, picture.ImagePath, picture.Title, picture.Latitude, picture.Longitude, picture.DateTaken, "json");
 //
 //            call.enqueue(new Callback<ResponseBody>() {
 //                @Override
@@ -684,7 +673,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
 //
 //        //Send the Samples:
 //        for(SampleTable sample : samplesList){
-//            call = myVetPathAPI.sample(headerMap, "sample", sample.Sample_ID, sample.Master_ID, sample.LocationOfSample, sample.NumberOfSample, sample.NameOfSample, "json");
+//            call = userClient.sample(headerMap, "sample", sample.Sample_ID, sample.Master_ID, sample.LocationOfSample, sample.NumberOfSample, sample.NameOfSample, "json");
 //
 //            call.enqueue(new Callback<ResponseBody>() {
 //                @Override
@@ -714,7 +703,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
 //        }
 //
 //        //Send the patient
-//        call = myVetPathAPI.patient(headerMap, "patient", newPatient.Patient_ID, newPatient.Master_ID, newPatient.PatientName, newPatient.Species, newPatient.Sex, newPatient.Euthanized, newPatient.DateOfBirth, newPatient.DateOfDeath, "json");
+//        call = userClient.patient(headerMap, "patient", newPatient.Patient_ID, newPatient.Master_ID, newPatient.PatientName, newPatient.Species, newPatient.Sex, newPatient.Euthanized, newPatient.DateOfBirth, newPatient.DateOfDeath, "json");
 //
 //        call.enqueue(new Callback<ResponseBody>() {
 //            @Override
