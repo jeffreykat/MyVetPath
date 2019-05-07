@@ -16,6 +16,8 @@ import retrofit2.http.Query;
 
 //This class will be used for POST functionality regarding the API, but we don't currently have the API.
 //Followed this guide: https://www.youtube.com/watch?v=Bv-KAxPOCzY
+
+//todo: the rest of queries will need to be changed a little so they're more like the post submissions query
 public interface MyVetPathAPI {
 
     String BASE_URL = "https://www.reddit.com/"; //this is a different API. It is completely unrelated to our project, it is mostly here to prove that the app can use an api to post
@@ -50,7 +52,9 @@ public interface MyVetPathAPI {
 //            @Query("api-type") String type
 //    );
 
-    @Headers({"Content-Type: application/json", "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo4LCJpYXQiOjE1NTY0OTA2MzksImV4cCI6MTU1NjU3NzAzOX0.E8z1rPMxzK2HpIBU2NMSE28awUexLxn8VSE-s91KhG0"})
+    //the bearer token expires after a set time. If you get an unathorized response, then post user again and take the bearer token sent in response.
+    // We will need to figure out a better way to handle this when we get login
+    @Headers({"Content-Type: application/json", "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwiaWF0IjoxNTU3MTg4NTg0LCJleHAiOjE1NTcyNzQ5ODR9.Q7vwCQ84K19YVe1rZXqVFp1jc9tbmfZws7FLeljVnqg"})
     @POST("submissions")
     Call<SubmissionTable> submission(@Body SubmissionTable submission);
 
