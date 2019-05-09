@@ -40,6 +40,9 @@ import org.json.JSONObject;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -159,6 +162,7 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
     ArrayList<SampleTable> samples = new ArrayList<>(1);
     Calendar calendar = Calendar.getInstance();
     final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+    java.text.DateFormat dateFormat;
     private TextView mSamplesTV;
     private ImageButton[] images;
     private EditText mReportReview;
@@ -268,23 +272,8 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
         }
         TextView birthDateTitleText = findViewById(R.id.birthdate_title);
         birthDateTitleText.setText(R.string.birthdate_display);
-        TextView birthDateText = findViewById(R.id.sickElementBirth);
-        Log.d(LOG_TAG, "patient birth: " + currentPatient.DateOfBirth + " patient death: " + currentPatient.DateOfDeath);
-        if(currentPatient.DateOfBirth != NULL){
-            calendar.setTimeInMillis(currentPatient.DateOfBirth);
-            birthDateText.setText(simpleDateFormat.format(calendar.getTime()));
-        } else {
-            birthDateText.setText("N/A");
-        }
         TextView deathDateTitleText = findViewById(R.id.deathdate_title);
         deathDateTitleText.setText(R.string.deathdate_display);
-        TextView deathDateText = findViewById(R.id.sickElementDeath);
-        if(currentPatient.DateOfDeath != NULL){
-            calendar.setTimeInMillis(currentPatient.DateOfDeath);
-            deathDateText.setText(simpleDateFormat.format(calendar.getTime()));
-        } else {
-            deathDateText.setText("N/A");
-        }
         TextView commentText = findViewById(R.id.subComment);
         commentText.setText(comment);
 
@@ -312,6 +301,9 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
             }
         });
 
+        dateFormat = android.text.format.DateFormat.getDateFormat(getApplicationContext());
+
+
     }
 
     public void setObservers(final long internalId){
@@ -336,6 +328,21 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
                 }
                 if(patientTable == null){
                     Log.d(LOG_TAG, "patient is null");
+                }
+                TextView birthDateText = findViewById(R.id.sickElementBirth);
+                Log.d(LOG_TAG, "patient birth: " + currentPatient.DateOfBirth + " patient death: " + currentPatient.DateOfDeath);
+                if(currentPatient.DateOfBirth != NULL){
+                    calendar.setTimeInMillis(currentPatient.DateOfBirth);
+                    birthDateText.setText(dateFormat.format(calendar.getTime()));
+                } else {
+                    birthDateText.setText("N/A");
+                }
+                TextView deathDateText = findViewById(R.id.sickElementDeath);
+                if(currentPatient.DateOfDeath != NULL){
+                    calendar.setTimeInMillis(currentPatient.DateOfDeath);
+                    deathDateText.setText(dateFormat.format(calendar.getTime()));
+                } else {
+                    deathDateText.setText("N/A");
                 }
             }
         });
