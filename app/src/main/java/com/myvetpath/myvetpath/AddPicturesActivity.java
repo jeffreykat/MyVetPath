@@ -28,7 +28,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.GridLayout;
+import android.support.v7.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -48,6 +48,8 @@ import java.util.List;
 
 //This is for the screen where users can add pictures. It is called when people click the camera icon on the CreateSubActivity screen
 public class AddPicturesActivity extends AppCompatActivity {
+
+    String LOGTAG = AddPicturesActivity.class.getSimpleName();
 
     private static final int GALLERY_PICTURE = 1;
     private int chosen_method;
@@ -99,6 +101,7 @@ public class AddPicturesActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 storePicturesInDB();
+                Log.d(LOGTAG, "");
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("pictureResults", picturesList);
                 setResult(RESULT_OK, resultIntent);
@@ -442,15 +445,20 @@ public class AddPicturesActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    if(latitudeRef.equals("N")){ //if the degrees should be positive
-                        latitude = Float.toString(convertToDegree(latitude));
-                    }else{ //If the degrees should be negative
-                        latitude = Float.toString(0 - convertToDegree(latitude));
-                    }
-                    if(longitudeRef.equals("N")){ //if the degrees should be positive
-                        longitude = Float.toString(convertToDegree(longitude));
-                    }else{ //else the degrees should be negative
-                        longitude = Float.toString(0 - convertToDegree(longitude));
+                    if(latitudeRef != null) {
+                        if (latitudeRef.equals("N")) { //if the degrees should be positive
+                            latitude = Float.toString(convertToDegree(latitude));
+                        } else { //If the degrees should be negative
+                            latitude = Float.toString(0 - convertToDegree(latitude));
+                        }
+                        if (longitudeRef.equals("N")) { //if the degrees should be positive
+                            longitude = Float.toString(convertToDegree(longitude));
+                        } else { //else the degrees should be negative
+                            longitude = Float.toString(0 - convertToDegree(longitude));
+                        }
+                    } else {
+                        latitude = "";
+                        longitude = "";
                     }
 
                     longitudes[selectedImageView] = longitude;

@@ -266,6 +266,25 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
             TextView groupText = findViewById(R.id.subGroupName);
             groupText.setText("Group: " + group);
         }
+        TextView birthDateTitleText = findViewById(R.id.birthdate_title);
+        birthDateTitleText.setText(R.string.birthdate_display);
+        TextView birthDateText = findViewById(R.id.sickElementBirth);
+        Log.d(LOG_TAG, "patient birth: " + currentPatient.DateOfBirth + " patient death: " + currentPatient.DateOfDeath);
+        if(currentPatient.DateOfBirth != NULL){
+            calendar.setTimeInMillis(currentPatient.DateOfBirth);
+            birthDateText.setText(simpleDateFormat.format(calendar.getTime()));
+        } else {
+            birthDateText.setText("N/A");
+        }
+        TextView deathDateTitleText = findViewById(R.id.deathdate_title);
+        deathDateTitleText.setText(R.string.deathdate_display);
+        TextView deathDateText = findViewById(R.id.sickElementDeath);
+        if(currentPatient.DateOfDeath != NULL){
+            calendar.setTimeInMillis(currentPatient.DateOfDeath);
+            deathDateText.setText(simpleDateFormat.format(calendar.getTime()));
+        } else {
+            deathDateText.setText("N/A");
+        }
         TextView commentText = findViewById(R.id.subComment);
         commentText.setText(comment);
 

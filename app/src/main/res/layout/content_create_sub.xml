@@ -153,18 +153,17 @@
 
             </Spinner>
 
-
-
             <CheckBox
                 android:id="@+id/EuthanizedCB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Euthanized"
+                android:text="Euthanized: "
+                android:textStyle="bold"
                 android:onClick="onCheckboxClicked"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/SexTV"
+                app:layout_constraintLeft_toRightOf="@id/SexSp"
+                app:layout_constraintTop_toBottomOf="@id/species_ET"
                 android:layout_margin="5dp"
-                android:padding="5dp"
+                android:paddingStart="5dp"
                 android:button="@null"
                 android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
                 />
