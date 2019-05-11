@@ -40,6 +40,9 @@ import org.json.JSONObject;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,36 +59,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static java.sql.Types.NULL;
 
-public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDialog.OnInputListener {
+public class SubDetailsActivity extends BaseActivity {
 
-    @Override
-    public void sendInput(String input) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(SubDetailsActivity.this);
-        String userName = preferences.getString(getString(R.string.username_preference_key), "");
+    public void sendInput(final ReplyTable tempReply, String username) {
 
-        if(userName.equals("")){//if user isn't logged in, then make them login first
-            Toast.makeText(SubDetailsActivity.this, "Please login first " + userName,
-                    Toast.LENGTH_LONG).show();
-            Intent login_activity;
-            login_activity = new Intent(SubDetailsActivity.this, LoginActivity.class);
-            startActivity(login_activity);
-            return;
-        }
-
-
-        //Get current date, might want to change date to when it gets to server
-        long curDate = Calendar.getInstance().getTime().getTime();
-        calendar.setTimeInMillis(curDate);
-        String currentDate = simpleDateFormat.format(calendar.getTime());
-
-        //Create temporary reply and insert it into database
-        final ReplyTable tempReply = new ReplyTable();
-        tempReply.ContentsOfMessage = input;
-        tempReply.DateOfMessage = curDate;
-        tempReply.Master_ID = internalId;
-        tempReply.Receiver_ID = 0; //probably won't need this
-
-        viewModel.getUserByUsername(preferences.getString(getString(R.string.username_preference_key), "")).observe(this, new Observer<UserTable>() {
+        viewModel.getUserByUsername(username).observe(this, new Observer<UserTable>() {
             @Override
             public void onChanged(@Nullable UserTable userTable) {
                 if(userTable != null) {
@@ -159,6 +137,7 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
     ArrayList<SampleTable> samples = new ArrayList<>(1);
     Calendar calendar = Calendar.getInstance();
     final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+    java.text.DateFormat dateFormat;
     private TextView mSamplesTV;
     private ImageButton[] images;
     private EditText mReportReview;
@@ -166,7 +145,7 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
     private Button add_replies_BTTN;
     private TextView mRepliesTV;
     private TextView mReportTV;
-    private String mReplyInput;
+    private EditText mReplyInput;
     private String mReplies;
     private ArrayList<ReplyTable> mRepliesList = new ArrayList<>(1);
 
@@ -174,6 +153,53 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
     boolean reportExists = false;
     String reportText;
     private long internalId;
+
+    public void createReplyDialog(){
+        LayoutInflater inflater = LayoutInflater.from(this);
+        final View view = inflater.inflate(R.layout.dialog_add_reply, null);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(SubDetailsActivity.this);
+        dialog.setCancelable(true);
+        dialog.setTitle("Add New Reply");
+        mReplyInput = view.findViewById(R.id.input);
+        dialog.setView(view);
+        dialog.setPositiveButton("Send", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(SubDetailsActivity.this);
+                String userName = preferences.getString(getString(R.string.username_preference_key), "");
+                if(userName.equals("")){//if user isn't logged in, then make them login first
+                    Toast.makeText(SubDetailsActivity.this, "Please login first " + userName,
+                            Toast.LENGTH_LONG).show();
+                    Intent login_activity;
+                    login_activity = new Intent(SubDetailsActivity.this, LoginActivity.class);
+                    startActivity(login_activity);
+                    return;
+                }
+
+                //Get current date, might want to change date to when it gets to server
+                long curDate = Calendar.getInstance().getTime().getTime();
+                calendar.setTimeInMillis(curDate);
+                String currentDate = simpleDateFormat.format(calendar.getTime());
+
+                String input = mReplyInput.getText().toString();
+                //Create temporary reply and insert it into database
+                final ReplyTable tempReply = new ReplyTable();
+                tempReply.ContentsOfMessage = input;
+                tempReply.DateOfMessage = curDate;
+                tempReply.Master_ID = internalId;
+                tempReply.Receiver_ID = 0; //probably won't need this
+                sendInput(tempReply, userName);
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //close
+            }
+        });
+
+        AlertDialog ad = dialog.create();
+        ad.show();
+    }
 
     public void createReportDialog(){
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -262,10 +288,10 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
         } else {
             caseIDText.setText(String.valueOf(currentSub.Case_ID));
         }
-        if(!group.isEmpty()) {
-            TextView groupText = findViewById(R.id.subGroupName);
-            groupText.setText("Group: " + group);
-        }
+        TextView birthDateTitleText = findViewById(R.id.birthdate_title);
+        birthDateTitleText.setText(R.string.birthdate_display);
+        TextView deathDateTitleText = findViewById(R.id.deathdate_title);
+        deathDateTitleText.setText(R.string.deathdate_display);
         TextView commentText = findViewById(R.id.subComment);
         commentText.setText(comment);
 
@@ -286,12 +312,14 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
         add_replies_BTTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddReplyCustomDialog dialog = new AddReplyCustomDialog();
-                dialog.show(getFragmentManager(), "AddReplyCustomDialog");
+                createReplyDialog();
 
 
             }
         });
+
+        dateFormat = android.text.format.DateFormat.getDateFormat(getApplicationContext());
+
 
     }
 
@@ -317,6 +345,21 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
                 }
                 if(patientTable == null){
                     Log.d(LOG_TAG, "patient is null");
+                }
+                TextView birthDateText = findViewById(R.id.sickElementBirth);
+                Log.d(LOG_TAG, "patient birth: " + currentPatient.DateOfBirth + " patient death: " + currentPatient.DateOfDeath);
+                if(currentPatient.DateOfBirth != NULL){
+                    calendar.setTimeInMillis(currentPatient.DateOfBirth);
+                    birthDateText.setText(dateFormat.format(calendar.getTime()));
+                } else {
+                    birthDateText.setText("N/A");
+                }
+                TextView deathDateText = findViewById(R.id.sickElementDeath);
+                if(currentPatient.DateOfDeath != NULL){
+                    calendar.setTimeInMillis(currentPatient.DateOfDeath);
+                    deathDateText.setText(dateFormat.format(calendar.getTime()));
+                } else {
+                    deathDateText.setText("N/A");
                 }
             }
         });
@@ -380,6 +423,10 @@ public class SubDetailsActivity extends BaseActivity implements AddReplyCustomDi
                 if(groupTable != null){
                     currentGroup = groupTable;
                     group = currentGroup.GroupName;
+                    if(group != "") {
+                        TextView groupText = findViewById(R.id.subGroupName);
+                        groupText.setText("Group: " + group);
+                    }
                 } else{
                     group = "";
                 }

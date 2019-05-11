@@ -39,12 +39,16 @@
     <string-array name="sexString">
         <item></item>
         <item>Male</item>
+        <item>Male Neutered</item>
         <item>Female</item>
+        <item>Female Spayed</item>
     </string-array>
     <string name="title_activity_add_samples">AddSamplesActivity</string>
     <string name="species_display">Species: </string>
     <string name="euthanized_neg">Not Euthanized</string>
     <string name="euthanized_pos">Euthanized</string>
+    <string name="birthdate_display">Date of Birth: </string>
+    <string name="deathdate_display">Date of Death: </string>
     <string name="registering_a_new_user">Registering a New User</string>
     <string name="registeringNewUserSubText">Registering a new user can only be done on the website. Click on the \'Create Account\' button in the home screen in order to be taken to that page.</string>
     <string name="creating_a_submission">Creating a Submission</string>
