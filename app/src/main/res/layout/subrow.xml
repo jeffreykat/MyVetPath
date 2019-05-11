@@ -24,9 +24,10 @@
         <TextView
             android:id="@+id/subHeader"
             android:layout_height="wrap_content"
-            android:layout_width="300dp"
+            android:layout_width="0dp"
             card_view:layout_constraintTop_toTopOf="parent"
             card_view:layout_constraintLeft_toLeftOf="parent"
+            card_view:layout_constraintRight_toLeftOf="@id/subDate"
             android:maxLines="1"
             android:ellipsize="end"
             android:padding="10dp"
@@ -43,6 +44,5 @@
             android:padding="10dp" />
 
     </android.support.constraint.ConstraintLayout>
-
 
 </android.support.v7.widget.CardView>
