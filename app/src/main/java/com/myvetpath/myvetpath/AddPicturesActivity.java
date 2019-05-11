@@ -80,7 +80,7 @@ public class AddPicturesActivity extends AppCompatActivity {
     String currentPhotoPath;
 
     MyVetPathViewModel viewModel;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
