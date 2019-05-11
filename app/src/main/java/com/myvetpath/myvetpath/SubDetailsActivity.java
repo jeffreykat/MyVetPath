@@ -283,14 +283,11 @@ public class SubDetailsActivity extends BaseActivity {
         TextView dateText = findViewById(R.id.subDate);
         dateText.setText(simpleDateFormat.format(calendar.getTime()));
         TextView caseIDText = findViewById(R.id.subCaseID);
+        TextView groupText = findViewById(R.id.subGroupName);
         if(currentSub.Case_ID == NULL){
             caseIDText.setText(R.string.pending);
         } else {
             caseIDText.setText(String.valueOf(currentSub.Case_ID));
-        }
-        if(!group.isEmpty()) {
-            TextView groupText = findViewById(R.id.subGroupName);
-            groupText.setText("Group: " + group);
         }
         TextView birthDateTitleText = findViewById(R.id.birthdate_title);
         birthDateTitleText.setText(R.string.birthdate_display);
