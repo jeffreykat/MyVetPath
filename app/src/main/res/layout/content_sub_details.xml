@@ -23,13 +23,15 @@
 
             <TextView
                 android:id="@+id/subTitle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:textSize="20sp"
                 android:textColor="@color/colorHeader"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"/>
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/subDate"/>
+
             <TextView
                 android:id="@+id/subGroupName"
                 android:layout_width="wrap_content"
@@ -39,7 +41,6 @@
                 android:textColor="@color/colorHeader"
                 app:layout_constraintTop_toBottomOf="@id/subTitle"
                 app:layout_constraintLeft_toLeftOf="parent"/>
-
 
             <TextView
                 android:id="@+id/subDate"
@@ -58,9 +59,8 @@
                 android:padding="10dp"
                 android:textSize="20sp"
                 android:textColor="@color/colorHeader"
-                app:layout_constraintTop_toBottomOf="@id/subDate"
+                app:layout_constraintTop_toBottomOf="@id/subTitle"
                 app:layout_constraintRight_toRightOf="parent" />
-
 
             <View
                 android:id="@+id/subHeaderView"
@@ -121,13 +121,53 @@
                 app:layout_constraintLeft_toRightOf="@id/sickElementSex" />
 
             <TextView
-                android:id="@+id/subComment"
+                android:id="@+id/birthdate_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:textSize="20dp"
                 android:textColor="@color/colorHeader"
                 app:layout_constraintTop_toBottomOf="@id/sickElementSex"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <TextView
+                android:id="@+id/sickElementBirth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="20dp"
+                android:textColor="@color/colorHeader"
+                app:layout_constraintTop_toBottomOf="@id/sickElementSex"
+                app:layout_constraintLeft_toRightOf="@id/birthdate_title" />
+
+            <TextView
+                android:id="@+id/deathdate_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="20dp"
+                android:textColor="@color/colorHeader"
+                app:layout_constraintTop_toBottomOf="@id/sickElementBirth"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <TextView
+                android:id="@+id/sickElementDeath"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="20dp"
+                android:textColor="@color/colorHeader"
+                app:layout_constraintTop_toBottomOf="@id/sickElementBirth"
+                app:layout_constraintLeft_toRightOf="@id/deathdate_title" />
+
+            <TextView
+                android:id="@+id/subComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="20dp"
+                android:textColor="@color/colorHeader"
+                app:layout_constraintTop_toBottomOf="@id/deathdate_title"
                 app:layout_constraintLeft_toLeftOf="parent"/>
 
             <TextView
