@@ -242,7 +242,7 @@ public class AddPicturesActivity extends AppCompatActivity {
 
     }
 
-
+public String mCurrentPhotoPath;
 
     //Purpose: Set a click event for each of the imagebuttons. Clicking on the button should prompt the user to upload a picture
     private void setSingleEvent(GridLayout mainGrid) {
@@ -300,7 +300,7 @@ public class AddPicturesActivity extends AppCompatActivity {
         myAlertDialog.show();
     }
 
-
+public String testPath;
     //Purpose: Asks the user if they want to use the camera or gallery to upload a picture. Starts the corresponding intents
     private void UploadPicturesPrompt() {
         AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(
@@ -344,6 +344,7 @@ public class AddPicturesActivity extends AppCompatActivity {
                                 Uri photoURI = FileProvider.getUriForFile(AddPicturesActivity.this,
                                         "com.example.android.fileprovider",
                                         photoFile);
+
                                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
                             }
@@ -374,6 +375,7 @@ public class AddPicturesActivity extends AppCompatActivity {
 
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
         return image;
     }
 
@@ -382,13 +384,14 @@ public class AddPicturesActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (chosen_method == 1 && data != null) { //user uploaded a picture using the camera
-            File file = new File(currentPhotoPath);
-            picturePaths [selectedImageView] = currentPhotoPath;
+
+        if (chosen_method == 1) { //user uploaded a picture using the camera
+            File file = new File(mCurrentPhotoPath);
+            picturePaths [selectedImageView] = mCurrentPhotoPath;
 
             Bitmap bitmap = null; //get the actual picture
             try {
-                bitmap = (Bitmap) MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), Uri.fromFile(file));
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.parse(mCurrentPhotoPath));
             } catch (IOException e) {
                 e.printStackTrace();
             }
