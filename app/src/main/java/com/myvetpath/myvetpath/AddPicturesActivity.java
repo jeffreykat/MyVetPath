@@ -28,7 +28,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.GridLayout;
+import android.support.v7.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -48,6 +48,8 @@ import java.util.List;
 
 //This is for the screen where users can add pictures. It is called when people click the camera icon on the CreateSubActivity screen
 public class AddPicturesActivity extends AppCompatActivity {
+
+    String LOGTAG = AddPicturesActivity.class.getSimpleName();
 
     private static final int GALLERY_PICTURE = 1;
     private int chosen_method;
@@ -78,7 +80,7 @@ public class AddPicturesActivity extends AppCompatActivity {
     String currentPhotoPath;
 
     MyVetPathViewModel viewModel;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +101,7 @@ public class AddPicturesActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 storePicturesInDB();
+                Log.d(LOGTAG, "");
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("pictureResults", picturesList);
                 setResult(RESULT_OK, resultIntent);
@@ -239,7 +242,7 @@ public class AddPicturesActivity extends AppCompatActivity {
 
     }
 
-
+public String mCurrentPhotoPath;
 
     //Purpose: Set a click event for each of the imagebuttons. Clicking on the button should prompt the user to upload a picture
     private void setSingleEvent(GridLayout mainGrid) {
@@ -297,7 +300,7 @@ public class AddPicturesActivity extends AppCompatActivity {
         myAlertDialog.show();
     }
 
-
+public String testPath;
     //Purpose: Asks the user if they want to use the camera or gallery to upload a picture. Starts the corresponding intents
     private void UploadPicturesPrompt() {
         AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(
@@ -341,6 +344,7 @@ public class AddPicturesActivity extends AppCompatActivity {
                                 Uri photoURI = FileProvider.getUriForFile(AddPicturesActivity.this,
                                         "com.example.android.fileprovider",
                                         photoFile);
+
                                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
                             }
@@ -371,6 +375,7 @@ public class AddPicturesActivity extends AppCompatActivity {
 
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
         return image;
     }
 
@@ -379,13 +384,14 @@ public class AddPicturesActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (chosen_method == 1 && data != null) { //user uploaded a picture using the camera
-            File file = new File(currentPhotoPath);
-            picturePaths [selectedImageView] = currentPhotoPath;
+
+        if (chosen_method == 1) { //user uploaded a picture using the camera
+            File file = new File(mCurrentPhotoPath);
+            picturePaths [selectedImageView] = mCurrentPhotoPath;
 
             Bitmap bitmap = null; //get the actual picture
             try {
-                bitmap = (Bitmap) MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), Uri.fromFile(file));
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.parse(mCurrentPhotoPath));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -442,15 +448,20 @@ public class AddPicturesActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    if(latitudeRef.equals("N")){ //if the degrees should be positive
-                        latitude = Float.toString(convertToDegree(latitude));
-                    }else{ //If the degrees should be negative
-                        latitude = Float.toString(0 - convertToDegree(latitude));
-                    }
-                    if(longitudeRef.equals("N")){ //if the degrees should be positive
-                        longitude = Float.toString(convertToDegree(longitude));
-                    }else{ //else the degrees should be negative
-                        longitude = Float.toString(0 - convertToDegree(longitude));
+                    if(latitudeRef != null) {
+                        if (latitudeRef.equals("N")) { //if the degrees should be positive
+                            latitude = Float.toString(convertToDegree(latitude));
+                        } else { //If the degrees should be negative
+                            latitude = Float.toString(0 - convertToDegree(latitude));
+                        }
+                        if (longitudeRef.equals("N")) { //if the degrees should be positive
+                            longitude = Float.toString(convertToDegree(longitude));
+                        } else { //else the degrees should be negative
+                            longitude = Float.toString(0 - convertToDegree(longitude));
+                        }
+                    } else {
+                        latitude = "";
+                        longitude = "";
                     }
 
                     longitudes[selectedImageView] = longitude;

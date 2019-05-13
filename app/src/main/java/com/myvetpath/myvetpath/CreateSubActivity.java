@@ -442,9 +442,11 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
         if (selectedCalendar == BIRTH_DATE){
             showDateText(c);
             birthDate = new GregorianCalendar(year, month, dayOfMonth).getTime();
+            Log.d(LOG_TAG, "Birthdate set: " + birthDate.toString());
         }else if (selectedCalendar == DEATH_DATE){
             showDateText(c);
             deathDate = new GregorianCalendar(year, month, dayOfMonth).getTime();
+            Log.d(LOG_TAG, "Deathdate set: " + deathDate.toString());
         }
     }
 
@@ -516,11 +518,13 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
 
         if(birthDate != null) {
             newPatient.DateOfBirth = birthDate.getTime();
+            Log.d(LOG_TAG, "new Patient birth: " + newPatient.DateOfBirth);
         } else {
             newPatient.DateOfBirth = 0;
         }
         if(deathDate != null) {
             newPatient.DateOfDeath = deathDate.getTime();
+            Log.d(LOG_TAG, "new Patient death: " + newPatient.DateOfDeath);
         } else {
             newPatient.DateOfDeath = 0;
         }

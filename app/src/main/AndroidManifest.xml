@@ -70,6 +70,7 @@
         <activity
             android:name=".AddPicturesActivity"
             android:label="@string/title_activity_add_pictures"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:parentActivityName=".CreateSubActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -89,6 +90,7 @@
             android:name=".SubDetailsActivity"
             android:label="@string/title_activity_sub_details"
             android:parentActivityName=".ViewSubsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
