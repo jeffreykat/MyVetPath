@@ -642,7 +642,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
 
             @Override
             public void onFailure(Call<SubmissionTable> call, Throwable t) {
-                Toast.makeText(CreateSubActivity.this, "Failure", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CreateSubActivity.this, "Failed to send to server. Check your internet connection and try again.", Toast.LENGTH_SHORT).show();
             }
         });
 
