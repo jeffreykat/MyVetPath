@@ -403,6 +403,7 @@ public String testPath;
                     requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.INTERNET}
                             ,10);
                     return;
+                    
                 }
             }
 

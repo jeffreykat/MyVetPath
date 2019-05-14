@@ -145,14 +145,24 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                     internalID = submission.Master_ID;
                     viewModel.updateSubmission(submission);
                     viewModel.updatePatient(patient);
-                    for (SampleTable tempSample : samplesList) {
-                        viewModel.updateSample(tempSample);
+                    for(SampleTable tempSample: originalSamples){
+                        viewModel.deleteSample(tempSample);
+                    }
+                    for(PictureTable tempPicture: originalPictures){
+                        if(tempPicture != null) {
+                            viewModel.deletePicture(tempPicture);
+                        }
+                    }
+                    for(SampleTable tempSample: samplesList){
+                        tempSample.Master_ID = internalID;
+                        viewModel.insertSample(tempSample);
                     }
 
-                    for (PictureTable tempPicture : picturesList) {
-                        if (tempPicture != null) {
+                    for(PictureTable tempPicture: picturesList){
+                        if(tempPicture != null){
+                            tempPicture.Master_ID = internalID;
                             Log.d(LOG_TAG, "onClick: current internal id is: " + Long.toString(tempPicture.Master_ID));
-                            viewModel.updatePicture(tempPicture);
+                            viewModel.insertPicture(tempPicture);
                         }
                     }
                 } else {
@@ -630,6 +640,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
         call.enqueue(new Callback<SubmissionTable>() {
             @Override
             public void onResponse(Call<SubmissionTable> call, Response<SubmissionTable> response) {
+
                 if(response.isSuccessful()){//if the submission was successfully sent to server, then update the submission in the SQLite DB
                     newSub.Submitted = Calendar.getInstance().getTime().getTime();
                     //todo: set case_id when the api has been further developed
