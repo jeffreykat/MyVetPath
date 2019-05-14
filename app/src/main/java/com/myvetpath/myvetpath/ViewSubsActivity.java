@@ -149,172 +149,172 @@ public class ViewSubsActivity extends BaseActivity implements SubmissionAdapter.
     }
 
 
-
-    //This function will automatically send data to the server, provided that the data hasn't already been sent before. The parameter is the lsit of submissions that are stored in the local database
-    public void sendToServer(ArrayList<SubmissionTable> submissions){
-        String MyVetPath_Base_Url = getString(R.string.MVP_Base_API_URL);
-        //build the retrofit that will make the query
-        final Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.MVP_Base_API_URL))
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        final MyVetPathAPI myVetPathAPI = retrofit.create(MyVetPathAPI.class);
-
-        final HashMap<String, String> headerMap = new HashMap<String, String>();
-        headerMap.put("Content-Type", "application/json");
-
-
-       for(final SubmissionTable newSub : submissions) {
-            if(newSub.Submitted == 0) { //only send to server if the submission hasn't been sent yet
-                //Send the Submission
-
-                Call<ResponseBody> call = myVetPathAPI.submission(headerMap, "submission", newSub.Group_ID, newSub.User_ID,
-                        newSub.Title, newSub.DateOfCreation, newSub.StatusFlag, newSub.Submitted, newSub.ReportComplete,
-                        newSub.UserComment, "json");
-
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                        Log.d(TAG, "onResponse: Server Response: " + response.toString());
-
-                        try{
-                            String json = response.body().string();
-//                            Log.d(TAG, "onResponse: json: " + json);
-                            JSONObject data = null;
-                            data = new JSONObject(json); //this is the response data that comes back.
-                            Log.d("k", "onResponse: data: " + data.optString("json"));
-                            //update submission in database
-                            newSub.Submitted = 1;
-                            viewModel.updateSubmission(newSub);
-                        }catch (JSONException e){
-//                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
-                        }catch (IOException e){
-//                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                        Log.e(TAG, "onFailure: Something went wrong: " + t.getMessage() );
-                        Toast.makeText(ViewSubsActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-
-                viewModel.getPicturesByID(newSub.Master_ID).observe(this, new Observer<List<PictureTable>>() {
-                    @Override
-                    public void onChanged(@Nullable List<PictureTable> pictureTables) {
-                        //Send the Pictures:
-                        MyVetPathAPI myVetPathAPI = retrofit.create(MyVetPathAPI.class);
-                        for(PictureTable picture : pictureTables){
-                            Call<ResponseBody> call = myVetPathAPI.picture(headerMap, "picture", picture.Image_ID, picture.Master_ID, picture.ImagePath, picture.Title, picture.Latitude, picture.Longitude, picture.DateTaken, "json");
-
-                            call.enqueue(new Callback<ResponseBody>() {
-                                @Override
-                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                        Log.d(TAG, "onResponse: Server Response: " + response.toString());
-
-                                    try{
-                                        String json = response.body().string();
-//                            Log.d(TAG, "onResponse: json: " + json);
-                                        JSONObject data = null;
-                                        data = new JSONObject(json); //this is the response data that comes back.
-                                        Log.d("k", "onResponse: data: " + data.optString("json"));
-
-                                    }catch (JSONException e){
-//                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
-                                    }catch (IOException e){
-//                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                        Log.e(TAG, "onFailure: Something went wrong: " + t.getMessage() );
-                                    Toast.makeText(ViewSubsActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    }
-                });
-
-
-                viewModel.getSamplesByID(newSub.Master_ID).observe(this, new Observer<List<SampleTable>>() {
-                    @Override
-                    public void onChanged(@Nullable List<SampleTable> sampleTables) {
-                        //Send the Samples:
-                        MyVetPathAPI myVetPathAPI = retrofit.create(MyVetPathAPI.class);
-                        for(SampleTable sample : sampleTables){
-                            Call<ResponseBody> call = myVetPathAPI.sample(headerMap, "sample", sample.Sample_ID, sample.Master_ID, sample.LocationOfSample, sample.NumberOfSample, sample.NameOfSample, "json");
-
-                            call.enqueue(new Callback<ResponseBody>() {
-                                @Override
-                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                        Log.d(TAG, "onResponse: Server Response: " + response.toString());
-
-                                    try{
-                                        String json = response.body().string();
-//                            Log.d(TAG, "onResponse: json: " + json);
-                                        JSONObject data = null;
-                                        data = new JSONObject(json); //this is the response data that comes back.
-                                        Log.d("k", "onResponse: data: " + data.optString("json"));
-
-                                    }catch (JSONException e){
-//                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
-                                    }catch (IOException e){
-//                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                        Log.e(TAG, "onFailure: Something went wrong: " + t.getMessage() );
-                                    Toast.makeText(ViewSubsActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    }
-                });
-
-
-
-                //Send the patient
-                LiveData<PatientTable> newPatient = viewModel.getPatientByID(newSub.Master_ID);
-                call = myVetPathAPI.patient(headerMap, "patient",  newPatient.getValue().Patient_ID, newPatient.getValue().Master_ID, newPatient.getValue().PatientName, newPatient.getValue().Species,
-                        newPatient.getValue().Sex, newPatient.getValue().Euthanized, newPatient.getValue().DateOfBirth, newPatient.getValue().DateOfDeath, "json");
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                        Log.d(TAG, "onResponse: Server Response: " + response.toString());
-
-                        try{
-                            String json = response.body().string();
-//                            Log.d(TAG, "onResponse: json: " + json);
-                            JSONObject data = null;
-                            data = new JSONObject(json); //this is the response data that comes back.
-                            Log.d("k", "onResponse: data: " + data.optString("json"));
-
-                        }catch (JSONException e){
-//                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
-                        }catch (IOException e){
-//                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                        Log.e(TAG, "onFailure: Something went wrong: " + t.getMessage() );
-                        Toast.makeText(ViewSubsActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-
-            }
-
-       }
-
-    }
+//
+//    //This function will automatically send data to the server, provided that the data hasn't already been sent before. The parameter is the lsit of submissions that are stored in the local database
+//    public void sendToServer(ArrayList<SubmissionTable> submissions){
+//        String MyVetPath_Base_Url = getString(R.string.MVP_Base_API_URL);
+//        //build the retrofit that will make the query
+//        final Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(getString(R.string.MVP_Base_API_URL))
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//
+//        final MyVetPathAPI myVetPathAPI = retrofit.create(MyVetPathAPI.class);
+//
+//        final HashMap<String, String> headerMap = new HashMap<String, String>();
+//        headerMap.put("Content-Type", "application/json");
+//
+//
+//       for(final SubmissionTable newSub : submissions) {
+//            if(newSub.Submitted == 0) { //only send to server if the submission hasn't been sent yet
+//                //Send the Submission
+//
+////                Call<ResponseBody> call = myVetPathAPI.submission(headerMap, "submission", newSub.Group_ID, newSub.User_ID,
+////                        newSub.Title, newSub.DateOfCreation, newSub.StatusFlag, newSub.Submitted, newSub.ReportComplete,
+////                        newSub.UserComment, "json");
+////
+////                call.enqueue(new Callback<ResponseBody>() {
+////                    @Override
+////                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//////                        Log.d(TAG, "onResponse: Server Response: " + response.toString());
+////
+////                        try{
+////                            String json = response.body().string();
+//////                            Log.d(TAG, "onResponse: json: " + json);
+////                            JSONObject data = null;
+////                            data = new JSONObject(json); //this is the response data that comes back.
+////                            Log.d("k", "onResponse: data: " + data.optString("json"));
+////                            //update submission in database
+////                            newSub.Submitted = 1;
+////                            viewModel.updateSubmission(newSub);
+////                        }catch (JSONException e){
+//////                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+////                        }catch (IOException e){
+//////                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+////                        }
+////                    }
+////
+////                    @Override
+////                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+//////                        Log.e(TAG, "onFailure: Something went wrong: " + t.getMessage() );
+////                        Toast.makeText(ViewSubsActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+////                    }
+////                });
+//
+//
+//                viewModel.getPicturesByID(newSub.Master_ID).observe(this, new Observer<List<PictureTable>>() {
+//                    @Override
+//                    public void onChanged(@Nullable List<PictureTable> pictureTables) {
+//                        //Send the Pictures:
+//                        MyVetPathAPI myVetPathAPI = retrofit.create(MyVetPathAPI.class);
+//                        for(PictureTable picture : pictureTables){
+//                            Call<ResponseBody> call = myVetPathAPI.picture(headerMap, "picture", picture.Image_ID, picture.Master_ID, picture.ImagePath, picture.Title, picture.Latitude, picture.Longitude, picture.DateTaken, "json");
+//
+//                            call.enqueue(new Callback<ResponseBody>() {
+//                                @Override
+//                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+////                        Log.d(TAG, "onResponse: Server Response: " + response.toString());
+//
+//                                    try{
+//                                        String json = response.body().string();
+////                            Log.d(TAG, "onResponse: json: " + json);
+//                                        JSONObject data = null;
+//                                        data = new JSONObject(json); //this is the response data that comes back.
+//                                        Log.d("k", "onResponse: data: " + data.optString("json"));
+//
+//                                    }catch (JSONException e){
+////                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+//                                    }catch (IOException e){
+////                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+////                        Log.e(TAG, "onFailure: Something went wrong: " + t.getMessage() );
+//                                    Toast.makeText(ViewSubsActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+//                                }
+//                            });
+//                        }
+//                    }
+//                });
+//
+//
+//                viewModel.getSamplesByID(newSub.Master_ID).observe(this, new Observer<List<SampleTable>>() {
+//                    @Override
+//                    public void onChanged(@Nullable List<SampleTable> sampleTables) {
+//                        //Send the Samples:
+//                        MyVetPathAPI myVetPathAPI = retrofit.create(MyVetPathAPI.class);
+//                        for(SampleTable sample : sampleTables){
+//                            Call<ResponseBody> call = myVetPathAPI.sample(headerMap, "sample", sample.Sample_ID, sample.Master_ID, sample.LocationOfSample, sample.NumberOfSample, sample.NameOfSample, "json");
+//
+//                            call.enqueue(new Callback<ResponseBody>() {
+//                                @Override
+//                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+////                        Log.d(TAG, "onResponse: Server Response: " + response.toString());
+//
+//                                    try{
+//                                        String json = response.body().string();
+////                            Log.d(TAG, "onResponse: json: " + json);
+//                                        JSONObject data = null;
+//                                        data = new JSONObject(json); //this is the response data that comes back.
+//                                        Log.d("k", "onResponse: data: " + data.optString("json"));
+//
+//                                    }catch (JSONException e){
+////                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+//                                    }catch (IOException e){
+////                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+////                        Log.e(TAG, "onFailure: Something went wrong: " + t.getMessage() );
+//                                    Toast.makeText(ViewSubsActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+//                                }
+//                            });
+//                        }
+//                    }
+//                });
+//
+//
+//
+////                //Send the patient
+////                LiveData<PatientTable> newPatient = viewModel.getPatientByID(newSub.Master_ID);
+////                call = myVetPathAPI.patient(headerMap, "patient",  newPatient.getValue().Patient_ID, newPatient.getValue().Master_ID, newPatient.getValue().PatientName, newPatient.getValue().Species,
+////                        newPatient.getValue().Sex, newPatient.getValue().Euthanized, newPatient.getValue().DateOfBirth, newPatient.getValue().DateOfDeath, "json");
+////                call.enqueue(new Callback<ResponseBody>() {
+////                    @Override
+////                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//////                        Log.d(TAG, "onResponse: Server Response: " + response.toString());
+////
+////                        try{
+////                            String json = response.body().string();
+//////                            Log.d(TAG, "onResponse: json: " + json);
+////                            JSONObject data = null;
+////                            data = new JSONObject(json); //this is the response data that comes back.
+////                            Log.d("k", "onResponse: data: " + data.optString("json"));
+////
+////                        }catch (JSONException e){
+//////                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+////                        }catch (IOException e){
+//////                            Log.e(TAG, "onResponse: JSONException: " + e.getMessage() );
+////                        }
+////                    }
+//
+//                    @Override
+//                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+////                        Log.e(TAG, "onFailure: Something went wrong: " + t.getMessage() );
+//                        Toast.makeText(ViewSubsActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//
+//
+//            }
+//
+//       }
+//
+//    }
 
 
     //This function syncs the data by inserting the results from the query into the database

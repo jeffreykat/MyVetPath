@@ -8,15 +8,30 @@ import android.os.Bundle;
 
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.myvetpath.myvetpath.data.CategoryItem;
+import com.myvetpath.myvetpath.data.MyVetPathAPI;
 import com.myvetpath.myvetpath.data.PlanetItem;
 import com.myvetpath.myvetpath.data.SubmissionTable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static java.sql.Types.NULL;
 
@@ -53,7 +68,7 @@ public class MainActivity extends BaseActivity {
         view_subs_activity = new Intent(this, ViewSubsActivity.class);
 
         create_sub_button = findViewById(R.id.createSubButton);
-        create_sub_button.setOnClickListener(new View.OnClickListener(){
+        create_sub_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(create_sub_activity);
@@ -64,10 +79,10 @@ public class MainActivity extends BaseActivity {
 
         create_account_activity = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.web_URL))); //TODO Just use placeholder web page for now, update later when we set up account creation page
         create_account_button = findViewById(R.id.createAccountButton);
-        create_account_button.setOnClickListener(new View.OnClickListener(){
+        create_account_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
-                if(create_account_activity.resolveActivity(getPackageManager()) != null){ //if there is a web browser on phone, go ahead and navigate to that page
+            public void onClick(View view) {
+                if (create_account_activity.resolveActivity(getPackageManager()) != null) { //if there is a web browser on phone, go ahead and navigate to that page
                     startActivity(create_account_activity);
                 }
             }
@@ -83,7 +98,7 @@ public class MainActivity extends BaseActivity {
 
         view_drafts_activity = new Intent(this, ViewDraftsActivity.class);
         view_drafts_button = findViewById(R.id.viewDraftsButton);
-        view_drafts_button.setOnClickListener(new View.OnClickListener(){
+        view_drafts_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(view_drafts_activity);
@@ -94,20 +109,13 @@ public class MainActivity extends BaseActivity {
         viewModel.getDrafts().observe(this, new Observer<List<SubmissionTable>>() {
             @Override
             public void onChanged(@Nullable List<SubmissionTable> submissionTables) {
-                if(submissionTables == null || submissionTables.size() < 1){
+                if (submissionTables == null || submissionTables.size() < 1) {
                     view_drafts_button.setVisibility(View.INVISIBLE);
-                }
-                else{
+                } else {
                     view_drafts_button.setVisibility(View.VISIBLE);
                 }
             }
         });
-
-        //Example of how to use API query
-//        mEntryViewModel = ViewModelProviders.of(this).get(EntryViewModel.class);
-//        mCategoryItems = new ArrayList<>();
-//        setObserverCategory();
-//        mEntryViewModel.loadCategoryItems("planets", null); //query
 
     }
 
