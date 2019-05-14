@@ -168,6 +168,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                 } else {
                     submission.Group_ID = viewModel.insertGroup(group);
                     internalID = viewModel.insertSubmission(submission, inserted);
+                    newSub.Master_ID = internalID;
                     Log.d(LOG_TAG, "internal id from view model: " + Long.toString(internalID));
 
                     patient.Master_ID = internalID;
@@ -639,7 +640,11 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
         call.enqueue(new Callback<SubmissionTable>() {
             @Override
             public void onResponse(Call<SubmissionTable> call, Response<SubmissionTable> response) {
-                if(response.isSuccessful()){
+
+                if(response.isSuccessful()){//if the submission was successfully sent to server, then update the submission in the SQLite DB
+                    newSub.Submitted = Calendar.getInstance().getTime().getTime();
+                    //todo: set case_id when the api has been further developed
+                    viewModel.updateSubmission(newSub);
                     Toast.makeText(CreateSubActivity.this, "Submission was sent to server", Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(CreateSubActivity.this, "Error: Submission wasn't sent.", Toast.LENGTH_SHORT).show();
@@ -648,7 +653,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
 
             @Override
             public void onFailure(Call<SubmissionTable> call, Throwable t) {
-                Toast.makeText(CreateSubActivity.this, "Failure", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CreateSubActivity.this, "Failed to send to server. Check your internet connection and try again.", Toast.LENGTH_SHORT).show();
             }
         });
 
