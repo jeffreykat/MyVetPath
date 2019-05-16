@@ -34,6 +34,7 @@
             android:name=".CreateSubActivity"
             android:label="@string/title_activity_create_sub"
             android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden">
             <meta-data

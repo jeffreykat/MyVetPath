@@ -522,7 +522,7 @@ public String testPath;
                 try { //set and save the actual image
 
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-
+                    bitmap = modifyOrientation(bitmap, mCurrentPhotoPath.substring(5));
                     images[selectedImageView].setImageBitmap(bitmap);
                     imageBitmaps[selectedImageView] = bitmap;
 
