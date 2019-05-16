@@ -114,8 +114,7 @@ public class AddPicturesActivity extends AppCompatActivity {
         mainGrid = (GridLayout) findViewById(R.id.mainGrid);
         setSingleEvent(mainGrid);
         images = new ImageButton[]{findViewById(R.id.firstImageBttn), findViewById(R.id.secondImageBttn),
-                findViewById(R.id.thirdImageBttn), findViewById(R.id.fourthImageBttn),
-                findViewById(R.id.fifthImageBttn)};
+                findViewById(R.id.thirdImageBttn), findViewById(R.id.fourthImageBttn), findViewById(R.id.fifthImageBttn)};
 
         defaultAddPictureImageRESID = R.drawable.ic_action_add_photo;
 
@@ -452,9 +451,20 @@ public String testPath;
                 InputStream in = null;
                 try {
                     in = getContentResolver().openInputStream(uri);
+                    String col = MediaStore.Images.ImageColumns.DATA;
+                    Cursor c = getApplicationContext().getContentResolver().query(uri,
+                            new String[]{col},
+                            null, null, null);
                     ExifInterface exifInterface = null;
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                         exifInterface = new ExifInterface(in);
+                    } else {
+                        if (c != null && c.moveToFirst()) {
+                            exifInterface = new ExifInterface(c.getString(c.getColumnIndex(col)));
+                            c.close();
+                        } else {
+                            exifInterface = new ExifInterface(uri.getPath());
+                        }
                     }
 
                     String longitude = exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
@@ -467,7 +477,9 @@ public String testPath;
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
                     Date convertedDate = new Date();
                     try {
-                        convertedDate = dateFormat.parse(dateString);
+                        if(dateString != null) {
+                            convertedDate = dateFormat.parse(dateString);
+                        }
                         imageDates[selectedImageView] = convertedDate.getTime();
                     } catch (ParseException e) {
                         // Auto-generated exception
