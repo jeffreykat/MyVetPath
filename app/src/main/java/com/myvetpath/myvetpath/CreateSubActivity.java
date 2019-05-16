@@ -74,6 +74,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
 
     Intent add_pictures_activity;
     Intent view_subs_activity;
+    Intent view_drafts_activiy;
     Intent add_samples_activity;
 
     SubmissionTable newSub;
@@ -188,6 +189,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                     }
                 }
                 sendToServer();
+                finish();
                 startActivity(view_subs_activity);
             }
         })
@@ -217,7 +219,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
         toolbar.setTitle(R.string.action_submission);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        view_drafts_activiy = new Intent( this, ViewDraftsActivity.class);
         view_subs_activity = new Intent(this, ViewSubsActivity.class);
         add_pictures_activity = new Intent(this, AddPicturesActivity.class);
         add_samples_activity = new Intent(this, AddSamplesActivity.class);
@@ -323,6 +325,8 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                     Toast testToast = Toast.makeText(getApplicationContext(), R.string.create_error, Toast.LENGTH_LONG);
                     testToast.show();
                 }
+                finish();
+                startActivity(view_drafts_activiy);
             }
         });
 
