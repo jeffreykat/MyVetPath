@@ -21,6 +21,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -139,7 +141,7 @@ public class SubDetailsActivity extends BaseActivity {
     final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
     java.text.DateFormat dateFormat;
     private TextView mSamplesTV;
-    private ImageButton[] images;
+    private ImageView[] images;
     private EditText mReportReview;
     private CheckBox mReportCheck;
     private Button add_replies_BTTN;
@@ -297,7 +299,7 @@ public class SubDetailsActivity extends BaseActivity {
 
 
         //set images
-        images = new ImageButton[]{findViewById(R.id.first_ImageDetails_bttn), findViewById(R.id.second_ImageDetails_bttn),
+        images = new ImageView[]{findViewById(R.id.first_ImageDetails_bttn), findViewById(R.id.second_ImageDetails_bttn),
                 findViewById(R.id.third_ImageDetails_bttn), findViewById(R.id.fourth_ImageDetails_bttn),
                 findViewById(R.id.fifth_ImageDetails_bttn)};
 
@@ -373,7 +375,7 @@ public class SubDetailsActivity extends BaseActivity {
                     for(int i = 0; i < 5; i++){
                         if(pictures.size() > i && pictures.get(i).Title != null){
                             Bitmap bmp = null;
-                            ImageButton bttn = (ImageButton) findViewById(R.id.first_ImageDetails_bttn);
+                            ImageView bttn = (ImageView) findViewById(R.id.first_ImageDetails_bttn);
 
                             String filename = pictures.get(i).ImagePath;
                             try { //try to get the bitmap and set the image button to it
@@ -385,8 +387,9 @@ public class SubDetailsActivity extends BaseActivity {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        }else{
+                        }else{//if no picture, then set the ImageView invisible
                             images[i].setVisibility(View.INVISIBLE);
+                            images[i].getLayoutParams().height = 0;
                         }
                     }
                 }

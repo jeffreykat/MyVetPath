@@ -189,6 +189,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                     }
                 }
                 sendToServer();
+                finish();
                 startActivity(view_subs_activity);
             }
         })
@@ -324,6 +325,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                     Toast testToast = Toast.makeText(getApplicationContext(), R.string.create_error, Toast.LENGTH_LONG);
                     testToast.show();
                 }
+                finish();
                 startActivity(view_drafts_activiy);
             }
         });
