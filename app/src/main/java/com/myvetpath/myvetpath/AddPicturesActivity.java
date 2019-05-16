@@ -113,8 +113,9 @@ public class AddPicturesActivity extends AppCompatActivity {
         mainGrid = (GridLayout) findViewById(R.id.mainGrid);
         setSingleEvent(mainGrid);
         images = new ImageButton[]{findViewById(R.id.firstImageBttn), findViewById(R.id.secondImageBttn),
-                findViewById(R.id.thirdImageBttn), findViewById(R.id.fourthImageBttn),
-                findViewById(R.id.fifthImageBttn)};
+                findViewById(R.id.thirdImageBttn), findViewById(R.id.fourthImageBttn)//,
+                //findViewById(R.id.fifthImageBttn)
+        };
 
         defaultAddPictureImageRESID = R.drawable.ic_action_add_photo;
 

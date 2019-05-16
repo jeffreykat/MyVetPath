@@ -68,17 +68,17 @@
             app:layout_rowWeight="1"
             android:scaleType="fitCenter"/>
 
-        <ImageButton
+        <!--<ImageButton-->
 
-            android:src="@drawable/ic_action_add_photo"
-            android:id="@+id/fifthImageBttn"
-            app:layout_row="2"
-            app:layout_column="0"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
-            android:scaleType="fitCenter"/>
+            <!--android:src="@drawable/ic_action_add_photo"-->
+            <!--android:id="@+id/fifthImageBttn"-->
+            <!--app:layout_row="2"-->
+            <!--app:layout_column="0"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="0dp"-->
+            <!--app:layout_columnWeight="1"-->
+            <!--app:layout_rowWeight="1"-->
+            <!--android:scaleType="fitCenter"/>-->
 
 
     </android.support.v7.widget.GridLayout>
