@@ -266,52 +266,70 @@
                 />
 
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/first_ImageDetails_bttn"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="500dp"
+                android:scaleType="fitCenter"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/picturesTV"
                 android:gravity = "center"
+                android:layout_margin="0dp"
+                android:padding="0dp"
                 />
 
-            <ImageButton
+            <ImageView
 
                 android:id="@+id/second_ImageDetails_bttn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="500dp"
+                android:scaleType="fitCenter"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/first_ImageDetails_bttn"
                 android:gravity = "center"
+                android:layout_margin="0dp"
+                android:padding="0dp"
                 />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/third_ImageDetails_bttn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="500dp"
+                android:scaleType="fitCenter"
                 app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/second_ImageDetails_bttn"
                 android:gravity = "center"
+                android:layout_margin="0dp"
+                android:padding="0dp"
                 />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/fourth_ImageDetails_bttn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="500dp"
+                android:scaleType="fitCenter"
                 app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/third_ImageDetails_bttn"
                 android:gravity = "center"
+                android:layout_margin="0dp"
+                android:padding="0dp"
                 />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/fifth_ImageDetails_bttn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="500dp"
+                android:scaleType="fitCenter"
                 app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/fourth_ImageDetails_bttn"
                 android:gravity = "center"
+                android:layout_margin="0dp"
+                android:padding="0dp"
                 />
 
         </android.support.constraint.ConstraintLayout>
