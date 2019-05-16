@@ -324,6 +324,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                     Toast testToast = Toast.makeText(getApplicationContext(), R.string.create_error, Toast.LENGTH_LONG);
                     testToast.show();
                 }
+                finish();
                 startActivity(view_drafts_activiy);
             }
         });
