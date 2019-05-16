@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -379,6 +380,31 @@ public String testPath;
         return image;
     }
 
+    public static Bitmap modifyOrientation(Bitmap bitmap, String image_absolute_path) throws IOException {
+        ExifInterface ei = new ExifInterface(image_absolute_path);
+        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        if(orientation == 6){ //picture came in rotated, so rotate it by 90 degrees to make it look correct
+            return rotate(bitmap, 90);
+        }else if(orientation ==  3 || orientation == 1){ //phone flipped the picture horizontally, so flip it again to make it correct
+            return flip(bitmap, false, true);
+        }else{ //picture came in fine, so don't do anything
+            return bitmap;
+        }
+    }
+
+
+    public static Bitmap rotate(Bitmap bitmap, float degrees) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degrees);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical) {
+        Matrix matrix = new Matrix();
+        matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
     //purpose: this method is called automatically after the app gets a picture from the UploadPicturesPrompt
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -392,6 +418,8 @@ public String testPath;
             Bitmap bitmap = null; //get the actual picture
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.parse(mCurrentPhotoPath));
+                bitmap = modifyOrientation(bitmap, mCurrentPhotoPath.substring(5));
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
