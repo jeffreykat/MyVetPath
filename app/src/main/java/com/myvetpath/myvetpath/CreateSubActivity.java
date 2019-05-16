@@ -189,6 +189,7 @@ public class CreateSubActivity extends BaseActivity implements DatePickerDialog.
                     }
                 }
                 sendToServer();
+                finish();
                 startActivity(view_subs_activity);
             }
         })
